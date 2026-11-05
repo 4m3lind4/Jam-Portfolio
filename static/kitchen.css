@@ -1,0 +1,256 @@
+/* The kitchen version of a project page: steel, burgundy and order tickets,
+   taken from the ticket-on-a-rail design in the portfolio. */
+.page-kitchen {
+  --k-top: #b3124e;
+  --k-mid: #8d0c3d;
+  --k-low: #4a0420;
+  --k-hot: #ff0866;
+  --k-steel: linear-gradient(180deg, #f4f4f5 0%, #c9cad0 22%, #8f9199 58%, #b9bbc1 78%, #e4e5e8 100%);
+  background: var(--k-low);
+}
+.art-defs { position: absolute; }
+
+.page-kitchen .site-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 6;
+}
+.page-kitchen .site-header a,
+.page-kitchen .site-header nav a { color: var(--cream); }
+
+.k-sans { font-family: var(--font-body); }
+.k-script { font-family: var(--script); }
+.k-shadow { fill: #1b0209; opacity: 0.45; }
+
+/* ---------- Scenes, stacked: reduced motion and no-JS see only this ---------- */
+
+.scene { background: linear-gradient(180deg, var(--k-top), var(--k-mid) 45%, var(--k-low)); }
+.scene--intro { padding-top: 4.5rem; }
+.scene-pin {
+  position: relative;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 2rem var(--gutter, 1.5rem);
+  display: grid;
+  grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+  align-items: center;
+  gap: 2rem;
+}
+.art { display: block; width: 100%; height: auto; order: 2; overflow: visible; }
+.scene-copy { order: 1; }
+.kitchen-dark, .lights, .scroll-cue, .slicer, .book-cover { display: none; }
+.ph-mid, .ph-lo { opacity: 0; }
+.stage-lo, .stage-mid { opacity: 0; }
+.art--paper .draw { fill: none; stroke: #470b23; stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1; }
+
+.scene-ticket {
+  position: relative;
+  background: repeating-linear-gradient(180deg, transparent 0 1.62em, rgba(71, 11, 35, 0.13) 1.62em calc(1.62em + 1px)), var(--cream);
+  color: var(--ink);
+  padding: 1.5rem 1.5rem 1.6rem;
+  box-shadow: 0 18px 34px rgba(27, 2, 9, 0.45);
+  font-size: clamp(0.84rem, 1.9svh, 1rem);
+  line-height: 1.55;
+}
+.scene-ticket p { margin: 0 0 0.7em; }
+.scene-ticket > :last-child { margin-bottom: 0; }
+.scene-ticket h2,
+.ticket-title {
+  font-family: var(--script);
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.15;
+  letter-spacing: 0;
+  margin: 0 0 0.35em;
+}
+.ticket-title { font-size: clamp(2.6rem, 7svh, 3.6rem); }
+.scene-ticket h2 { font-size: clamp(1.7rem, 4.4svh, 2.3rem); }
+.ticket-step {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--k-hot);
+}
+.scene-ticket .ticket-step { margin-bottom: 0.2em; }
+.ticket-kicker { font-weight: 700; }
+.scene-ticket ul, .scene-ticket ol { margin: 0 0 0.7em; padding-left: 1.15em; }
+.scene-ticket li { transition: color 0.15s; }
+.scene-ticket li.is-hot { color: var(--k-hot); font-weight: 700; }
+.scene-ticket h3 { font-size: 1em; font-weight: 700; color: var(--ink); margin: 0 0 0.35em; }
+.scene-ticket img, .scene-ticket video { max-width: 100%; height: auto; }
+.scene-ticket figure { margin: 0 0 0.7em; }
+.scene--plated .scene-ticket h3 { padding: 0.45em 0.7em; background: #470b23; color: var(--cream); }
+.ticket-meta { margin: 0 0 0.8em; display: grid; gap: 0.35em; }
+.ticket-meta dt { font-size: 0.7em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.65; }
+.ticket-meta dd { margin: 0; }
+.ticket-links { display: flex; flex-wrap: wrap; gap: 0.4em 1.1em; }
+.ticket-links a { color: var(--k-hot); font-weight: 700; }
+
+/* ---------- Scenes, pinned ---------- */
+
+.kitchen-on .scene { padding: 0; height: var(--len, 240vh); background: none; }
+.kitchen-on .scene--intro { --len: 200vh; }
+.kitchen-on .scene--challenge { --len: 280vh; }
+.kitchen-on .scene--development { --len: 400vh; }
+.kitchen-on .scene--plated { --len: 280vh; }
+
+.kitchen-on .scene-pin {
+  --art-w: min(111svh, calc(100vw - 27rem));
+  --rail-top: 1.1rem;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  max-width: none;
+  padding: 0;
+  display: block;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--k-top), var(--k-mid) 45%, var(--k-low));
+}
+.kitchen-on .scene--intro .scene-pin { --rail-top: 4.4rem; }
+/* The order rail along the top and the steel counter along the bottom. */
+.kitchen-on .scene-pin::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  top: var(--rail-top);
+  height: 2.6rem;
+  background: var(--k-steel);
+  box-shadow: 0 7px 12px rgba(27, 2, 9, 0.5);
+}
+.kitchen-on .scene-pin::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--art-w) * 0.125);
+  background: linear-gradient(180deg, #e8e9ec 0, #a7a9b0 7%, #6d6f77 45%, #3c3d44 100%);
+}
+.kitchen-on .art {
+  position: absolute;
+  z-index: 1;
+  right: 1rem;
+  bottom: 0;
+  width: var(--art-w);
+  height: calc(var(--art-w) * 0.775);
+  overflow: visible;
+}
+.kitchen-on .scene-copy {
+  position: absolute;
+  z-index: 2;
+  left: clamp(1rem, 3vw, 3rem);
+  top: calc(var(--rail-top) + 1.2rem);
+  width: 23rem;
+  transform: rotate(-1.1deg);
+  transform-origin: 50% 0;
+}
+/* Text is edited in Notion, so a long section scrolls inside its ticket. */
+.kitchen-on .scene-ticket { max-height: calc(100svh - var(--rail-top) - 3rem); overflow-y: auto; }
+.kitchen-on .kitchen-dark {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #12020a;
+  opacity: 0.86;
+  pointer-events: none;
+}
+.kitchen-on .scene--intro .art { z-index: 0; }
+.kitchen-on .lights {
+  display: block;
+  position: absolute;
+  z-index: 4;
+  right: 1.25rem;
+  top: calc(var(--rail-top) + 3.4rem);
+  font: 700 0.8rem var(--font-body);
+  color: var(--cream);
+  background: #2c0714;
+  border: 1px solid rgba(249, 247, 235, 0.5);
+  border-radius: 99px;
+  padding: 0.45em 1em;
+  cursor: pointer;
+}
+.kitchen-on .lights[aria-pressed="true"]::before { content: "● "; color: #ffd27a; }
+.kitchen-on .lights[aria-pressed="false"]::before { content: "○ "; }
+.kitchen-on .lights:hover { background: #470b23; }
+.kitchen-on .scroll-cue {
+  display: block;
+  position: absolute;
+  z-index: 4;
+  right: 1.25rem;
+  bottom: 1rem;
+  margin: 0;
+  font-family: var(--script);
+  font-size: 1.3rem;
+  color: var(--ink);
+}
+.kitchen-on .slicer, .kitchen-on .book-cover { display: inline; }
+.kitchen-on .slice, .kitchen-on .dial, .kitchen-on .chip { cursor: pointer; }
+.kitchen-on .plate-phone { cursor: grab; }
+
+/* ---------- Phones: art stays stuck above the ticket as you read ---------- */
+
+@media (max-width: 820px) {
+  .scene-pin { grid-template-columns: minmax(0, 1fr); }
+  .art { order: 0; }
+
+  .kitchen-on .scene { height: auto; background: linear-gradient(180deg, var(--k-top), var(--k-low)); }
+  .kitchen-on .scene--intro { --tail: 30svh; }
+  .kitchen-on .scene--development { --tail: 90svh; }
+  .kitchen-on .scene--challenge, .kitchen-on .scene--plated { --tail: 60svh; }
+  /* The ticket's margin is the tail: it keeps the art stuck until the scene ends. */
+  .kitchen-on .scene-pin { position: static; display: flow-root; height: auto; overflow: visible; background: none; }
+  .kitchen-on .scene-pin::before, .kitchen-on .scene-pin::after { display: none; }
+  .kitchen-on .art {
+    position: sticky;
+    top: 0;
+    right: auto;
+    width: 100%;
+    height: 46svh;
+    z-index: 2;
+    overflow: hidden;
+    background:
+      linear-gradient(0deg, #6d6f77 0, #a7a9b0 12.5vw, transparent 12.5vw),
+      linear-gradient(180deg, var(--k-top), var(--k-mid));
+  }
+  .kitchen-on .scene--intro .art { z-index: 2; }
+  .kitchen-on .scene-copy {
+    position: relative;
+    z-index: 1;
+    left: auto;
+    top: auto;
+    width: auto;
+    margin: 1.25rem 1rem var(--tail, 35svh);
+    transform: none;
+  }
+  .kitchen-on .kitchen-dark { z-index: 3; bottom: auto; height: 46svh; position: absolute; }
+  .kitchen-on .lights { top: 3.6rem; right: 0.75rem; }
+  .kitchen-on .scroll-cue { display: none; }
+  .scene-ticket { font-size: 0.95rem; }
+  .kitchen-on .scene-ticket { max-height: none; overflow: visible; }
+}
+
+/* ---------- The end of the meal ---------- */
+
+.kitchen-end { background: var(--cream); padding: 4rem var(--gutter, 1.5rem) 2rem; }
+.kitchen-end-inner {
+  max-width: 62rem;
+  margin: 0 auto 3rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19rem;
+  gap: 3rem;
+  align-items: start;
+}
+.brought h2 { font-family: var(--script); font-weight: 400; font-size: 2.3rem; margin: 0 0 1rem; color: var(--ink); }
+.brought dl { margin: 0; display: grid; gap: 1rem; }
+.brought dt { font-weight: 700; color: var(--maroon); }
+.brought dd { margin: 0; color: var(--ink); }
+@media (max-width: 820px) {
+  .kitchen-end-inner { grid-template-columns: minmax(0, 1fr); }
+}

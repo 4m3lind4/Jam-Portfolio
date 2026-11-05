@@ -1,4 +1,5 @@
 import { esc, isVideo } from "./render.mjs";
+import { artDefs, bookArt } from "./kitchen-art.mjs";
 
 export function zone(config, category) {
   return config.categories[category] || { ...config.defaultCategory, label: category || config.defaultCategory.label };
@@ -163,6 +164,106 @@ export function aboutPage({ config, aboutHtml }) {
     bodyClass: "page-about",
     footer: false,
     current: "about",
+  });
+}
+
+// Hide nothing, but give the scenes their scroll length only once the script is
+// sure to run. Reduced motion and no-JS visitors get the stacked, static page.
+const KITCHEN_HEAD = `
+<link rel="stylesheet" href="../../kitchen.css">
+<script>
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.classList.add("kitchen-on");
+    addEventListener("load", function () { if (!window.__kitchenRan) document.documentElement.classList.remove("kitchen-on"); });
+  }
+</script>`;
+
+export function kitchenPage({ config, project: p, next, story }) {
+  const root = "../../";
+  const z = zone(config, p.category);
+  const ticket = [
+    ["Role", esc(story.role)],
+    ["Course", esc(story.course)],
+    p.year && ["Year", String(p.year)],
+    p.tools.length && ["Tools", p.tools.map(esc).join(", ")],
+    ["Category", esc(z.label)],
+  ].filter(Boolean);
+
+  const scenes = story.scenes
+    .map(
+      (s) => `<section class="scene scene--${s.id}" id="${s.id}" aria-labelledby="${s.id}-title">
+  <div class="scene-pin">
+    ${s.art(root, s.labels)}
+    <div class="scene-copy">
+      <div class="scene-ticket">
+        <p class="ticket-step">Step ${s.step}</p>
+        <h2 id="${s.id}-title">${esc(s.title)}</h2>
+        ${s.kicker ? `<p class="ticket-kicker">${esc(s.kicker)}</p>` : ""}
+        ${s.html}
+      </div>
+    </div>
+  </div>
+</section>`
+    )
+    .join("\n");
+
+  const body = `${artDefs}
+<article class="kitchen">
+<section class="scene scene--intro" id="intro" aria-labelledby="intro-title">
+  <div class="scene-pin">
+    <div class="kitchen-dark" aria-hidden="true"></div>
+    ${bookArt(p.cover, "")}
+    <div class="scene-copy">
+      <div class="scene-ticket">
+        <h1 id="intro-title" class="ticket-title">${esc(p.title)}</h1>
+        <p class="ticket-kicker">${esc(story.heading)}</p>
+        ${story.overview.map((t) => `<p>${t}</p>`).join("")}
+        <dl class="ticket-meta">
+          <div><dt>Role</dt><dd>${esc(story.role)}</dd></div>
+          <div><dt>Course</dt><dd>${esc(story.course)}</dd></div>
+        </dl>
+        <p class="ticket-links">
+          ${p.link ? `<a href="${esc(p.link)}" rel="noopener">${linkLabel(p.link)}</a>` : ""}
+          <a href="#plated">Skip to the finished app</a>
+        </p>
+      </div>
+    </div>
+    <button class="lights" type="button" aria-pressed="true">Kitchen lights</button>
+    <p class="scroll-cue" aria-hidden="true">Scroll to start cooking</p>
+  </div>
+</section>
+${scenes}
+<section class="kitchen-end" aria-labelledby="brought-title">
+  <div class="kitchen-end-inner">
+    <div class="brought">
+      <h2 id="brought-title">What I brought to the project</h2>
+      <dl>${story.brought.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+    </div>
+    <aside class="case-ticket" aria-label="Project details">
+      <div class="case-ticket-paper" style="clip-path:${tornEdges()}">
+        <p class="ticket-head">Order details</p>
+        <dl>${ticket.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>
+        <p class="ticket-thanks">Thank you!</p>
+      </div>
+    </aside>
+  </div>
+  <nav class="case-nav" aria-label="More projects">
+    <a class="case-back" href="../../#projects"><span class="case-nav-label">Back to the</span><span class="case-nav-title">Menu</span></a>
+    ${next ? `<a class="case-next" href="../${esc(next.slug)}/"><span class="case-nav-label">Next course</span><span class="case-nav-title">${esc(next.title)}</span></a>` : ""}
+  </nav>
+</section>
+</article>`;
+
+  return layout({
+    config,
+    root,
+    title: `${p.title} | ${config.title}`,
+    description: p.summary || config.intro,
+    body,
+    head: MENU_FONTS + KITCHEN_HEAD,
+    scripts: `<script src="../../vendor/gsap.min.js"></script>\n<script src="../../vendor/ScrollTrigger.min.js"></script>\n<script src="../../kitchen.js"></script>`,
+    bodyClass: "page-case page-kitchen",
+    footer: false,
   });
 }
 

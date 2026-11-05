@@ -8,7 +8,8 @@ import { fileURLToPath } from "node:url";
 import config from "../site.config.mjs";
 import { createNotionSource, toProject, toResumeRow } from "./notion.mjs";
 import { renderBlocks } from "./render.mjs";
-import { aboutPage, homePage, projectPage } from "./templates.mjs";
+import { aboutPage, homePage, kitchenPage, projectPage } from "./templates.mjs";
+import { KITCHENS, storyFromNotion } from "./kitchen.mjs";
 import { buildMenu } from "./menu.mjs";
 import { buildAbout } from "./about.mjs";
 
@@ -65,7 +66,9 @@ async function main() {
   await mkdir(ASSETS, { recursive: true });
   await cp(path.join(ROOT, "static"), DIST, { recursive: true });
   await mkdir(path.join(DIST, "vendor"), { recursive: true });
-  await copyFile(path.join(ROOT, "node_modules/gsap/dist/gsap.min.js"), path.join(DIST, "vendor/gsap.min.js"));
+  for (const file of ["gsap.min.js", "ScrollTrigger.min.js"]) {
+    await copyFile(path.join(ROOT, "node_modules/gsap/dist", file), path.join(DIST, "vendor", file));
+  }
 
   // About the Chef is optional: if Notion can't be read, the rest still builds
   // and the header leaves out the About link.
@@ -101,14 +104,11 @@ async function main() {
   for (const [i, p] of projects.entries()) {
     const blocks = await source.getBlocks(p.id);
     const prefixAsset = async (url, kind) => fromRoot(await asset(url, kind), "../../");
-    const contentHtml = await renderBlocks(blocks, prefixAsset);
     const next = projects.length > 1 ? projects[(i + 1) % projects.length] : null;
-    const html = projectPage({
-      config: site,
-      project: { ...p, cover: fromRoot(p.coverPath, "../../") },
-      next,
-      contentHtml,
-    });
+    const page = { config: site, project: { ...p, cover: fromRoot(p.coverPath, "../../") }, next };
+    const html = KITCHENS[p.slug]
+      ? kitchenPage({ ...page, story: await storyFromNotion(KITCHENS[p.slug], blocks, prefixAsset) })
+      : projectPage({ ...page, contentHtml: await renderBlocks(blocks, prefixAsset) });
     const dir = path.join(DIST, "projects", p.slug);
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, "index.html"), html);

@@ -370,6 +370,56 @@
     "heading_2": {
      "rich_text": [
       {
+       "plain_text": "A Period Tracker Designed Around Athletic Performance",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Role:",
+       "annotations": {
+        "bold": true
+       },
+       "href": null
+      },
+      {
+       "plain_text": " UX/UI Designer · Developer · Team Coordinator",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Course:",
+       "annotations": {
+        "bold": true
+       },
+       "href": null
+      },
+      {
+       "plain_text": " Introduction to iOS Development, UTS",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "heading_3",
+    "heading_3": {
+     "rich_text": [
+      {
        "plain_text": "Overview",
        "annotations": {},
        "href": null
@@ -382,7 +432,143 @@
     "paragraph": {
      "rich_text": [
       {
-       "plain_text": "Sample paragraph standing in for the real write-up. Athletes and coaches rarely talk about cycles, even though they affect training load and recovery.",
+       "plain_text": "PeriodT is an athlete-focused period tracking concept designed to help athletes understand how their menstrual cycle may interact with ",
+       "annotations": {},
+       "href": null
+      },
+      {
+       "plain_text": "training, recovery and performance",
+       "annotations": {
+        "bold": true
+       },
+       "href": null
+      },
+      {
+       "plain_text": ".",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "The project was developed within a two-week development period and combined interaction design with software development.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "divider",
+    "divider": {}
+   },
+   {
+    "type": "heading_2",
+    "heading_2": {
+     "rich_text": [
+      {
+       "plain_text": "01 — The Challenge",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Traditional period trackers primarily focus on menstrual health and cycle prediction.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "For athletes, however, the menstrual cycle can also intersect with:",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "bulleted_list_item",
+    "bulleted_list_item": {
+     "rich_text": [
+      {
+       "plain_text": "Training",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "bulleted_list_item",
+    "bulleted_list_item": {
+     "rich_text": [
+      {
+       "plain_text": "Energy levels",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "bulleted_list_item",
+    "bulleted_list_item": {
+     "rich_text": [
+      {
+       "plain_text": "Recovery",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "bulleted_list_item",
+    "bulleted_list_item": {
+     "rich_text": [
+      {
+       "plain_text": "Exercise",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "bulleted_list_item",
+    "bulleted_list_item": {
+     "rich_text": [
+      {
+       "plain_text": "Performance",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "The goal was to explore how menstrual information could be presented in a way that was more relevant to an athlete's training routine.",
        "annotations": {},
        "href": null
       }
@@ -394,7 +580,127 @@
     "heading_2": {
      "rich_text": [
       {
-       "plain_text": "Process",
+       "plain_text": "02 — Research & Team Planning",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Because the project focused on a problem space I was personally familiar with as an athlete, I was able to bring contextual knowledge into the research and ideation process.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "At the beginning of the project, I worked with my team to identify individual strengths, interests and development goals.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "We then allocated responsibilities across the project based on these strengths while maintaining shared ownership of the final product.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "heading_2",
+    "heading_2": {
+     "rich_text": [
+      {
+       "plain_text": "03 — Low-Fidelity Design",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "With less than two weeks to complete the project, another team member and I rapidly developed the initial low-fidelity prototype.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "We established the core user flows before refining the concept into a mid-fidelity design.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "I took responsibility for reviewing the mid-fidelity experience and ensuring that the interactions and visual hierarchy remained consistent across the product.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "heading_2",
+    "heading_2": {
+     "rich_text": [
+      {
+       "plain_text": "04 — Product Development",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "heading_3",
+    "heading_3": {
+     "rich_text": [
+      {
+       "plain_text": "Translating the design into a working product",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Once the core screens were confirmed, the team divided the development workload across the main product flows:",
        "annotations": {},
        "href": null
       }
@@ -406,7 +712,7 @@
     "bulleted_list_item": {
      "rich_text": [
       {
-       "plain_text": "Interviews with athletes",
+       "plain_text": "Onboarding questionnaire",
        "annotations": {},
        "href": null
       }
@@ -418,7 +724,7 @@
     "bulleted_list_item": {
      "rich_text": [
       {
-       "plain_text": "Journey mapping",
+       "plain_text": "Cycle home screen",
        "annotations": {},
        "href": null
       }
@@ -430,7 +736,7 @@
     "bulleted_list_item": {
      "rich_text": [
       {
-       "plain_text": "SwiftUI prototype",
+       "plain_text": "Calendar",
        "annotations": {},
        "href": null
       }
@@ -438,11 +744,11 @@
     }
    },
    {
-    "type": "quote",
-    "quote": {
+    "type": "bulleted_list_item",
+    "bulleted_list_item": {
      "rich_text": [
       {
-       "plain_text": "A sample quote from a research participant.",
+       "plain_text": "Predicted period",
        "annotations": {},
        "href": null
       }
@@ -450,15 +756,83 @@
     }
    },
    {
-    "type": "image",
-    "image": {
-     "type": "file",
-     "file": {
-      "url": "fixture:coach.svg"
-     },
-     "caption": [
+    "type": "bulleted_list_item",
+    "bulleted_list_item": {
+     "rich_text": [
       {
-       "plain_text": "Sample image caption",
+       "plain_text": "Workout and exercise information",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "I contributed to the software development process and worked with the team through GitHub to combine and integrate our individual components.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "This required us to maintain consistency between the design and the implemented product while working within a highly compressed timeline.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "heading_2",
+    "heading_2": {
+     "rich_text": [
+      {
+       "plain_text": "05 — Final Product",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "The final concept provided athletes with cycle-related information alongside training and exercise guidance.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "The experience was designed to help users move beyond simply ",
+       "annotations": {},
+       "href": null
+      },
+      {
+       "plain_text": "predicting their period",
+       "annotations": {
+        "bold": true
+       },
+       "href": null
+      },
+      {
+       "plain_text": " towards understanding how their cycle could be considered within their broader training routine.",
        "annotations": {},
        "href": null
       }
@@ -478,11 +852,154 @@
     }
    },
    {
+    "type": "heading_3",
+    "heading_3": {
+     "rich_text": [
+      {
+       "plain_text": "🏆 Best Interaction Design — TechFest",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
     "type": "paragraph",
     "paragraph": {
      "rich_text": [
       {
-       "plain_text": "Sample outcome text.",
+       "plain_text": "PeriodT was selected as the Best Interaction Design project from 40 selected projects and 200+ applicants.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "I also completed the course with a High Distinction.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Following the project, PeriodT received interest from industry and is currently being explored for further development.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "heading_3",
+    "heading_3": {
+     "rich_text": [
+      {
+       "plain_text": "What I brought to the project",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Product thinking:",
+       "annotations": {
+        "bold": true
+       },
+       "href": null
+      },
+      {
+       "plain_text": " Connected menstrual-cycle tracking with the specific needs of athletes.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "UX/UI:",
+       "annotations": {
+        "bold": true
+       },
+       "href": null
+      },
+      {
+       "plain_text": " Contributed to the core interaction flows and visual design.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Development:",
+       "annotations": {
+        "bold": true
+       },
+       "href": null
+      },
+      {
+       "plain_text": " Contributed to implementing the product and integrating team code through GitHub.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Team coordination:",
+       "annotations": {
+        "bold": true
+       },
+       "href": null
+      },
+      {
+       "plain_text": " Helped allocate development responsibilities according to team strengths and project requirements.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Outcome:",
+       "annotations": {
+        "bold": true
+       },
+       "href": null
+      },
+      {
+       "plain_text": " Delivered an award-winning interaction design concept within a two-week development period.",
        "annotations": {},
        "href": null
       }
@@ -554,7 +1071,7 @@
    {
     "type": "child_database",
     "child_database": {
-     "title": "R\u00e9sum\u00e9"
+     "title": "Résumé"
     }
    }
   ]
@@ -593,7 +1110,7 @@
      "type": "rich_text",
      "rich_text": [
       {
-       "plain_text": "Founder | May 2025 \u2013 Present",
+       "plain_text": "Founder | May 2025 – Present",
        "annotations": {},
        "href": null
       }
@@ -646,7 +1163,7 @@
      "type": "rich_text",
      "rich_text": [
       {
-       "plain_text": "UI UX & Graphic Designer | March 2025 \u2013 Present",
+       "plain_text": "UI UX & Graphic Designer | March 2025 – Present",
        "annotations": {},
        "href": null
       }
@@ -699,7 +1216,7 @@
      "type": "rich_text",
      "rich_text": [
       {
-       "plain_text": "Content Creator | March 2026 \u2013 Present",
+       "plain_text": "Content Creator | March 2026 – Present",
        "annotations": {},
        "href": null
       }
