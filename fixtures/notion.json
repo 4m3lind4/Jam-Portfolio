@@ -1,0 +1,494 @@
+{
+ "pages": [
+  {
+   "id": "p1",
+   "properties": {
+    "Project name": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "PeriodT",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Category": {
+     "type": "select",
+     "select": {
+      "name": "University"
+     }
+    },
+    "Year": {
+     "type": "number",
+     "number": 2026
+    },
+    "Tools": {
+     "type": "multi_select",
+     "multi_select": [
+      {
+       "name": "SwiftUI"
+      },
+      {
+       "name": "Swift"
+      },
+      {
+       "name": "Figma"
+      }
+     ]
+    },
+    "Order": {
+     "type": "number",
+     "number": 1
+    },
+    "Slug": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "periodt",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Summary": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "A solution to break down taboos around menstrual cycles for high-performing athletes",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "My Role": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Product Lead, UI UX Designer & programmer",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Link": {
+     "type": "url",
+     "url": "https://github.com/LALAJJ0302/PeriodT-Coach-App"
+    },
+    "Cover Image": {
+     "type": "files",
+     "files": [
+      {
+       "type": "file",
+       "file": {
+        "url": "fixture:periodt.svg"
+       }
+      }
+     ]
+    },
+    "Featured on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "p2",
+   "properties": {
+    "Project name": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "PeriodT Coach",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Category": {
+     "type": "select",
+     "select": {
+      "name": "University"
+     }
+    },
+    "Year": {
+     "type": "number",
+     "number": 2026
+    },
+    "Tools": {
+     "type": "multi_select",
+     "multi_select": [
+      {
+       "name": "Figma"
+      },
+      {
+       "name": "Swift"
+      },
+      {
+       "name": "SwiftUI"
+      }
+     ]
+    },
+    "Order": {
+     "type": "number",
+     "number": 2
+    },
+    "Slug": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "periodt-coach",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Summary": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "A companion app that improves how coaches understand and communicate with their high-performing athletes",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "My Role": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Solo project",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Link": {
+     "type": "url",
+     "url": "https://github.com/4m3lind4/PeriodT-V2"
+    },
+    "Cover Image": {
+     "type": "files",
+     "files": [
+      {
+       "type": "file",
+       "file": {
+        "url": "fixture:coach.svg"
+       }
+      }
+     ]
+    },
+    "Featured on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "p3",
+   "properties": {
+    "Project name": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "Envent",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Category": {
+     "type": "select",
+     "select": {
+      "name": "Work"
+     }
+    },
+    "Year": {
+     "type": "number",
+     "number": 2025
+    },
+    "Tools": {
+     "type": "multi_select",
+     "multi_select": [
+      {
+       "name": "Figma"
+      }
+     ]
+    },
+    "Order": {
+     "type": "number",
+     "number": 3
+    },
+    "Slug": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "envent",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Summary": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Designing wayfinding solutions for clients such as St George, Chatswood and Peninsula University Health hospitals",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "My Role": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "UI UX Designer & Information Architect",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Link": {
+     "type": "url",
+     "url": null
+    },
+    "Cover Image": {
+     "type": "files",
+     "files": [
+      {
+       "type": "file",
+       "file": {
+        "url": "fixture:envent.svg"
+       }
+      }
+     ]
+    },
+    "Featured on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "p4",
+   "properties": {
+    "Project name": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "SwipeShop",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Category": {
+     "type": "select",
+     "select": {
+      "name": "Competition"
+     }
+    },
+    "Year": {
+     "type": "number",
+     "number": 2026
+    },
+    "Tools": {
+     "type": "multi_select",
+     "multi_select": [
+      {
+       "name": "Figma"
+      },
+      {
+       "name": "Swift"
+      },
+      {
+       "name": "SwiftUI"
+      }
+     ]
+    },
+    "Order": {
+     "type": "number",
+     "number": 4
+    },
+    "Slug": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "swipeshop",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Summary": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Finding a match for future Gen Z shoppers",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "My Role": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Project Lead",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Link": {
+     "type": "url",
+     "url": "https://4m3lind4.github.io/Woolworths-SwipeShop/web/#/home"
+    },
+    "Cover Image": {
+     "type": "files",
+     "files": [
+      {
+       "type": "file",
+       "file": {
+        "url": "fixture:swipeshop.svg"
+       }
+      }
+     ]
+    },
+    "Featured on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  }
+ ],
+ "blocks": {
+  "p1": [
+   {
+    "type": "heading_2",
+    "heading_2": {
+     "rich_text": [
+      {
+       "plain_text": "Overview",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Sample paragraph standing in for the real write-up. Athletes and coaches rarely talk about cycles, even though they affect training load and recovery.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "heading_2",
+    "heading_2": {
+     "rich_text": [
+      {
+       "plain_text": "Process",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "bulleted_list_item",
+    "bulleted_list_item": {
+     "rich_text": [
+      {
+       "plain_text": "Interviews with athletes",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "bulleted_list_item",
+    "bulleted_list_item": {
+     "rich_text": [
+      {
+       "plain_text": "Journey mapping",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "bulleted_list_item",
+    "bulleted_list_item": {
+     "rich_text": [
+      {
+       "plain_text": "SwiftUI prototype",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "quote",
+    "quote": {
+     "rich_text": [
+      {
+       "plain_text": "A sample quote from a research participant.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "image",
+    "image": {
+     "type": "file",
+     "file": {
+      "url": "fixture:coach.svg"
+     },
+     "caption": [
+      {
+       "plain_text": "Sample image caption",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "heading_2",
+    "heading_2": {
+     "rich_text": [
+      {
+       "plain_text": "Outcome",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Sample outcome text.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   }
+  ]
+ }
+}
