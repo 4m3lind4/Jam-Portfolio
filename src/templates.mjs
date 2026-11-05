@@ -20,7 +20,17 @@ function zoneStyle(z) {
   return `--zone:${z.color};--zone-ink:${z.ink}`;
 }
 
-function layout({ config, root, title, description, body, head = "", scripts = "" }) {
+const MENU_FONTS = `<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Outfit:wght@700&family=Cedarville+Cursive&family=Monsieur+La+Doulaise&display=swap" rel="stylesheet">`;
+
+// Torn top and bottom edges for a paper ticket.
+function tornEdges(teeth = 18, depth = 1.2) {
+  const pts = [];
+  for (let i = 0; i <= teeth; i++) pts.push(`${((i / teeth) * 100).toFixed(2)}% ${i % 2 ? depth : 0}%`);
+  for (let i = teeth; i >= 0; i--) pts.push(`${((i / teeth) * 100).toFixed(2)}% ${i % 2 ? 100 - depth : 100}%`);
+  return `polygon(${pts.join(",")})`;
+}
+
+function layout({ config, root, title, description, body, head = "", scripts = "", bodyClass = "", footer = true }) {
   const { links } = config;
   const contact = [
     links.email && `<a href="mailto:${esc(links.email)}">Email</a>`,
@@ -41,7 +51,7 @@ function layout({ config, root, title, description, body, head = "", scripts = "
 <link rel="stylesheet" href="${root}styles.css">
 ${head}
 </head>
-<body>
+<body${bodyClass ? ` class="${bodyClass}"` : ""}>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <a class="wordmark" href="${root}">${esc(config.name)}</a>
@@ -53,10 +63,14 @@ ${head}
 <main id="main">
 ${body}
 </main>
-<footer class="site-footer" id="contact">
+${
+  footer
+    ? `<footer class="site-footer" id="contact">
   <p class="footer-name">${esc(config.name)}</p>
   ${contact.length ? `<p class="footer-links">${contact.join("")}</p>` : ""}
-</footer>
+</footer>`
+    : ""
+}
 <script>
   // Respect reduced motion: stop looping cover videos and give people controls instead.
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -113,19 +127,22 @@ export function homePage({ config, projects, menu }) {
       </div>
     </div>
   </div>
+  <div class="menu-end" id="contact"></div>
   <script type="application/json" id="menu-data">${JSON.stringify(menu).replace(/</g, "\\u003c")}</script>
 </section>`;
 
-  const head = `<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Outfit:wght@700&family=Cedarville+Cursive&family=Monsieur+La+Doulaise&display=swap" rel="stylesheet">
+  const head = `${MENU_FONTS}
 <link rel="stylesheet" href="menu.css">`;
   const scripts = `<script src="menu.js"></script>`;
 
-  return layout({ config, root: "", title: config.title, description: config.intro, body, head, scripts });
+  return layout({ config, root: "", title: config.title, description: config.intro, body, head, scripts, footer: false });
 }
 
 export function projectPage({ config, project: p, next, contentHtml }) {
   const z = zone(config, p.category);
-  const meta = [
+  const section = config.menu.sections.find((s) => s.category === p.category);
+  const banner = section ? section.banner : config.menu.otherBanner;
+  const ticket = [
     p.role && ["Role", esc(p.role)],
     p.year && ["Year", String(p.year)],
     p.tools.length && ["Tools", p.tools.map(esc).join(", ")],
@@ -133,25 +150,38 @@ export function projectPage({ config, project: p, next, contentHtml }) {
   ].filter(Boolean);
 
   const body = `
-<article class="case" style="${zoneStyle(z)}">
-  <header class="case-header"><div class="case-header-inner">
-    <a class="back-link" href="../../#projects">All projects</a>
-    <h1>${esc(p.title)}</h1>
-    ${p.summary ? `<p class="case-summary">${esc(p.summary)}</p>` : ""}
-    <dl class="case-meta">${meta.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>
-    ${p.link ? `<p class="actions"><a class="btn btn--light" href="${esc(p.link)}" rel="noopener">${linkLabel(p.link)}</a></p>` : ""}
-  </div></header>
-  <div class="case-cover">${media(p.cover, p.title, "media--cover")}</div>
-  <div class="prose">
-    ${contentHtml || `<p class="empty">The full write-up for this project is on its way.</p>`}
+<article class="case">
+  <header class="case-hero">
+    <div class="case-hero-inner">
+      <div class="case-plate">${media(p.cover, p.title)}</div>
+      <div class="case-card">
+        <p class="case-banner">${esc(banner)}</p>
+        <div class="case-card-body">
+          <h1>${esc(p.title)}</h1>
+          ${p.tools.length ? `<ul class="case-tags" aria-label="Tools">${p.tools.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+          ${p.summary ? `<p class="case-summary">${esc(p.summary)}</p>` : ""}
+          ${p.role ? `<p class="case-role">${esc(p.role)}${p.year ? `, ${p.year}` : ""}</p>` : ""}
+          ${p.link ? `<p class="actions"><a class="btn btn--order" href="${esc(p.link)}" rel="noopener">${linkLabel(p.link)}</a></p>` : ""}
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="case-body">
+    <div class="prose">
+      ${contentHtml || `<p class="empty">The full write-up for this project is on its way.</p>`}
+    </div>
+    <aside class="case-ticket" aria-label="Project details">
+      <div class="case-ticket-paper" style="clip-path:${tornEdges()}">
+        <p class="ticket-head">Order details</p>
+        <dl>${ticket.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>
+        <p class="ticket-thanks">Thank you!</p>
+      </div>
+    </aside>
   </div>
-  ${
-    next
-      ? `<nav class="next" aria-label="Next project" style="${zoneStyle(zone(config, next.category))}">
-    <a href="../${esc(next.slug)}/"><span class="next-label">Next project</span><span class="next-title">${esc(next.title)}</span></a>
-  </nav>`
-      : ""
-  }
+  <nav class="case-nav" aria-label="More projects">
+    <a class="case-back" href="../../#projects"><span class="case-nav-label">Back to the</span><span class="case-nav-title">Menu</span></a>
+    ${next ? `<a class="case-next" href="../${esc(next.slug)}/"><span class="case-nav-label">Next course</span><span class="case-nav-title">${esc(next.title)}</span></a>` : ""}
+  </nav>
 </article>`;
 
   return layout({
@@ -160,5 +190,7 @@ export function projectPage({ config, project: p, next, contentHtml }) {
     title: `${p.title} | ${config.title}`,
     description: p.summary || config.intro,
     body,
+    head: MENU_FONTS,
+    bodyClass: "page-case",
   });
 }

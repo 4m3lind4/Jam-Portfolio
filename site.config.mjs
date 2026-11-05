@@ -1,6 +1,17 @@
 // Edit this file to change the words around your projects.
 // Project content itself comes from the Notion "Projects" database.
 
+const EMAIL = "amelinda.mang2@gmail.com";
+const LINKEDIN = "https://www.linkedin.com/in/jessica-amelinda-mang/";
+const GITHUB = "https://github.com/4m3lind4";
+
+const CONTACT = [
+  { text: "ph: 0451 156 160", href: "tel:+61451156160" },
+  { text: `Email: ${EMAIL}`, href: `mailto:${EMAIL}` },
+  { text: "LinkedIn", href: LINKEDIN },
+  { text: "GitHub", href: GITHUB },
+];
+
 export default {
   name: "Jam",
   title: "Jam Portfolio",
@@ -8,9 +19,9 @@ export default {
     "I design and build apps, from the first Figma frame to the SwiftUI that ships.",
   // Shown in the footer and the contact section. Leave a value empty to hide it.
   links: {
-    email: "",
-    github: "https://github.com/4m3lind4",
-    linkedin: "",
+    email: EMAIL,
+    github: GITHUB,
+    linkedin: LINKEDIN,
   },
   // Colour and label for each Category option in Notion.
   // Add a row here if you add a new Category option.
@@ -44,11 +55,12 @@ export default {
       "If you wish to",
       "Leave a review in the inboxes.",
     ],
-    contact: ["ph: 0451 156 160", "Email: amelinda.mang2@gmail", "Esta . 2025"],
+    contact: CONTACT,
+    established: "Esta . 2025",
     bill: {
       brand: "jam",
       place: "Sydney",
-      contact: ["ph: 0451 156 160", "Email: amelinda.mang2@gmail"],
+      contact: CONTACT,
       card: "VISA .....1267 APPROVED",
     },
   },

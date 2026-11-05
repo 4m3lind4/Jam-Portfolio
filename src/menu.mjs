@@ -56,6 +56,11 @@ function reviewsBlock(r) {
   </div>`;
 }
 
+function contactLink(c) {
+  const external = /^https?:/.test(c.href) ? ' target="_blank" rel="me noopener"' : "";
+  return `<a class="contact-link" href="${esc(c.href)}"${external}>${esc(c.text)}</a>`;
+}
+
 function page(banner, align, items) {
   return `<div class="page-body">
     <div class="menu-banner anim${align === "right" ? " right" : ""}">${esc(banner)}</div>
@@ -112,7 +117,8 @@ export function buildMenu(config, projects) {
   const backcover = `<div class="page-body">
     ${m.backCover.map((l) => `<p class="bc-line anim">${esc(l)}</p>`).join("")}
     <div class="bc-gap"></div>
-    ${m.contact.map((l) => `<p class="bc-contact anim">${esc(l)}</p>`).join("")}
+    ${m.contact.map((c) => `<p class="bc-contact anim">${contactLink(c)}</p>`).join("")}
+    <p class="bc-contact anim">${esc(m.established)}</p>
   </div>`;
 
   const filler = `<div class="page-body page-filler">
@@ -129,7 +135,7 @@ export function buildMenu(config, projects) {
     <p class="r-brand">${esc(b.brand)}</p>
     <p class="r-sub">${esc(b.place)}</p>
     <p class="r-sub" data-table-time>Table 1, 1 guest</p>
-    ${b.contact.map((c) => `<p class="r-sub">${esc(c)}</p>`).join("")}
+    ${b.contact.map((c) => `<p class="r-sub">${contactLink(c)}</p>`).join("")}
   </div>
   <hr class="r-rule anim">
   ${lines

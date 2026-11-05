@@ -32,24 +32,36 @@
   isolation: isolate;
 }
 
-/* The table it all sits on: a tiled wood photo with a vignette. */
-.menu-section::before,
+/* The page background fades into the table as the menu scrolls in. */
 .menu-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8rem;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--bg) 0, rgba(245, 246, 248, 0) 100%);
+}
+
+/* The table it all sits on: a tiled wood photo with a vignette. It belongs to
+   the pinned stage, so it holds still while the book turns. */
+.menu-section .stage::before,
+.menu-section .stage::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
 }
-.menu-section::before {
+.menu-section .stage::before {
   background: url("menu/table.jpg") repeat;
   background-size: 480px auto;
   filter: brightness(0.62) saturate(1.05);
 }
-.menu-section::after {
-  background:
-    linear-gradient(180deg, var(--bg) 0, rgba(245, 246, 248, 0) 8rem),
-    radial-gradient(120% 90% at 50% 30%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 70%, rgba(0, 0, 0, 0.78) 100%);
+.menu-section .stage::after {
+  background: radial-gradient(120% 90% at 50% 30%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 70%, rgba(0, 0, 0, 0.78) 100%);
 }
 
 .menu-heading {
@@ -68,6 +80,7 @@
   display: grid;
   place-items: center;
   overflow: hidden;
+  isolation: isolate;
 }
 .menu-section .stage-lace {
   position: absolute;
@@ -166,6 +179,58 @@
   opacity: var(--sheen, 0);
   background: linear-gradient(255deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 70%);
   mix-blend-mode: overlay;
+}
+
+/* ── The bending turn ── (menu.js builds and poses these) */
+.menu-section .bend { display: none; position: absolute; inset: 0; transform-style: preserve-3d; }
+.menu-section .bend-strip {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+.menu-section .bend-clip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.menu-section .bend-clip.back { transform: rotateY(180deg); }
+.menu-section .bend-clip .face {
+  inset: 0 auto 0 auto;
+  transform: none;
+  visibility: visible;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+.menu-section .bend a { pointer-events: none; }
+.menu-section .bend-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, var(--g0, 0)), rgba(255, 255, 255, var(--g1, 0))),
+    linear-gradient(90deg, rgba(30, 6, 14, var(--a0, 0)), rgba(30, 6, 14, var(--a1, 0)));
+}
+.menu-section .bend-clip.back .bend-shade {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, var(--g1, 0)), rgba(255, 255, 255, var(--g0, 0))),
+    linear-gradient(90deg, rgba(30, 6, 14, var(--a1, 0)), rgba(30, 6, 14, var(--a0, 0)));
+}
+.menu-section .turn-shadow {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: var(--page-w);
+  width: var(--page-w);
+  height: 100%;
+  pointer-events: none;
+  transform-origin: left center;
+  background: linear-gradient(90deg, rgba(30, 6, 14, 0.7) 0%, rgba(30, 6, 14, 0.55) 72%, rgba(30, 6, 14, 0) 100%);
 }
 
 /* ── Page typography ── */
@@ -370,6 +435,11 @@
   margin-top: 0.2em;
 }
 
+.menu-section .contact-link { color: inherit; text-decoration: none; }
+.menu-section .contact-link:hover { opacity: 0.7; }
+/* Where the page's "Contact" link lands: the bill, in full view. */
+.menu-section .menu-end { position: absolute; bottom: 100svh; }
+
 /* ── Narrow screens: one page at a time ── */
 @media (max-width: 759px) {
   .menu-section {
@@ -383,5 +453,6 @@
 }
 .menu-section.single .book { width: var(--page-w); }
 .menu-section.single .sheet,
+.menu-section.single .turn-shadow,
 .menu-section.single .receipt-slot { left: 0; }
 .menu-section.single .spine { display: none; }

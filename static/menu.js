@@ -64,6 +64,132 @@
     },
   };
 
+  /* ── Bend ──────────────────────────────────────────────────────── */
+  /* A turning sheet swaps its flat faces for a rig: a chain of narrow strips,
+     each hinged to the one before it, showing its slice of both faces. The
+     outer strips lead and the ones by the spine follow, which curls the paper
+     and brings it down flat. Rigs are decorative copies, so nothing in one can
+     be clicked; the real links come back as soon as the page settles. */
+  const BEND_LEAD = 0.35;
+  let cast = null;
+
+  function copyFace(face) {
+    const copy = face.cloneNode(true);
+    copy.querySelectorAll(".gloss, .sheen").forEach((el) => el.remove());
+    copy.querySelectorAll(".anim").forEach((el) => {
+      el.style.opacity = 1;
+      el.style.transform = "none";
+    });
+    copy.querySelectorAll("a").forEach((a) => {
+      a.tabIndex = -1;
+      a.style.pointerEvents = "";
+    });
+    copy.querySelectorAll("img").forEach((img) => (img.loading = "eager"));
+    return copy;
+  }
+
+  // A video can't be sliced into strips without loading it once per strip, so
+  // each slice gets a canvas that takes the video's frame when the turn starts.
+  function freezeVideos(copy, face, frames) {
+    const sources = face.querySelectorAll("video");
+    copy.querySelectorAll("video").forEach((video, i) => {
+      const source = sources[i];
+      const look = getComputedStyle(source);
+      const canvas = document.createElement("canvas");
+      canvas.width = source.offsetWidth;
+      canvas.height = source.offsetHeight;
+      canvas.style.cssText = `position:relative;display:block;width:${look.width};height:${look.height};border-radius:${look.borderRadius};box-shadow:${look.boxShadow}`;
+      video.replaceWith(canvas);
+      frames.push({ canvas, source });
+    });
+  }
+
+  function drawFrames(frames) {
+    for (const { canvas, source } of frames) {
+      if (source.readyState < 2) continue;
+      const fit = Math.max(canvas.width / source.videoWidth, canvas.height / source.videoHeight);
+      const w = source.videoWidth * fit;
+      const h = source.videoHeight * fit;
+      canvas.getContext("2d").drawImage(source, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+    }
+  }
+
+  function buildRig(s) {
+    const count = single ? 8 : 12;
+    const w = pw / count;
+    const rig = document.createElement("div");
+    rig.className = "bend";
+    rig.setAttribute("aria-hidden", "true");
+    const frontCopy = copyFace(s.front);
+    const backCopy = copyFace(s.back);
+    const frames = [];
+
+    const slice = (source, face, side, left) => {
+      const clip = document.createElement("div");
+      clip.className = `bend-clip ${side}`;
+      clip.style.width = `${w + 1}px`;
+      clip.style.transformOrigin = `${w / 2}px 50%`;
+      const copy = source.cloneNode(true);
+      copy.style.width = `${pw}px`;
+      copy.style.left = `${-left}px`;
+      freezeVideos(copy, face, frames);
+      const shade = document.createElement("div");
+      shade.className = "bend-shade";
+      clip.append(copy, shade);
+      return clip;
+    };
+
+    const strips = [];
+    let parent = rig;
+    for (let i = 0; i < count; i++) {
+      const strip = document.createElement("div");
+      strip.className = "bend-strip";
+      strip.style.width = `${w}px`;
+      strip.style.left = i ? `${w}px` : "0";
+      strip.append(slice(frontCopy, s.front, "front", i * w), slice(backCopy, s.back, "back", pw - (i + 1) * w));
+      parent.appendChild(strip);
+      parent = strip;
+      strips.push(strip);
+    }
+    s.el.appendChild(rig);
+    s.rig = { el: rig, strips, frames, w, shown: false };
+  }
+
+  const stripAngle = (local, u) => -180 * easeInOutCubic(clamp(local * (1 + BEND_LEAD) - BEND_LEAD * (1 - u), 0, 1));
+  const shadeAt = (deg) => (0.34 * (1 - Math.abs(Math.cos((deg * Math.PI) / 180)))).toFixed(3);
+  const glintAt = (deg) => (0.3 * Math.pow(Math.max(0, Math.cos(((deg + 55) * Math.PI) / 180)), 10)).toFixed(3);
+
+  function poseRig(s, local) {
+    const { strips, w } = s.rig;
+    const last = strips.length - 1;
+    let previous = 0;
+    let reach = 0;
+    for (let i = 0; i <= last; i++) {
+      const deg = stripAngle(local, i / last);
+      const next = stripAngle(local, Math.min(i + 1, last) / last);
+      const style = strips[i].style;
+      style.transform = `rotateY(${(deg - previous).toFixed(3)}deg)`;
+      style.setProperty("--a0", shadeAt(deg));
+      style.setProperty("--a1", shadeAt(next));
+      style.setProperty("--g0", glintAt(deg));
+      style.setProperty("--g1", glintAt(next));
+      previous = deg;
+      reach += w * Math.cos((deg * Math.PI) / 180);
+    }
+    // The page's shadow reaches a little past its edge onto the paper below.
+    const spread = (reach + Math.sign(reach || 1) * pw * 0.28) / pw;
+    cast.style.transform = `translateZ(${((SHEETS + 0.5) * 1.5).toFixed(2)}px) scaleX(${spread.toFixed(4)})`;
+    cast.style.opacity = (Math.sin(Math.PI * local) * 0.55).toFixed(3);
+  }
+
+  function showRig(s, on) {
+    if (!s.rig || s.rig.shown === on) return;
+    s.rig.shown = on;
+    s.rig.el.style.display = on ? "block" : "none";
+    s.front.style.visibility = s.back.style.visibility = on ? "hidden" : "";
+    if (on) drawFrames(s.rig.frames);
+  }
+
   /* ── Build ─────────────────────────────────────────────────────── */
   let sheets = [];
   let SHEETS = 0;
@@ -100,6 +226,10 @@
         last: { z: -1, fr: -1, br: -1, fv: null, bv: null },
       };
     });
+
+    cast = document.createElement("div");
+    cast.className = "turn-shadow";
+    sheetsEl.appendChild(cast);
 
     section.style.setProperty("--sheet-count", SHEETS);
   }
@@ -173,6 +303,7 @@
     spineEl.style.opacity = single ? 0 : (eOpen * (1 - clamp(close * 1.8, 0, 1))).toFixed(3);
     shadowEl.style.opacity = (1 - eFocus * 0.75).toFixed(3);
 
+    let bending = false;
     for (let i = 0; i < SHEETS; i++) {
       const s = sheets[i];
       const local = clamp(p - i, 0, 1);
@@ -180,7 +311,15 @@
       const turning = local > 0.0005 && local < 0.9995;
 
       const z = turning ? SHEETS * 2 + 2 : local < 0.5 ? SHEETS - i : i;
-      s.el.style.transform = `translateZ(${(z * 1.5).toFixed(2)}px) rotateY(${-180 * e}deg)`;
+      const bend = turning && !REDUCED;
+      // Rigs are made just before they're needed, so idle pages stay light.
+      if (!REDUCED && !s.rig && Math.abs(p - i - 0.5) < 2) buildRig(s);
+      showRig(s, bend);
+      s.el.style.transform = `translateZ(${(z * 1.5).toFixed(2)}px) rotateY(${bend ? 0 : -180 * e}deg)`;
+      if (bend) {
+        poseRig(s, local);
+        bending = true;
+      }
       if (z !== s.last.z) {
         s.el.style.zIndex = z;
         s.last.z = z;
@@ -212,6 +351,8 @@
       setLinks(s.backLinks, backVisible, "bv", s);
     }
 
+    cast.style.display = bending ? "block" : "none";
+
     sheetsEl.style.opacity = (1 - eFocus * 0.38).toFixed(3);
     sheetsEl.style.transform = `translate3d(${-pw * 0.12 * eFocus}px, ${16 * eFocus}px, 0) scale(${1 - 0.05 * eFocus})`;
     sheetsEl.style.filter = eFocus > 0.001 ? `blur(${(2.2 * eFocus).toFixed(2)}px)` : "none";
@@ -242,6 +383,15 @@
   }
 
   /* ── The scroll driver ─────────────────────────────────────────── */
+  // Each spread rests flat for a stretch of scroll before the next turn starts,
+  // so there is room to stop and click a project on either page.
+  const REST = 0.22;
+  function withRests(p) {
+    if (p <= 0 || p >= SHEETS) return p;
+    const turn = Math.floor(p);
+    return turn + clamp((p - turn - REST) / (1 - REST * 2), 0, 1);
+  }
+
   let smooth = 0;
   let raw = 0;
   let running = false;
@@ -254,7 +404,7 @@
     // Critically damped follow: about 120 ms to settle.
     smooth += (raw - smooth) * (REDUCED ? 1 : 0.14);
     if (Math.abs(raw - smooth) < 0.0005) smooth = raw;
-    render(smooth);
+    render(withRests(smooth));
     if (Math.abs(raw - smooth) > 0.0004) requestAnimationFrame(frame);
     else running = false;
   }
@@ -269,6 +419,14 @@
   addEventListener("scroll", kick, { passive: true });
   addEventListener("resize", () => {
     layout();
+    // Rigs are cut to the page's width; the next frame recuts them.
+    for (const s of sheets) {
+      if (s.rig && s.rig.w * s.rig.strips.length !== pw) {
+        showRig(s, false);
+        s.rig.el.remove();
+        s.rig = null;
+      }
+    }
     smooth = raw;
     kick();
   });
@@ -288,13 +446,13 @@
     layout();
     smooth = raw = progress();
     lastBill = -1;
-    render(smooth);
+    render(withRests(smooth));
     kick();
   });
 
   buildSheets();
   layout();
   smooth = raw = progress();
-  render(smooth);
+  render(withRests(smooth));
   kick();
 })();
