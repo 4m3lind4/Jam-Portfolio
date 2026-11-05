@@ -9,6 +9,7 @@ import config from "../site.config.mjs";
 import { createNotionSource, toProject } from "./notion.mjs";
 import { renderBlocks } from "./render.mjs";
 import { homePage, projectPage } from "./templates.mjs";
+import { buildMenu } from "./menu.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
@@ -92,7 +93,9 @@ async function main() {
     await writeFile(path.join(dir, "index.html"), html);
   }
 
-  const home = homePage({ config, projects: projects.map((p) => ({ ...p, cover: p.coverPath })) });
+  const homeProjects = projects.map((p) => ({ ...p, cover: p.coverPath }));
+  const menu = buildMenu(config, homeProjects);
+  const home = homePage({ config, projects: homeProjects, menu });
   await writeFile(path.join(DIST, "index.html"), home);
   await writeFile(path.join(DIST, ".nojekyll"), "");
 

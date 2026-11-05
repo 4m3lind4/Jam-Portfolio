@@ -20,7 +20,7 @@ function zoneStyle(z) {
   return `--zone:${z.color};--zone-ink:${z.ink}`;
 }
 
-function layout({ config, root, title, description, body }) {
+function layout({ config, root, title, description, body, head = "", scripts = "" }) {
   const { links } = config;
   const contact = [
     links.email && `<a href="mailto:${esc(links.email)}">Email</a>`,
@@ -39,6 +39,7 @@ function layout({ config, root, title, description, body }) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Schibsted+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${root}styles.css">
+${head}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -62,12 +63,13 @@ ${body}
     document.querySelectorAll("video[autoplay]").forEach(function (v) { v.pause(); v.removeAttribute("autoplay"); v.controls = true; });
   }
 </script>
+${scripts}
 </body>
 </html>
 `;
 }
 
-export function homePage({ config, projects }) {
+export function homePage({ config, projects, menu }) {
   const directory = projects
     .map((p) => {
       const z = zone(config, p.category);
@@ -78,26 +80,6 @@ export function homePage({ config, projects }) {
           <span class="dir-year">${p.year ?? ""}</span>
         </a>
       </li>`;
-    })
-    .join("\n");
-
-  const features = projects
-    .map((p) => {
-      const z = zone(config, p.category);
-      return `<article class="feature" style="${zoneStyle(z)}" aria-labelledby="t-${esc(p.slug)}">
-        <a class="feature-media" href="projects/${esc(p.slug)}/" tabindex="-1" aria-hidden="true">${media(p.cover, p.title)}</a>
-        <div class="feature-text">
-          <p class="zone-tag">${esc(z.label)}${p.year ? `, ${p.year}` : ""}</p>
-          <h3 id="t-${esc(p.slug)}"><a href="projects/${esc(p.slug)}/">${esc(p.title)}</a></h3>
-          ${p.summary ? `<p class="feature-summary">${esc(p.summary)}</p>` : ""}
-          ${p.role ? `<p class="feature-role">${esc(p.role)}</p>` : ""}
-          ${p.tools.length ? `<ul class="tools">${p.tools.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
-          <p class="actions">
-            <a class="btn btn--zone" href="projects/${esc(p.slug)}/">Read case study</a>
-            ${p.link ? `<a class="btn" href="${esc(p.link)}" rel="noopener">${linkLabel(p.link)}</a>` : ""}
-          </p>
-        </div>
-      </article>`;
     })
     .join("\n");
 
@@ -118,11 +100,27 @@ export function homePage({ config, projects }) {
     ${legend ? `<ul class="legend" aria-label="Categories">${legend}</ul>` : ""}
   </div>
 </section>
-<section class="projects" id="projects" aria-label="Projects">
-${features}
+<section class="menu-section" id="projects" aria-labelledby="menu-heading">
+  <h2 class="menu-heading" id="menu-heading">Project menu</h2>
+  <div class="stage">
+    <div class="stage-lace" aria-hidden="true"></div>
+    <div class="book-perspective">
+      <div class="book">
+        <div class="book-shadow" aria-hidden="true"></div>
+        <div class="receipt-slot"><div class="receipt-wrap"><div class="receipt"></div></div></div>
+        <div class="sheets"></div>
+        <div class="spine" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+  <script type="application/json" id="menu-data">${JSON.stringify(menu).replace(/</g, "\\u003c")}</script>
 </section>`;
 
-  return layout({ config, root: "", title: config.title, description: config.intro, body });
+  const head = `<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Outfit:wght@700&family=Cedarville+Cursive&family=Monsieur+La+Doulaise&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="menu.css">`;
+  const scripts = `<script src="menu.js"></script>`;
+
+  return layout({ config, root: "", title: config.title, description: config.intro, body, head, scripts });
 }
 
 export function projectPage({ config, project: p, next, contentHtml }) {
@@ -137,7 +135,7 @@ export function projectPage({ config, project: p, next, contentHtml }) {
   const body = `
 <article class="case" style="${zoneStyle(z)}">
   <header class="case-header"><div class="case-header-inner">
-    <a class="back" href="../../#projects">All projects</a>
+    <a class="back-link" href="../../#projects">All projects</a>
     <h1>${esc(p.title)}</h1>
     ${p.summary ? `<p class="case-summary">${esc(p.summary)}</p>` : ""}
     <dl class="case-meta">${meta.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>

@@ -263,7 +263,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .case-header-inner { max-width: calc(var(--max) - 2 * var(--gutter)); margin: 0 auto; }
 
-.back { display: block; font-weight: 700; margin-bottom: 2rem; }
+.back-link { display: block; font-weight: 700; margin-bottom: 2rem; }
 
 .case-header h1 {
   margin-top: 0;
