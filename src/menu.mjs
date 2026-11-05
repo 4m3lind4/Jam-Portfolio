@@ -19,15 +19,18 @@ function pillPalette(projects) {
   return map;
 }
 
-function dishMedia(p) {
+// Every project is served on a plate, handed out in menu order.
+const PLATES = ["platter", "hearts", "scallop", "square", "rim"];
+
+function dishMedia(p, plate) {
   if (!p.cover) return "";
   const media = isVideo(p.cover)
     ? `<video src="${esc(p.cover)}" muted loop playsinline autoplay aria-hidden="true"></video>`
     : `<img src="${esc(p.cover)}" alt="" loading="lazy">`;
-  return `<div class="dish-media">${media}</div>`;
+  return `<div class="dish-media plate plate--${plate}">${media}</div>`;
 }
 
-function dish(p, pills, reverse) {
+function dish(p, pills, reverse, plate) {
   const tags = p.tools
     .map((t) => {
       const c = pills.get(t);
@@ -35,7 +38,7 @@ function dish(p, pills, reverse) {
     })
     .join("");
   return `<a class="dish anim${reverse ? " reverse" : ""}" href="projects/${esc(p.slug)}/" target="_top">
-    ${dishMedia(p)}
+    ${dishMedia(p, plate)}
     <div class="dish-body">
       <p class="dish-title">${esc(p.title)}</p>
       ${tags ? `<div class="tags">${tags}</div>` : ""}
@@ -81,6 +84,7 @@ export function buildMenu(config, projects) {
   // Lay each section out across as many pages as it needs.
   // A reviews block takes up one dish slot on the page of its project.
   const pages = [];
+  let served = 0;
   for (const g of groups) {
     let slots = [];
     const flush = () => {
@@ -95,7 +99,7 @@ export function buildMenu(config, projects) {
       const withReviews = m.reviews && m.reviews.slug === p.slug;
       const need = withReviews ? 2 : 1;
       if (slots.length + need > PER_PAGE) flush();
-      slots.push(dish(p, pills, slots.length % 2 === 1));
+      slots.push(dish(p, pills, slots.length % 2 === 1, PLATES[served++ % PLATES.length]));
       if (withReviews) slots.push(reviewsBlock(m.reviews));
     }
     flush();

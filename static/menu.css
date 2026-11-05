@@ -193,24 +193,47 @@
   text-decoration: none;
 }
 .menu-section .dish.reverse { flex-direction: row-reverse; }
-.menu-section .dish-media { flex: 0 0 auto; width: 38%; }
+.menu-section .dish-media { flex: 0 0 auto; width: 46%; }
+
+/* The project image sits on a plate, like food on the table. */
+.menu-section .plate {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+}
+.menu-section .plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--plate) center / contain no-repeat;
+  filter: drop-shadow(0 5px 7px rgba(44, 7, 20, 0.32));
+}
+.menu-section .plate--scallop { --plate: url("menu/plate-scallop.webp"); }
+.menu-section .plate--hearts { --plate: url("menu/plate-hearts.webp"); }
+.menu-section .plate--rim { --plate: url("menu/plate-rim.webp"); }
+.menu-section .plate--square { --plate: url("menu/plate-square.webp"); }
+.menu-section .plate--platter { --plate: url("menu/plate-platter.webp"); aspect-ratio: 738 / 476; }
+
 .menu-section .dish-media img,
 .menu-section .dish-media video {
+  position: relative;
   display: block;
-  width: 100%;
+  width: 50%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  border-radius: 8px;
-  border: 3px solid #fff;
-  box-shadow: 0 6px 14px rgba(44, 7, 20, 0.28);
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(44, 7, 20, 0.3);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+.menu-section .plate--platter img,
+.menu-section .plate--platter video { width: 54%; aspect-ratio: 4 / 3; }
 .menu-section a.dish:hover .dish-media img,
 .menu-section a.dish:hover .dish-media video,
 .menu-section a.dish:focus-visible .dish-media img,
 .menu-section a.dish:focus-visible .dish-media video {
   transform: translateY(-3px);
-  box-shadow: 0 12px 20px rgba(44, 7, 20, 0.36);
+  box-shadow: 0 9px 14px rgba(44, 7, 20, 0.36);
 }
 .menu-section a.dish:hover .dish-title,
 .menu-section a.dish:focus-visible .dish-title { text-decoration: underline; text-underline-offset: 0.15em; }
@@ -218,11 +241,14 @@
 
 .menu-section .dish-body { flex: 1; min-width: 0; }
 
-/* A dish alone on its page: big plate on top, description underneath. */
+/* A dish alone on its page: big platter on top, description underneath. */
 .menu-section .dish--feature { flex-direction: column; gap: clamp(10px, 3.6%, 20px); }
-.menu-section .dish--feature .dish-media { width: 100%; }
+.menu-section .dish--feature .dish-media { width: 66%; align-self: center; }
+.menu-section .dish--feature .plate--platter { width: 100%; }
 .menu-section .dish--feature .dish-media img,
-.menu-section .dish--feature .dish-media video { aspect-ratio: 4 / 3; }
+.menu-section .dish--feature .dish-media video { width: 58%; aspect-ratio: 1; }
+.menu-section .dish--feature .plate--platter img,
+.menu-section .dish--feature .plate--platter video { width: 54%; aspect-ratio: 4 / 3; }
 .menu-section .dish--feature .dish-title { font-size: calc(var(--page-w) * 0.072); }
 .menu-section .dish--feature .dish-desc { font-size: calc(var(--page-w) * 0.04); }
 .menu-section .dish-title {
