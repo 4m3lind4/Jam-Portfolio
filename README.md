@@ -51,4 +51,5 @@ NOTION_TOKEN=secret_xxx NOTION_DATA_SOURCE_ID=12511c25-c997-4223-88d6-021f22b8b4
 - Page structure: `src/templates.mjs`
 - Styling: `static/styles.css` (site), `static/about.css` (About the Chef) and `static/menu.css` (menu)
 - Menu animation: `static/menu.js`; menu page layout: `src/menu.mjs`
+- About heading animation: `static/sauce.js` (GSAP); its letter shapes: `src/sauce.mjs`
 - Supported Notion blocks (headings, paragraphs, lists, quotes, callouts, toggles, images, videos, code, dividers, columns, YouTube and Figma embeds): `src/render.mjs`

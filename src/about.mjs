@@ -2,6 +2,7 @@
 // Notion, then the Résumé table grouped into Experience, Education, Skills
 // and Awards. Styled after the résumé sheet in the original portfolio.
 import { esc, renderBlocks } from "./render.mjs";
+import { sauceLettering } from "./sauce.mjs";
 
 // The first image block on the page becomes the portrait; the first heading
 // becomes the label beside it. Everything else is the comments text.
@@ -68,7 +69,7 @@ export async function buildAbout(config, { blocks, rows }, asset, root = "") {
     .join("\n");
 
   return `<section class="about" id="about" aria-labelledby="about-heading">
-  <h1 class="about-heading" id="about-heading">${esc(a.heading)}</h1>
+  <h1 class="about-heading" id="about-heading">${sauceLettering(a.heading) || esc(a.heading)}</h1>
   <div class="about-intro">
     ${photo ? `<div class="portrait"><img src="${esc(photo)}" alt="${esc(config.name)} in a chef's hat" loading="lazy"></div>` : ""}
     <div class="intro-copy">

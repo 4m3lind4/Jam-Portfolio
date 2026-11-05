@@ -139,7 +139,18 @@ export function homePage({ config, projects, menu }) {
   return layout({ config, root: "", title: config.title, description: config.intro, body, head, scripts, footer: false });
 }
 
+// Hide what the sauce animation will reveal before first paint. If sauce.js
+// never runs, the page is shown as normal once it has loaded.
+const SAUCE_HEAD = `
+<script>
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.classList.add("sauce-on");
+    addEventListener("load", function () { if (!window.__sauceRan) document.documentElement.classList.remove("sauce-on"); });
+  }
+</script>`;
+
 export function aboutPage({ config, aboutHtml }) {
+  const sauce = aboutHtml.includes('class="sauce"');
   return layout({
     config,
     root: "../",
@@ -147,7 +158,8 @@ export function aboutPage({ config, aboutHtml }) {
     description: config.intro,
     body: aboutHtml,
     head: `${MENU_FONTS}
-<link rel="stylesheet" href="../about.css">`,
+<link rel="stylesheet" href="../about.css">${sauce ? SAUCE_HEAD : ""}`,
+    scripts: sauce ? `<script src="../vendor/gsap.min.js"></script>\n<script src="../sauce.js"></script>` : "",
     bodyClass: "page-about",
     footer: false,
     current: "about",

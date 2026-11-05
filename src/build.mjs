@@ -64,6 +64,8 @@ async function main() {
   await rm(DIST, { recursive: true, force: true });
   await mkdir(ASSETS, { recursive: true });
   await cp(path.join(ROOT, "static"), DIST, { recursive: true });
+  await mkdir(path.join(DIST, "vendor"), { recursive: true });
+  await copyFile(path.join(ROOT, "node_modules/gsap/dist/gsap.min.js"), path.join(DIST, "vendor/gsap.min.js"));
 
   // About the Chef is optional: if Notion can't be read, the rest still builds
   // and the header leaves out the About link.

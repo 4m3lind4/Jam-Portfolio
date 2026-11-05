@@ -34,6 +34,45 @@
   margin: 0 0 clamp(2rem, 5vw, 3rem);
 }
 
+/* The heading's letters are the SVG ribbon; the text stays for screen readers,
+   search and copying. */
+.about { overflow-x: clip; }
+.about-heading:has(.sauce) { margin-bottom: clamp(1.75rem, 4vw, 2.5rem); }
+.sauce-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.sauce {
+  display: block;
+  width: min(720px, 100%);
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+}
+.sauce-word,
+.sauce-stream {
+  fill: none;
+  stroke: #ff0866;
+  stroke-width: 15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sauce-tip { fill: #ff0866; }
+.sauce-label {
+  font-family: var(--a-script);
+  font-size: 22px;
+  fill: #470b23;
+}
+.sauce-on .sauce-word { visibility: hidden; }
+.sauce-on .about-intro .portrait,
+.sauce-on .about-intro .label,
+.sauce-on .about-intro .comments > *,
+.sauce-on .about-block { visibility: hidden; }
+
 .about-intro,
 .about-block {
   width: var(--a-col);
