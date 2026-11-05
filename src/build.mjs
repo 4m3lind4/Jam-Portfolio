@@ -6,10 +6,11 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import config from "../site.config.mjs";
-import { createNotionSource, toProject } from "./notion.mjs";
+import { createNotionSource, toProject, toResumeRow } from "./notion.mjs";
 import { renderBlocks } from "./render.mjs";
 import { homePage, projectPage } from "./templates.mjs";
 import { buildMenu } from "./menu.mjs";
+import { buildAbout } from "./about.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
@@ -24,6 +25,7 @@ async function mockSource() {
         .filter((p) => p.properties["Featured on Portfolio"]?.checkbox)
         .sort((a, b) => (a.properties.Order?.number ?? 1e9) - (b.properties.Order?.number ?? 1e9)),
     getBlocks: async (id) => data.blocks[id] || [],
+    queryResume: async () => data.resume.filter((p) => p.properties["Show on Portfolio"]?.checkbox),
   };
 }
 
@@ -95,7 +97,22 @@ async function main() {
 
   const homeProjects = projects.map((p) => ({ ...p, cover: p.coverPath }));
   const menu = buildMenu(config, homeProjects);
-  const home = homePage({ config, projects: homeProjects, menu });
+
+  // About the Chef is optional: if Notion can't be read, the rest still builds.
+  let aboutHtml = "";
+  if (config.about?.pageId) {
+    try {
+      const blocks = await source.getBlocks(config.about.pageId);
+      const rows = config.about.resumeDataSourceId
+        ? (await source.queryResume(config.about.resumeDataSourceId)).map(toResumeRow)
+        : [];
+      aboutHtml = await buildAbout(config, { blocks, rows }, asset);
+    } catch (err) {
+      console.warn(`Skipped About the Chef: ${err.message}`);
+    }
+  }
+
+  const home = homePage({ config, projects: homeProjects, menu, aboutHtml });
   await writeFile(path.join(DIST, "index.html"), home);
   await writeFile(path.join(DIST, ".nojekyll"), "");
 

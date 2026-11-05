@@ -489,6 +489,570 @@
      ]
     }
    }
+  ],
+  "40f42916-eb9d-8144-b9d9-cd2760fb19f3": [
+   {
+    "type": "heading_2",
+    "heading_2": {
+     "rich_text": [
+      {
+       "plain_text": "Chef's Comments",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "For those curious, my initials are JAM. I'm Jessica Amelinda Mang, a UI/UX designer who likes to experiment, make a mess, and create something worth serving.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "I believe design is a lot like cooking. You need the right ingredients, time to experiment, and plenty of taste testing before you know you've got the recipe right.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "So, welcome to my kitchen. Let's see what I've been cooking.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "paragraph",
+    "paragraph": {
+     "rich_text": [
+      {
+       "plain_text": "Design takes time, experimentation and testing for it to be enjoyed.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    }
+   },
+   {
+    "type": "child_database",
+    "child_database": {
+     "title": "R\u00e9sum\u00e9"
+    }
+   }
   ]
- }
+ },
+ "resume": [
+  {
+   "id": "r0",
+   "properties": {
+    "Title": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "UXID @ UTS",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Section": {
+     "type": "select",
+     "select": {
+      "name": "Experience"
+     }
+    },
+    "Note": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "(User Experience & Interaction Design)",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Role & Dates": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Founder | May 2025 \u2013 Present",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Description": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Founded and scaled the society to 300+ members. Organised events and coordinated teams to increase engagement both with UTS Faculty of Engineering & IT.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Order": {
+     "type": "number",
+     "number": 1
+    },
+    "Show on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "r1",
+   "properties": {
+    "Title": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "Envent",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Section": {
+     "type": "select",
+     "select": {
+      "name": "Experience"
+     }
+    },
+    "Note": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Role & Dates": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "UI UX & Graphic Designer | March 2025 \u2013 Present",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Description": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Delivered high quality & tailored UI UX designs for clients including Peninsula University Hospital. Improved mobile & kiosk UI, improving customer satisfaction.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Order": {
+     "type": "number",
+     "number": 2
+    },
+    "Show on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "r2",
+   "properties": {
+    "Title": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "JBL Student Ambassador",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Section": {
+     "type": "select",
+     "select": {
+      "name": "Experience"
+     }
+    },
+    "Note": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Role & Dates": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Content Creator | March 2026 \u2013 Present",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Description": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Led promotional initiatives and activations, driving awareness among student communities. Created targeted digital content to promote JBL products, enhancing reach and engagement across social platforms.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Order": {
+     "type": "number",
+     "number": 3
+    },
+    "Show on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "r3",
+   "properties": {
+    "Title": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "Bachelor of Information Technology",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Section": {
+     "type": "select",
+     "select": {
+      "name": "Education"
+     }
+    },
+    "Note": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Role & Dates": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Software & Interaction Design | Estimated graduation: 2027",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Description": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Order": {
+     "type": "number",
+     "number": 1
+    },
+    "Show on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "r4",
+   "properties": {
+    "Title": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "Branding & Identity",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Section": {
+     "type": "select",
+     "select": {
+      "name": "Skills"
+     }
+    },
+    "Note": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Role & Dates": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Description": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Logo design, typography, packaging, and style guides.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Order": {
+     "type": "number",
+     "number": 1
+    },
+    "Show on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "r5",
+   "properties": {
+    "Title": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "UI/UX Design",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Section": {
+     "type": "select",
+     "select": {
+      "name": "Skills"
+     }
+    },
+    "Note": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Role & Dates": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Description": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Wireframing, prototyping, user research, and responsive web design.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Order": {
+     "type": "number",
+     "number": 2
+    },
+    "Show on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "r6",
+   "properties": {
+    "Title": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "Project Management",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Section": {
+     "type": "select",
+     "select": {
+      "name": "Skills"
+     }
+    },
+    "Note": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Role & Dates": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Description": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Led project planning and execution by defining priorities, coordinating cross-functional teams, tracking progress, and delivering user-centred solutions within project timelines.",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Order": {
+     "type": "number",
+     "number": 3
+    },
+    "Show on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "r7",
+   "properties": {
+    "Title": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "UTS TechFest Selection",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Section": {
+     "type": "select",
+     "select": {
+      "name": "Awards"
+     }
+    },
+    "Note": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Role & Dates": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Top Project in iOS Course, 2026",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Description": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Order": {
+     "type": "number",
+     "number": 1
+    },
+    "Show on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "r8",
+   "properties": {
+    "Title": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "Burwood Art Competition",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Section": {
+     "type": "select",
+     "select": {
+      "name": "Awards"
+     }
+    },
+    "Note": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Role & Dates": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Top 50 Finalist, 2024",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Description": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Order": {
+     "type": "number",
+     "number": 2
+    },
+    "Show on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  },
+  {
+   "id": "r9",
+   "properties": {
+    "Title": {
+     "type": "title",
+     "title": [
+      {
+       "plain_text": "Randwick's Women's Art Competition",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Section": {
+     "type": "select",
+     "select": {
+      "name": "Awards"
+     }
+    },
+    "Note": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Role & Dates": {
+     "type": "rich_text",
+     "rich_text": [
+      {
+       "plain_text": "Community Choice Award, 2023",
+       "annotations": {},
+       "href": null
+      }
+     ]
+    },
+    "Description": {
+     "type": "rich_text",
+     "rich_text": []
+    },
+    "Order": {
+     "type": "number",
+     "number": 3
+    },
+    "Show on Portfolio": {
+     "type": "checkbox",
+     "checkbox": true
+    }
+   }
+  }
+ ]
 }

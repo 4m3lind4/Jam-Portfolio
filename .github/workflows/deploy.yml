@@ -24,8 +24,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
+      # npm ci when the lockfile is committed (exact versions), npm install otherwise
+      - run: if [ -f package-lock.json ]; then npm ci; else npm install; fi
       - run: npm run build
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}

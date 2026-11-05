@@ -56,6 +56,7 @@ ${head}
 <header class="site-header">
   <a class="wordmark" href="${root}">${esc(config.name)}</a>
   <nav aria-label="Main">
+    <a href="${root}#about">About</a>
     <a href="${root}#projects">Projects</a>
     ${contact.length ? `<a href="${root}#contact">Contact</a>` : ""}
   </nav>
@@ -83,7 +84,7 @@ ${scripts}
 `;
 }
 
-export function homePage({ config, projects, menu }) {
+export function homePage({ config, projects, menu, aboutHtml = "" }) {
   const directory = projects
     .map((p) => {
       const z = zone(config, p.category);
@@ -114,6 +115,7 @@ export function homePage({ config, projects, menu }) {
     ${legend ? `<ul class="legend" aria-label="Categories">${legend}</ul>` : ""}
   </div>
 </section>
+${aboutHtml}
 <section class="menu-section" id="projects" aria-labelledby="menu-heading">
   <h2 class="menu-heading" id="menu-heading">Project menu</h2>
   <div class="stage">
@@ -132,7 +134,8 @@ export function homePage({ config, projects, menu }) {
 </section>`;
 
   const head = `${MENU_FONTS}
-<link rel="stylesheet" href="menu.css">`;
+<link rel="stylesheet" href="menu.css">
+<link rel="stylesheet" href="about.css">`;
   const scripts = `<script src="menu.js"></script>`;
 
   return layout({ config, root: "", title: config.title, description: config.intro, body, head, scripts, footer: false });

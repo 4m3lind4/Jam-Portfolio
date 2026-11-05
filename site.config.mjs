@@ -32,6 +32,21 @@ export default {
   },
   defaultCategory: { label: "Project", color: "#5B6170", ink: "#FFFFFF" },
 
+  // "About the Chef" on the home page. Text comes from the About the Chef
+  // page in Notion; Experience, Education, Skills and Awards come from the
+  // Résumé table inside it. These IDs are not secret.
+  about: {
+    heading: "About the Chef",
+    pageId: "40f42916-eb9d-8144-b9d9-cd2760fb19f3",
+    resumeDataSourceId: "3144e98d-9622-43a4-bc9f-df4be63ec095",
+    // Order of the résumé sections; rows with any other Section go last.
+    sections: ["Experience", "Education", "Skills", "Awards"],
+    // Used when the About page in Notion has no image block.
+    photo: "about/chef-photo.webp",
+    // Link for the "Download PDF Resume" button. Leave empty to hide it.
+    resumePdf: "",
+  },
+
   // The scroll-driven project menu on the home page.
   // Projects come from Notion; each Category becomes a menu section.
   menu: {

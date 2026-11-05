@@ -41,7 +41,23 @@ export function createNotionSource({ token, dataSourceId }) {
     return blocks;
   }
 
-  return { queryProjects, getBlocks };
+  async function queryResume(resumeDataSourceId) {
+    const rows = [];
+    let cursor;
+    do {
+      const res = await notion.dataSources.query({
+        data_source_id: resumeDataSourceId,
+        start_cursor: cursor,
+        filter: { property: "Show on Portfolio", checkbox: { equals: true } },
+        sorts: [{ property: "Order", direction: "ascending" }],
+      });
+      rows.push(...res.results);
+      cursor = res.has_more ? res.next_cursor : undefined;
+    } while (cursor);
+    return rows;
+  }
+
+  return { queryProjects, getBlocks, queryResume };
 }
 
 // ---- Property helpers (work on Notion API page objects) ----
@@ -104,5 +120,16 @@ export function toProject(page) {
     tools: multi(page, "Tools"),
     link: text(page, "Link"),
     covers: files(page, "Cover Image"),
+  };
+}
+
+export function toResumeRow(page) {
+  return {
+    title: text(page, "Title"),
+    section: text(page, "Section"),
+    note: text(page, "Note"),
+    meta: text(page, "Role & Dates"),
+    description: text(page, "Description"),
+    order: number(page, "Order"),
   };
 }
