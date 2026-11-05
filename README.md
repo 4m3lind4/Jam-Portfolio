@@ -7,7 +7,7 @@ A static portfolio site that reads its projects from the **Projects** database o
 1. `src/build.mjs` queries the Notion data source for rows with **Featured on Portfolio** ticked, sorted by **Order**.
 2. Cover images and any images or videos in a project's page are downloaded into `dist/assets/`, because Notion's file links expire after about an hour.
 3. The home page opens on the directory board, then the **project menu**: a scroll-driven book (ported from the original portfolio) whose pages, dishes and bill are printed from your Notion rows. Each Category becomes a menu section; set the order and banner names in `site.config.mjs` under `menu`.
-4. Between the hero and the menu sits **About the Chef**, built from the About the Chef page in Notion (its text is Chef's Comments; an image block replaces the portrait) and its Résumé table (Experience, Education, Skills, Awards). The IDs are in `site.config.mjs` under `about`.
+4. **About the Chef** has its own page at `/about/`, linked from the header. It is built from the About the Chef page in Notion (its text is Chef's Comments; an image block replaces the portrait) and its Résumé table (Experience, Education, Skills, Awards). The IDs are in `site.config.mjs` under `about`.
 5. Each row also gets a case-study page at `/projects/<Slug>/`, built from the row's page content.
 6. A GitHub Action runs the build and deploys `dist/` to GitHub Pages.
 

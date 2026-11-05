@@ -2,6 +2,12 @@
    around content from Notion. Cream ground, maroon text, one centred
    column, Outfit for the wide labels and DM Sans for the body. */
 
+/* The page takes the sheet's colours, so the cream runs edge to edge. */
+.page-about { background: #f9f7eb; }
+.page-about .site-header nav a { color: #470b23; }
+.page-about .site-header nav a[aria-current="page"] { font-weight: 700; }
+.page-about .wordmark { color: #470b23; }
+
 .about {
   --a-maroon: #470b23;
   --a-cream: #f9f7eb;
@@ -78,7 +84,7 @@
 
 .about .entry { margin-bottom: 30px; }
 .about .entry:last-child { margin-bottom: 10px; }
-.about .entry h4 {
+.about .entry h3 {
   font-size: 18px;
   font-weight: 800;
   line-height: 1.3;
@@ -100,12 +106,6 @@
 }
 .about .pdf:hover { background: #2c0714; }
 .about a:focus-visible { outline: 2px solid var(--a-hot); outline-offset: 3px; }
-
-/* The menu's table fades in from the cream sheet above it. */
-.about + .menu-section { margin-top: 0; }
-.about + .menu-section::after {
-  background: linear-gradient(180deg, #f9f7eb 0, rgba(249, 247, 235, 0) 100%);
-}
 
 @media (max-width: 560px) {
   .about-intro { grid-template-columns: 1fr; gap: 20px; }

@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import config from "../site.config.mjs";
 import { createNotionSource, toProject, toResumeRow } from "./notion.mjs";
 import { renderBlocks } from "./render.mjs";
-import { homePage, projectPage } from "./templates.mjs";
+import { aboutPage, homePage, projectPage } from "./templates.mjs";
 import { buildMenu } from "./menu.mjs";
 import { buildAbout } from "./about.mjs";
 
@@ -65,6 +65,23 @@ async function main() {
   await mkdir(ASSETS, { recursive: true });
   await cp(path.join(ROOT, "static"), DIST, { recursive: true });
 
+  // About the Chef is optional: if Notion can't be read, the rest still builds
+  // and the header leaves out the About link.
+  let aboutHtml = "";
+  if (config.about?.pageId) {
+    try {
+      const blocks = await source.getBlocks(config.about.pageId);
+      const rows = config.about.resumeDataSourceId
+        ? (await source.queryResume(config.about.resumeDataSourceId)).map(toResumeRow)
+        : [];
+      const prefixAsset = async (url, kind) => fromRoot(await asset(url, kind), "../");
+      aboutHtml = await buildAbout(config, { blocks, rows }, prefixAsset, "../");
+    } catch (err) {
+      console.warn(`Skipped About the Chef: ${err.message}`);
+    }
+  }
+  const site = { ...config, about: aboutHtml ? config.about : null };
+
   const pages = await source.queryProjects();
   const projects = pages.map(toProject);
 
@@ -85,7 +102,7 @@ async function main() {
     const contentHtml = await renderBlocks(blocks, prefixAsset);
     const next = projects.length > 1 ? projects[(i + 1) % projects.length] : null;
     const html = projectPage({
-      config,
+      config: site,
       project: { ...p, cover: fromRoot(p.coverPath, "../../") },
       next,
       contentHtml,
@@ -98,22 +115,12 @@ async function main() {
   const homeProjects = projects.map((p) => ({ ...p, cover: p.coverPath }));
   const menu = buildMenu(config, homeProjects);
 
-  // About the Chef is optional: if Notion can't be read, the rest still builds.
-  let aboutHtml = "";
-  if (config.about?.pageId) {
-    try {
-      const blocks = await source.getBlocks(config.about.pageId);
-      const rows = config.about.resumeDataSourceId
-        ? (await source.queryResume(config.about.resumeDataSourceId)).map(toResumeRow)
-        : [];
-      aboutHtml = await buildAbout(config, { blocks, rows }, asset);
-    } catch (err) {
-      console.warn(`Skipped About the Chef: ${err.message}`);
-    }
-  }
-
-  const home = homePage({ config, projects: homeProjects, menu, aboutHtml });
+  const home = homePage({ config: site, projects: homeProjects, menu });
   await writeFile(path.join(DIST, "index.html"), home);
+  if (aboutHtml) {
+    await mkdir(path.join(DIST, "about"), { recursive: true });
+    await writeFile(path.join(DIST, "about", "index.html"), aboutPage({ config: site, aboutHtml }));
+  }
   await writeFile(path.join(DIST, ".nojekyll"), "");
 
   console.log(`Built ${projects.length} project${projects.length === 1 ? "" : "s"} into dist/`);

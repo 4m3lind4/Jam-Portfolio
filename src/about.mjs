@@ -29,7 +29,7 @@ async function splitPage(blocks, asset) {
 function entry(row) {
   const title = `${esc(row.title)}${row.note ? `<br><span class="entry-note">${esc(row.note)}</span>` : ""}`;
   return `<div class="entry">
-    <h4>${title}</h4>
+    <h3>${title}</h3>
     ${row.meta ? `<p class="meta">${esc(row.meta)}</p>` : ""}
     ${row.description ? `<p class="body">${esc(row.description)}</p>` : ""}
   </div>`;
@@ -43,11 +43,11 @@ const RENDER = {
   Awards: (row) => `<p class="body">${esc(row.title)}${row.meta ? ` | ${esc(row.meta)}` : ""}</p>`,
 };
 
-export async function buildAbout(config, { blocks, rows }, asset) {
+export async function buildAbout(config, { blocks, rows }, asset, root = "") {
   const a = config.about;
   const page = await splitPage(blocks, asset);
   const comments = await renderBlocks(page.blocks, asset);
-  const photo = page.photo || a.photo;
+  const photo = page.photo || (a.photo && root + a.photo);
 
   const order = a.sections;
   const names = [...new Set(rows.map((r) => r.section).filter(Boolean))].sort((x, y) => {
@@ -61,18 +61,18 @@ export async function buildAbout(config, { blocks, rows }, asset) {
       const render = RENDER[name] || entry;
       const items = rows.filter((r) => r.section === name).map(render).join("\n");
       return `<section class="about-block" aria-labelledby="about-${esc(name.toLowerCase())}">
-        <h3 class="label" id="about-${esc(name.toLowerCase())}">${esc(name)}</h3>
+        <h2 class="label" id="about-${esc(name.toLowerCase())}">${esc(name)}</h2>
         ${items}
       </section>`;
     })
     .join("\n");
 
   return `<section class="about" id="about" aria-labelledby="about-heading">
-  <h2 class="about-heading" id="about-heading">${esc(a.heading)}</h2>
+  <h1 class="about-heading" id="about-heading">${esc(a.heading)}</h1>
   <div class="about-intro">
     ${photo ? `<div class="portrait"><img src="${esc(photo)}" alt="${esc(config.name)} in a chef's hat" loading="lazy"></div>` : ""}
     <div class="intro-copy">
-      <h3 class="label">${esc(page.label)}</h3>
+      <h2 class="label">${esc(page.label)}</h2>
       <div class="comments">${comments}</div>
     </div>
   </div>

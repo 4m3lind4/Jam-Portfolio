@@ -30,7 +30,7 @@ function tornEdges(teeth = 18, depth = 1.2) {
   return `polygon(${pts.join(",")})`;
 }
 
-function layout({ config, root, title, description, body, head = "", scripts = "", bodyClass = "", footer = true }) {
+function layout({ config, root, title, description, body, head = "", scripts = "", bodyClass = "", footer = true, current = "" }) {
   const { links } = config;
   const contact = [
     links.email && `<a href="mailto:${esc(links.email)}">Email</a>`,
@@ -56,7 +56,7 @@ ${head}
 <header class="site-header">
   <a class="wordmark" href="${root}">${esc(config.name)}</a>
   <nav aria-label="Main">
-    <a href="${root}#about">About</a>
+    ${config.about ? `<a href="${root}about/"${current === "about" ? ` aria-current="page"` : ""}>About</a>` : ""}
     <a href="${root}#projects">Projects</a>
     ${contact.length ? `<a href="${root}#contact">Contact</a>` : ""}
   </nav>
@@ -84,7 +84,7 @@ ${scripts}
 `;
 }
 
-export function homePage({ config, projects, menu, aboutHtml = "" }) {
+export function homePage({ config, projects, menu }) {
   const directory = projects
     .map((p) => {
       const z = zone(config, p.category);
@@ -115,7 +115,6 @@ export function homePage({ config, projects, menu, aboutHtml = "" }) {
     ${legend ? `<ul class="legend" aria-label="Categories">${legend}</ul>` : ""}
   </div>
 </section>
-${aboutHtml}
 <section class="menu-section" id="projects" aria-labelledby="menu-heading">
   <h2 class="menu-heading" id="menu-heading">Project menu</h2>
   <div class="stage">
@@ -134,11 +133,25 @@ ${aboutHtml}
 </section>`;
 
   const head = `${MENU_FONTS}
-<link rel="stylesheet" href="menu.css">
-<link rel="stylesheet" href="about.css">`;
+<link rel="stylesheet" href="menu.css">`;
   const scripts = `<script src="menu.js"></script>`;
 
   return layout({ config, root: "", title: config.title, description: config.intro, body, head, scripts, footer: false });
+}
+
+export function aboutPage({ config, aboutHtml }) {
+  return layout({
+    config,
+    root: "../",
+    title: `${config.about.heading} | ${config.title}`,
+    description: config.intro,
+    body: aboutHtml,
+    head: `${MENU_FONTS}
+<link rel="stylesheet" href="../about.css">`,
+    bodyClass: "page-about",
+    footer: false,
+    current: "about",
+  });
 }
 
 export function projectPage({ config, project: p, next, contentHtml }) {
