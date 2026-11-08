@@ -23,7 +23,7 @@ export function richText(rich = []) {
     .join("");
 }
 
-function mediaUrl(b) {
+export function mediaUrl(b) {
   const m = b[b.type];
   return m?.type === "external" ? m.external?.url : m?.file?.url;
 }

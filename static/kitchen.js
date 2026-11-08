@@ -63,6 +63,8 @@
     var slices = $(".slice");
     var tags = $(".slice-tag");
     var knife = $(".knife");
+    var juice = $(".juice");
+    var towel = $(".towel");
     slices.forEach(function (s, i) { gsap.set(s, { x: -i * GAP }); });
     gsap.set(tags, { autoAlpha: 0, scale: 0.4, transformOrigin: "50% 100%" });
     gsap.set(knife, { x: X0 + W, y: -60, rotation: -10 });
@@ -72,11 +74,24 @@
       var at = k < 5 ? X0 + k * W + (k - 1) * GAP : X0 + 4 * (W + GAP) + W * 0.84;
       tl.to(knife, { x: at, duration: 0.3, ease: "sine.inOut" })
         .to(knife, { y: 302, rotation: 2, duration: 0.16, ease: "power3.in" });
-      if (k < 5) tl.to(slices.slice(k), { x: "+=" + GAP, duration: 0.14, ease: "power2.out" }, ">-0.02");
+      if (k < 5) {
+        tl.to(slices.slice(k), { x: "+=" + GAP, duration: 0.14, ease: "power2.out" }, ">-0.02")
+          .to(juice[k - 1], { opacity: 1, duration: 0.08 }, "<");
+      }
       tl.to(tags[k - 1], { autoAlpha: 1, scale: 1, duration: 0.24, ease: "back.out(2)" }, ">-0.1")
         .to(knife, { y: 130, rotation: 0, duration: 0.24, ease: "sine.out" }, "<");
     }
-    tl.to(knife, { x: 728, y: 300, duration: 0.5, ease: "sine.inOut" }).to({}, { duration: 0.4 });
+    tl.to(knife, { x: 700, y: 300, duration: 0.5, ease: "sine.inOut" });
+
+    // Then a cloth comes up and wipes the juice off the board in one swipe.
+    gsap.set(towel, { x: 150, y: 1100 });
+    tl.to(towel, { y: 490, duration: 0.4, ease: "power2.out" })
+      .addLabel("wipe")
+      .to(towel, { x: 600, rotation: 6, duration: 0.6, ease: "sine.inOut" });
+    juice.forEach(function (j, i) {
+      tl.to(j, { opacity: 0, duration: 0.12 }, "wipe+=" + (0.08 + i * 0.13));
+    });
+    tl.to(towel, { y: 1100, duration: 0.4, ease: "power2.in" }, "wipe+=0.6").to({}, { duration: 0.4 });
 
     // Pointing at a slice lights up its line on the ticket, and the other way round.
     var items = $(".scene-ticket li");
@@ -138,15 +153,24 @@
     gsap.set($(".paper-mid"), { y: -24, svgOrigin: "400 520" });
     gsap.set($(".draw"), { strokeDashoffset: 1 });
     gsap.set($(".draw-label"), { opacity: 0 });
+    gsap.set($(".shot"), { opacity: 0 });
     gsap.set(pencil, { x: 720, y: 150, rotation: 24 });
+    var flip = $(".flip-hand");
+    gsap.set(flip, { x: 300, y: 1000 });
 
+    // A hand comes up and opens each fold of the paper.
     tl.to($(".paper-mid"), { y: 0, duration: 0.4, ease: "bounce.out" })
-      .to(left, { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, 0.35)
-      .to(right, { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, 0.55);
+      .to(flip, { y: 330, duration: 0.35, ease: "power2.out" }, 0.3)
+      .to(left, { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, 0.65)
+      .to(flip, { x: 70, duration: 0.5, ease: "power2.inOut" }, 0.65)
+      .to(flip, { x: 500, duration: 0.4, ease: "sine.inOut" }, 1.2)
+      .to(right, { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, 1.6)
+      .to(flip, { x: 730, duration: 0.5, ease: "power2.inOut" }, 1.6)
+      .to(flip, { y: 1000, duration: 0.35, ease: "power2.in" }, 2.15);
 
     [[left, 160], [$(".paper-mid"), 400], [right, 640]].forEach(function (panel, i) {
       var group = gsap.utils.toArray(panel[0][0].querySelectorAll(".draw"));
-      var at = 1.25 + i * 1.15;
+      var at = 2.4 + i * 1.15;
       tl.to(pencil, { x: panel[1] + 30, y: 240, duration: 0.2, ease: "sine.inOut" }, at);
       tl.to(pencil, { keyframes: [
           { x: panel[1] - 40, y: 440, duration: 0.3 },
@@ -154,7 +178,9 @@
           { x: panel[1] - 20, y: 400, duration: 0.25 },
         ], ease: "sine.inOut" }, at + 0.2);
       tl.to(panel[0][0].querySelector(".draw-label"), { opacity: 1, duration: 0.2 }, at + 0.1);
-      tl.to(group, { strokeDashoffset: 0, duration: 0.3, stagger: 0.7 / group.length }, at + 0.1);
+      if (group.length) tl.to(group, { strokeDashoffset: 0, duration: 0.3, stagger: 0.7 / group.length }, at + 0.1);
+      var shot = panel[0][0].querySelector(".shot");
+      if (shot) tl.to(shot, { opacity: 1, duration: 0.7 }, at + 0.1);
     });
     tl.to(pencil, { x: 690, y: 440, rotation: 30, duration: 0.4, ease: "sine.inOut" }).to({}, { duration: 0.3 });
   });

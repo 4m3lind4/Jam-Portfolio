@@ -2,7 +2,7 @@
 // by having an entry here. Its properties (cover, tools, year, link) come from
 // Notion, and storyFromNotion swaps in the text of its Notion page, section by
 // heading. The text below is the fallback for any section the page doesn't have.
-import { richText, renderBlocks } from "./render.mjs";
+import { richText, renderBlocks, mediaUrl } from "./render.mjs";
 import { boardArt, bowlArt, paperArt, ovenArt, plateArt } from "./kitchen-art.mjs";
 
 export const KITCHENS = {
@@ -88,6 +88,8 @@ const SECTIONS = {
   outcome: "outcome",
   "what i brought to the project": "brought",
 };
+// How many images each scene takes from its section to use as art.
+const SHOT_SCENES = { lofi: 3, plated: 1 };
 const HEADING = /^heading_[123]$/;
 const plain = (b) => (b[b.type]?.rich_text || []).map((t) => t.plain_text).join("").trim();
 const keyOf = (b) => SECTIONS[plain(b).replace(/^\d+\s*[—–.:-]*\s*/, "").trim().toLowerCase()];
@@ -140,7 +142,12 @@ export async function storyFromNotion(fallback, blocks, asset) {
       const list = found[scene.id];
       if (!list?.length) return scene;
       fromNotion.push(scene.title);
-      const out = { ...scene, title: titles[scene.id], kicker: null, html: await html(list) };
+      // Images in these sections become the art: the wireframes on the paper,
+      // and the finished screen on the plate. The rest stays on the ticket.
+      const shots = SHOT_SCENES[scene.id] ? list.filter((b) => b.type === "image").slice(0, SHOT_SCENES[scene.id]) : [];
+      const text = list.filter((b) => !shots.includes(b));
+      const out = { ...scene, title: titles[scene.id], kicker: null, html: await html(text) };
+      if (shots.length) out.shots = await Promise.all(shots.map(async (b) => ({ src: await asset(mediaUrl(b), "image"), caption: (b.image.caption || []).map((t) => t.plain_text).join("").trim() })));
       if (scene.id === "challenge") {
         // The five bullets name the five chopped slices. Any other shape keeps
         // the drawn labels, because the knife choreography is built for five.
@@ -151,6 +158,10 @@ export async function storyFromNotion(fallback, blocks, asset) {
       return out;
     })
   );
+
+  // The oven bakes the same finished screen that's served on the plate.
+  const plated = story.scenes.find((s) => s.id === "plated");
+  if (plated?.shots) story.scenes = story.scenes.map((s) => (s.id === "development" ? { ...s, shots: plated.shots } : s));
 
   const rows = (found.brought || [])
     .filter((b) => b.type === "paragraph" && plain(b).includes(":"))
