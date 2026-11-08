@@ -71,22 +71,43 @@
 .sauce-on .about-intro .portrait,
 .sauce-on .about-intro .label,
 .sauce-on .about-intro .comments > *,
-.sauce-on .about-block { visibility: hidden; }
+.sauce-on .about-intro .talk-sound,
+.sauce-on .folder { visibility: hidden; }
 
-.about-intro,
 .about-block {
   width: var(--a-col);
   max-width: 100%;
   margin: 0 auto;
 }
 
+/* ---- Chef's comments: the chef, talking, across the whole first screen ---- */
 .about-intro {
+  width: min(1080px, 100%);
+  min-height: calc(100svh - 15rem);
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
-  gap: 32px;
-  align-items: start;
-  padding-bottom: 1.5rem;
+  grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+  padding-bottom: clamp(2rem, 6svh, 4rem);
 }
+.about .intro-copy.bubble {
+  background: #fff;
+  border: 2px solid var(--a-maroon);
+  border-radius: 2rem;
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+  box-shadow: 8px 10px 0 var(--a-maroon);
+}
+.about .intro-copy.bubble::after {
+  left: -2.15rem;
+  top: 3.5rem;
+  width: 2.2rem;
+  height: 2.4rem;
+  background: var(--a-maroon);
+  clip-path: polygon(100% 0, 100% 100%, 0 20%);
+}
+.about .intro-copy .comments p { font-size: clamp(16px, 1.35vw, 19px); }
+.about .intro-copy .talk-sound { color: var(--a-maroon); }
 
 .about .portrait img {
   width: 100%;
@@ -146,7 +167,121 @@
 .about .pdf:hover { background: #2c0714; }
 .about a:focus-visible { outline: 2px solid var(--a-hot); outline-offset: 3px; }
 
-@media (max-width: 560px) {
-  .about-intro { grid-template-columns: 1fr; gap: 20px; }
+@media (max-width: 760px) {
+  .about-intro { grid-template-columns: 1fr; gap: 2.5rem; min-height: 0; }
+  .about .intro-copy.bubble::after { left: 3rem; top: -2.1rem; clip-path: polygon(0 100%, 100% 100%, 20% 0); }
   .about .portrait { width: 160px; margin: 0 auto; }
+}
+
+/* ---- The résumé folder ---- */
+.folder { margin-top: clamp(2rem, 6vw, 4rem); }
+.folder-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.folder-tab {
+  font-family: var(--a-display);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--a-cream);
+  background: var(--a-maroon);
+  padding: 0.55rem 1rem;
+  border-radius: 0.6rem;
+}
+
+/* With scripts and motion, the folder sits on the desk and opens to each tab in turn. */
+.folder-on .folder { height: calc((var(--sheets, 4) * 1.2 + 0.6) * 100svh); }
+.folder-on .folder-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  perspective: 1800px;
+}
+.folder-on .folder-case {
+  position: relative;
+  width: min(880px, calc(100vw - 6rem));
+  height: min(80svh, 720px);
+  transform-style: preserve-3d;
+  transform: rotateX(8deg);
+}
+/* The back of the folder, with its tabs standing off the right edge. */
+.folder-on .folder-case::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px 10px 14px 14px;
+  background: linear-gradient(180deg, #f3b8cb, #e893ae);
+  box-shadow: 0 30px 50px rgba(71, 11, 35, 0.28);
+}
+.folder-on .folder-tabs {
+  position: absolute;
+  z-index: 1;
+  top: 1.5rem;
+  right: -2.8rem;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  margin: 0;
+  gap: 0.4rem;
+}
+.folder-on .folder-tab {
+  writing-mode: vertical-rl;
+  padding: 1rem 0.6rem;
+  border-radius: 0 0.7rem 0.7rem 0;
+  background: #e893ae;
+  color: var(--a-maroon);
+  box-shadow: 3px 3px 0 rgba(71, 11, 35, 0.15);
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.folder-on .folder-tab:hover { transform: translateX(3px); }
+.folder-on .folder-tab.is-open { background: var(--a-maroon); color: var(--a-cream); transform: translateX(4px); }
+.folder-on .folder-pocket { position: absolute; inset: 0; }
+.folder-on .folder-sheet {
+  position: absolute;
+  inset: 4% 5% 4% 4%;
+  width: auto;
+  margin: 0;
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+  background: var(--a-cream);
+  box-shadow: 0 2px 0 #e7dccb, 0 4px 0 #f9f7eb, 0 6px 0 #e7dccb, 0 12px 20px rgba(71, 11, 35, 0.18);
+  overflow-y: auto;
+  visibility: hidden;
+}
+.folder-on .folder-sheet.is-open { visibility: visible; }
+/* The front cover, hinged on the left, opens like a book. */
+.folder-cover {
+  display: none;
+}
+.folder-on .folder-cover {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border-radius: 10px 14px 14px 10px;
+  background:
+    linear-gradient(90deg, rgba(71, 11, 35, 0.18), transparent 8%),
+    linear-gradient(180deg, #f6c8d6, #ee9fb9);
+  transform-origin: 0 50%;
+  backface-visibility: hidden;
+  box-shadow: 0 2px 0 rgba(71, 11, 35, 0.2);
+}
+.folder-cover span {
+  font-family: var(--a-script);
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  color: var(--a-maroon);
+  transform: rotate(-4deg);
+}
+
+@media (max-width: 760px) {
+  .folder-on .folder-case { width: calc(100vw - 4.5rem); margin-right: 2rem; height: 76svh; }
+  .folder-on .folder-tabs { right: -2.4rem; }
+  .folder-on .folder-tab { font-size: 12px; padding: 0.7rem 0.45rem; }
 }

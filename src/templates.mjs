@@ -21,6 +21,9 @@ function zoneStyle(z) {
   return `--zone:${z.color};--zone-ink:${z.ink}`;
 }
 
+// The switch for the talking sound in speech bubbles (static/talk.js shows it).
+export const SOUND_BUTTON = `<button class="talk-sound" type="button" aria-pressed="false" hidden><span aria-hidden="true">♪</span> <span class="talk-sound-label">Sound off</span></button>`;
+
 const MENU_FONTS = `<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Outfit:wght@700&family=Cedarville+Cursive&family=Monsieur+La+Doulaise&display=swap" rel="stylesheet">`;
 
 // Torn top and bottom edges for a paper ticket.
@@ -55,7 +58,7 @@ ${head}
 <body${bodyClass ? ` class="${bodyClass}"` : ""}>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
-  <a class="wordmark" href="${root}">${esc(config.name)}</a>
+  <a class="wordmark" href="${root}"><img src="${root}jam-logo.webp" alt="${esc(config.name)}, home" width="44" height="44"></a>
   <nav aria-label="Main">
     ${config.about ? `<a href="${root}about/"${current === "about" ? ` aria-current="page"` : ""}>About</a>` : ""}
     <a href="${root}#projects">Projects</a>
@@ -85,35 +88,26 @@ ${scripts}
 `;
 }
 
-export function homePage({ config, projects, menu }) {
-  const directory = projects
-    .map((p) => {
-      const z = zone(config, p.category);
-      return `<li style="${zoneStyle(z)}">
-        <a href="projects/${esc(p.slug)}/">
-          <span class="dir-zone">${esc(z.label)}</span>
-          <span class="dir-title">${esc(p.title)}</span>
-          <span class="dir-year">${p.year ?? ""}</span>
-        </a>
-      </li>`;
-    })
-    .join("\n");
-
-  const zonesUsed = [...new Set(projects.map((p) => p.category))].map((c) => zone(config, c));
-  const legend = zonesUsed
-    .map((z) => `<li style="${zoneStyle(z)}"><span class="swatch" aria-hidden="true"></span>${esc(z.label)}</li>`)
-    .join("");
-
+export function homePage({ config, menu }) {
   const body = `
-<section class="hero">
-  <div class="hero-text">
-    <h1>${esc(config.name)}</h1>
-    <p class="intro">${esc(config.intro)}</p>
-  </div>
-  <div class="directory" aria-label="Project directory">
-    <h2 class="directory-heading">Directory</h2>
-    ${projects.length ? `<ul class="directory-list">${directory}</ul>` : `<p class="empty">No projects are published yet. Tick "Featured on Portfolio" on a row in Notion, then rebuild.</p>`}
-    ${legend ? `<ul class="legend" aria-label="Categories">${legend}</ul>` : ""}
+<section class="welcome" id="welcome" aria-labelledby="welcome-title">
+  <div class="welcome-pin">
+    <div class="welcome-room" aria-hidden="true">
+      <div class="welcome-sign"><img src="jam-logo.webp" alt=""><span>Jam</span></div>
+      <div class="welcome-door">
+        <div class="welcome-glow"></div>
+        <div class="door door--left"><span class="door-window"></span><span class="door-handle"></span></div>
+        <div class="door door--right"><span class="door-window"></span><span class="door-handle"></span></div>
+      </div>
+      <div class="welcome-floor"></div>
+    </div>
+    <img class="waiter" src="menu/waiter.webp" alt="${esc(config.name)}, dressed for service, holding a plate" width="1259" height="769">
+    <div class="bubble welcome-bubble">
+      <h1 class="talk-text" id="welcome-title">${config.welcome.map(esc).join(" ")}</h1>
+      ${SOUND_BUTTON}
+    </div>
+    <div class="welcome-flash" aria-hidden="true"></div>
+    <a class="welcome-go" href="#projects">${esc(config.welcomeCta)} <span aria-hidden="true">↓</span></a>
   </div>
 </section>
 <section class="menu-section" id="projects" aria-labelledby="menu-heading">
@@ -134,10 +128,21 @@ export function homePage({ config, projects, menu }) {
 </section>`;
 
   const head = `${MENU_FONTS}
-<link rel="stylesheet" href="menu.css">`;
-  const scripts = `<script src="menu.js"></script>`;
+<link rel="stylesheet" href="menu.css">
+<link rel="stylesheet" href="welcome.css">
+<script>
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.classList.add("welcome-on");
+    addEventListener("load", function () { if (!window.__welcomeRan) document.documentElement.classList.remove("welcome-on"); });
+  }
+</script>`;
+  const scripts = `<script src="talk.js"></script>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="welcome.js"></script>
+<script src="menu.js"></script>`;
 
-  return layout({ config, root: "", title: config.title, description: config.intro, body, head, scripts, footer: false });
+  return layout({ config, root: "", title: config.title, description: config.intro, body, head, scripts, bodyClass: "page-home", footer: false });
 }
 
 // Hide what the sauce animation will reveal before first paint. If sauce.js
@@ -159,8 +164,17 @@ export function aboutPage({ config, aboutHtml }) {
     description: config.intro,
     body: aboutHtml,
     head: `${MENU_FONTS}
-<link rel="stylesheet" href="../about.css">${sauce ? SAUCE_HEAD : ""}`,
-    scripts: sauce ? `<script src="../vendor/gsap.min.js"></script>\n<script src="../sauce.js"></script>` : "",
+<link rel="stylesheet" href="../about.css">${sauce ? SAUCE_HEAD : ""}
+<script>
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.classList.add("folder-on");
+    addEventListener("load", function () { if (!window.__folderRan) document.documentElement.classList.remove("folder-on"); });
+  }
+</script>`,
+    scripts: `<script src="../talk.js"></script>
+<script src="../vendor/gsap.min.js"></script>
+<script src="../vendor/ScrollTrigger.min.js"></script>
+${sauce ? `<script src="../sauce.js"></script>\n` : ""}<script src="../about.js"></script>`,
     bodyClass: "page-about",
     footer: false,
     current: "about",
@@ -212,7 +226,7 @@ export function kitchenPage({ config, project: p, next, story }) {
 <section class="scene scene--intro" id="intro" aria-labelledby="intro-title">
   <div class="scene-pin">
     <div class="kitchen-dark" aria-hidden="true"></div>
-    ${bookArt(p.cover, "")}
+    ${bookArt(p.cover, "", story.scenes.map((s) => ({ id: s.id, step: s.step, title: esc(s.title) })), esc(p.title), esc(story.course))}
     <div class="scene-copy">
       <div class="scene-ticket">
         <h1 id="intro-title" class="ticket-title">${esc(p.title)}</h1>

@@ -2,6 +2,7 @@
 // Notion, then the Résumé table grouped into Experience, Education, Skills
 // and Awards. Styled after the résumé sheet in the original portfolio.
 import { esc, renderBlocks } from "./render.mjs";
+import { SOUND_BUTTON } from "./templates.mjs";
 import { sauceLettering } from "./sauce.mjs";
 
 // The first image block on the page becomes the portrait; the first heading
@@ -57,27 +58,45 @@ export async function buildAbout(config, { blocks, rows }, asset, root = "") {
     return ix - iy;
   });
 
-  const blocksHtml = names
+  // The résumé sits in a folder with a tab per section. Without scripts the
+  // tabs are links and every sheet is shown, one after another.
+  const slug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const tabs = names
+    .map((name) => `<a class="folder-tab" href="#about-${esc(slug(name))}" id="tab-${esc(slug(name))}">${esc(name)}</a>`)
+    .join("");
+  const sheets = names
     .map((name) => {
       const render = RENDER[name] || entry;
       const items = rows.filter((r) => r.section === name).map(render).join("\n");
-      return `<section class="about-block" aria-labelledby="about-${esc(name.toLowerCase())}">
-        <h2 class="label" id="about-${esc(name.toLowerCase())}">${esc(name)}</h2>
+      return `<section class="about-block folder-sheet" id="about-${esc(slug(name))}" aria-labelledby="about-${esc(slug(name))}-title">
+        <h2 class="label" id="about-${esc(slug(name))}-title">${esc(name)}</h2>
         ${items}
       </section>`;
     })
     .join("\n");
+  const folder = names.length
+    ? `<div class="folder" id="resume" style="--sheets:${names.length}">
+    <div class="folder-pin">
+      <div class="folder-case">
+        <nav class="folder-tabs" aria-label="Résumé sections">${tabs}</nav>
+        <div class="folder-pocket">${sheets}</div>
+        <div class="folder-cover" aria-hidden="true"><span>${esc(config.name)}'s file</span></div>
+      </div>
+    </div>
+  </div>`
+    : "";
 
   return `<section class="about" id="about" aria-labelledby="about-heading">
   <h1 class="about-heading" id="about-heading">${sauceLettering(a.heading) || esc(a.heading)}</h1>
   <div class="about-intro">
-    ${photo ? `<div class="portrait"><img src="${esc(photo)}" alt="${esc(config.name)} in a chef's hat" loading="lazy"></div>` : ""}
-    <div class="intro-copy">
+    ${photo ? `<div class="portrait"><img src="${esc(photo)}" alt="${esc(config.name)} in a chef's hat"></div>` : ""}
+    <div class="intro-copy bubble">
       <h2 class="label">${esc(page.label)}</h2>
-      <div class="comments">${comments}</div>
+      <div class="comments talk-text">${comments}</div>
+      ${SOUND_BUTTON}
     </div>
   </div>
-  ${blocksHtml}
+  ${folder}
   ${a.resumePdf ? `<div class="about-block"><a class="pdf" href="${esc(a.resumePdf)}" rel="noopener">Download PDF resume</a></div>` : ""}
 </section>`;
 }

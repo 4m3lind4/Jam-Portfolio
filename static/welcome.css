@@ -1,0 +1,189 @@
+/* The home page opens at the door of the Jam restaurant: the waiter greets
+   you in a speech bubble, then scrolling opens the doors and walks you in to
+   the menu. Without motion it's one still screen with the same words. */
+
+.page-home { background: #2c0714; }
+.page-home .site-header {
+  position: absolute;
+  z-index: 6;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.page-home .site-header nav a { color: #f9f7eb; }
+.page-home .menu-section { margin-top: 0; }
+.page-home .site-header nav a:hover { color: #fff; }
+
+.welcome {
+  --w-maroon: #470b23;
+  --w-deep: #2c0714;
+  --w-cream: #f9f7eb;
+  --w-hot: #ff0866;
+  position: relative;
+  color: var(--w-cream);
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.welcome-on .welcome { height: 260svh; }
+
+.welcome-pin {
+  position: relative;
+  height: 100svh;
+  min-height: 34rem;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 70% at 50% 10%, rgba(255, 8, 102, 0.18), transparent 60%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.08) 0 2px, transparent 2px 64px),
+    linear-gradient(180deg, #5a0f2d 0%, var(--w-maroon) 55%, var(--w-deep) 100%);
+}
+.welcome-on .welcome-pin { position: sticky; top: 0; }
+
+/* ---- The shopfront ---- */
+.welcome-room {
+  position: absolute;
+  inset: 0;
+  transform-origin: 62% 62%;
+}
+.welcome-sign {
+  position: absolute;
+  left: 62%;
+  top: 12svh;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 1.2rem 0.4rem 0.6rem;
+  border-radius: 999px;
+  background: var(--w-deep);
+  box-shadow: 0 0 0 3px rgba(255, 8, 102, 0.55), 0 0 28px rgba(255, 8, 102, 0.55);
+}
+.welcome-sign img { width: 3rem; height: 3rem; }
+.welcome-sign span {
+  font-family: "Cedarville Cursive", "Snell Roundhand", cursive;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: #ffd3e2;
+  text-shadow: 0 0 10px rgba(255, 8, 102, 0.9), 0 0 2px #fff;
+}
+.welcome-door {
+  position: absolute;
+  left: 62%;
+  bottom: 14svh;
+  width: min(30vw, 22rem);
+  height: min(56svh, 30rem);
+  transform: translateX(-50%);
+  border: 0.9rem solid #1c0410;
+  border-bottom: 0;
+  border-radius: 12rem 12rem 0 0;
+  perspective: 900px;
+  display: flex;
+  overflow: hidden;
+  background: #1c0410;
+  box-shadow: 0 0 0 4px #7a2346, inset 0 0 40px rgba(0, 0, 0, 0.6);
+}
+.welcome-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 50% at 50% 55%, #fff6dc, #ffc2d6 45%, #b51757 100%);
+  opacity: 0.85;
+}
+.door {
+  position: relative;
+  flex: 1;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06), transparent 30%),
+    linear-gradient(180deg, #7a2346, #5a0f2d);
+  box-shadow: inset 0 0 0 0.45rem rgba(0, 0, 0, 0.22);
+  backface-visibility: hidden;
+}
+.door--left { transform-origin: 0 50%; border-right: 1px solid #1c0410; }
+.door--right { transform-origin: 100% 50%; }
+.door-window {
+  position: absolute;
+  left: 50%;
+  top: 22%;
+  width: 46%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 0.35rem solid #1c0410;
+  background: radial-gradient(circle at 40% 40%, #fff3cf, #ff7ea8 70%);
+  opacity: 0.85;
+}
+.door-handle {
+  position: absolute;
+  top: 56%;
+  width: 0.5rem;
+  height: 3.2rem;
+  border-radius: 0.3rem;
+  background: linear-gradient(90deg, #d7d8dc, #8d8f97);
+}
+.door--left .door-handle { right: 0.8rem; }
+.door--right .door-handle { left: 0.8rem; }
+.welcome-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 14svh;
+  background:
+    repeating-conic-gradient(#f9f7eb 0 25%, #e7d7d2 0 50%) 0 0 / 3.2rem 3.2rem;
+  box-shadow: inset 0 18px 24px rgba(28, 4, 16, 0.55);
+}
+
+.welcome-flash {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  background: radial-gradient(80% 80% at 50% 50%, #fffaf0, #f9f7eb 60%, #efe6dc);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- The waiter and what she says ---- */
+.waiter {
+  position: absolute;
+  z-index: 2;
+  left: -2vw;
+  bottom: 0;
+  width: min(66vw, 62rem);
+  height: auto;
+  filter: drop-shadow(0 18px 30px rgba(28, 4, 16, 0.55));
+}
+
+.welcome-bubble {
+  position: absolute;
+  z-index: 3;
+  left: clamp(1rem, 22vw, 22rem);
+  top: clamp(4.5rem, 12svh, 8rem);
+  width: min(26rem, calc(100vw - 2rem));
+}
+.welcome-bubble::after { left: 2.5rem; bottom: -1.7rem; }
+.welcome-bubble h1 {
+  margin: 0;
+  font: 700 clamp(1.15rem, 1.9vw, 1.45rem) / 1.4 "DM Sans", sans-serif;
+}
+
+.welcome-go {
+  position: absolute;
+  z-index: 3;
+  right: clamp(1rem, 4vw, 3rem);
+  bottom: clamp(1rem, 4svh, 2rem);
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  background: var(--w-hot);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(28, 4, 16, 0.4);
+}
+.welcome-go:hover { background: #d4004f; }
+
+@media (max-width: 760px) {
+  .welcome-door { left: 72%; width: 44vw; height: 40svh; }
+  .welcome-sign { left: 72%; top: auto; bottom: 57svh; }
+  .welcome-sign img { width: 2.2rem; height: 2.2rem; }
+  .welcome-sign span { font-size: 1.8rem; }
+  .waiter { width: 130vw; left: -20vw; }
+  .welcome-bubble { left: 1rem; top: 5rem; }
+}

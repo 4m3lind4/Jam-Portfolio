@@ -162,7 +162,7 @@
 
   // ---- The reveal underneath: portrait set down like a plate, then the rest.
   var intro = document.querySelectorAll(".about-intro .portrait");
-  var copy = document.querySelectorAll(".about-intro .label, .about-intro .comments > *, .about-block");
+  var copy = document.querySelectorAll(".about-intro .label, .about-intro .comments > *, .about-intro .talk-sound, .folder");
 
   var tl = gsap.timeline({
     paused: true,
@@ -172,6 +172,7 @@
     onComplete: function () {
       root.classList.remove("sauce-on");
       skipOff();
+      document.dispatchEvent(new Event("sauce:done"));
     },
   });
 

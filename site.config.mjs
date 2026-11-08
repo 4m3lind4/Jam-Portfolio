@@ -17,6 +17,14 @@ export default {
   title: "Jam Portfolio",
   intro:
     "I design and build apps, from the first Figma frame to the SwiftUI that ships.",
+  // What the waiter says at the door on the home page, one sentence per line.
+  welcome: [
+    "Welcome to Jam!",
+    "I'm Jam, and I'll be looking after you tonight.",
+    "Everything on our menu is designed and built in house.",
+    "Right this way, your table's ready.",
+  ],
+  welcomeCta: "Follow me to your table",
   // Shown in the footer and the contact section. Leave a value empty to hide it.
   links: {
     email: EMAIL,

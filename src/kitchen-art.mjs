@@ -28,9 +28,10 @@ const HANDS = {
   cloth: { file: "hand-cloth.webp", w: 563, h: 895 },
   open: { file: "hand-open.png", w: 406, h: 993 },
 };
-const hand = (root, name, px, py, scale, turn = 0) => {
+// `mirror` flips the photo left to right before it's turned.
+const hand = (root, name, px, py, scale, turn = 0, mirror = false) => {
   const { file, w, h } = HANDS[name];
-  return `<image href="${root}kitchen/${file}" width="${w}" height="${h}" mask="url(#k-arm)" transform="rotate(${turn}) scale(${scale}) translate(${-px} ${-py})"/>`;
+  return `<image href="${root}kitchen/${file}" width="${w}" height="${h}" mask="url(#k-arm)" transform="rotate(${turn}) scale(${mirror ? -scale : scale} ${scale}) translate(${-px} ${-py})"/>`;
 };
 
 const shadow = (cx, cy, rx, ry, cls = "") =>
@@ -90,41 +91,56 @@ export function phone(cls = "", screen = null) {
   </g>`;
 }
 
-export const bookArt = (cover, root) => stage("book", `
-  <path class="lamp-cone" d="M350,80 L450,80 L700,520 L100,520 Z" fill="url(#k-cone)"/>
-  <rect x="397" y="-200" width="6" height="250" fill="#2c0714"/>
-  <path class="lamp" d="M340,84 C346,50 454,50 460,84 Z" fill="url(#k-steel-side)"/>
-  <ellipse class="bulb" cx="400" cy="86" rx="24" ry="9" fill="#fff6d9"/>
-  ${shadow(400, 526, 300, 16)}
-  <g class="book">
-    <rect x="392" y="170" width="16" height="352" fill="#2c0714"/>
-    <g class="book-left">
-      <rect x="150" y="176" width="250" height="344" fill="#f9f7eb"/>
-      <rect x="150" y="176" width="250" height="344" fill="none" stroke="#d8cfba"/>
-      <image href="${cover ? root + cover : ""}" x="205" y="210" width="140" height="140" preserveAspectRatio="xMidYMid slice"/>
-      <text x="275" y="412" text-anchor="middle" class="k-script" font-size="44" fill="#470b23">PeriodT</text>
-      <text x="275" y="444" text-anchor="middle" class="k-sans" font-size="15" fill="#470b23">Introduction to iOS Development</text>
-    </g>
-    <g class="book-right">
-      <rect x="400" y="176" width="250" height="344" fill="#f9f7eb"/>
-      <rect x="400" y="176" width="250" height="344" fill="none" stroke="#d8cfba"/>
-      <text x="525" y="232" text-anchor="middle" class="k-script" font-size="30" fill="#ff0866">Recipe</text>
-      <g class="k-sans" font-size="17" fill="#470b23">
-        <text x="428" y="280">01  The Challenge</text>
-        <text x="428" y="316">02  Research</text>
-        <text x="428" y="352">03  Low-fidelity</text>
-        <text x="428" y="388">04  Development</text>
-        <text x="428" y="424">05  Final product</text>
+// The opening scene: a pendant lamp over the recipe book. The lamp is SVG,
+// shaded to read as a dome, with a pull cord that static/kitchen.js runs as a
+// little rope simulation. The book is HTML so it can turn in real 3D and its
+// chapters can be links; it sits in the same 800 x 620 box as the drawing.
+export const bookArt = (cover, root, chapters = [], title = "", course = "") => `<div class="art art--book"><div class="art-box">
+  ${stage("lamp", `
+  <defs>
+    <radialGradient id="k-dome" cx=".34" cy=".3" r=".9"><stop offset="0" stop-color="#ff7fab"/><stop offset=".35" stop-color="#ff0866"/><stop offset=".8" stop-color="#8a0d3c"/><stop offset="1" stop-color="#470b23"/></radialGradient>
+    <radialGradient id="k-dome-in" cx=".5" cy=".2" r=".8"><stop offset="0" stop-color="#ffe7a8"/><stop offset=".6" stop-color="#e0a35a"/><stop offset="1" stop-color="#5a1a1a"/></radialGradient>
+    <radialGradient id="k-bulb-glow"><stop offset="0" stop-color="#fff6d9"/><stop offset=".45" stop-color="#ffe9a6" stop-opacity=".7"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
+  </defs>
+  <path class="lamp-cone" d="M334,104 L466,104 L720,520 L80,520 Z" fill="url(#k-cone)"/>
+  <g class="lamp-rig">
+    <rect x="398" y="-260" width="4" height="232" fill="#2c0714"/>
+    <path d="M386,-28 H414 L418,-14 H382 Z" fill="#2c0714"/>
+    <path class="lamp" d="M322,100 C322,40 360,-14 400,-14 C440,-14 478,40 478,100 Z" fill="url(#k-dome)"/>
+    <path d="M342,86 C340,44 366,6 394,-4" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="400" cy="100" rx="78" ry="15" fill="url(#k-dome-in)"/>
+    <ellipse class="bulb-glow bulb" cx="400" cy="108" rx="70" ry="34" fill="url(#k-bulb-glow)"/>
+    <ellipse class="bulb" cx="400" cy="104" rx="26" ry="11" fill="#fff6d9"/>
+    <ellipse cx="400" cy="100" rx="78" ry="15" fill="none" stroke="#470b23" stroke-width="3"/>
+  </g>
+  ${shadow(400, 526, 300, 16)}`)}
+  <p class="pull-hint" aria-hidden="true">pull me</p>
+  <div class="book3d">
+    <div class="b3-page b3-right">
+      <p class="b3-recipe">Recipe</p>
+      <ol class="b3-chapters">${chapters
+        .map((c) => `<li><a href="#${c.id}"><span class="b3-num">${c.step}</span> ${c.title}</a></li>`)
+        .join("")}</ol>
+    </div>
+    <div class="b3-cover">
+      <div class="b3-face b3-front"><span class="b3-title">${title}</span><span class="b3-sub">THE RECIPE</span></div>
+      <div class="b3-face b3-back">
+        ${cover ? `<img src="${root + cover}" alt="">` : ""}
+        <span class="b3-title">${title}</span>
+        <span class="b3-sub">${course}</span>
+      </div>
+    </div>
+  </div>
+  ${stage("pull", `
+    <g class="pull" aria-hidden="true">
+      <path class="pull-cord" d="M452,104 V220" fill="none" stroke="#f9f7eb" stroke-width="2.5" stroke-linecap="round"/>
+      <g class="pull-bead" transform="translate(452 230)">
+        <circle r="22" fill="transparent"/>
+        <path d="M-7,-12 H7 L9,10 Q0,16 -9,10 Z" fill="#c4c6cc" stroke="#6f7178"/>
+        <ellipse cy="-12" rx="7" ry="2.5" fill="#eeeef0"/>
       </g>
-      <path d="M428,290 H622 M428,326 H622 M428,362 H622 M428,398 H622 M428,434 H622" stroke="#d8cfba"/>
-    </g>
-    <g class="book-cover">
-      <rect x="400" y="170" width="258" height="352" rx="4" fill="url(#k-cover)"/>
-      <rect x="418" y="190" width="222" height="312" rx="3" fill="none" stroke="#f9f7eb" stroke-opacity=".5"/>
-      <text x="530" y="340" text-anchor="middle" class="k-script" font-size="46" fill="#f9f7eb">PeriodT</text>
-      <text x="530" y="376" text-anchor="middle" class="k-sans" font-size="14" fill="#f9f7eb" letter-spacing="3">THE RECIPE</text>
-    </g>
-  </g>`);
+    </g>`)}
+</div></div>`;
 
 const SLICES = ["Training", "Energy levels", "Recovery", "Exercise", "Performance"];
 export const BOARD = { x0: 130, w: 80, gap: 30 };
@@ -156,7 +172,7 @@ export const boardArt = (root, labels = SLICES) => {
       const x = x0 + (i + 1) * w + i * gap + gap / 2;
       return `<g class="juice" fill="#ff4f8b" opacity="0"><ellipse cx="${x - 14}" cy="496" rx="9" ry="3.5"/><ellipse cx="${x + 12}" cy="504" rx="5" ry="2.5"/><circle cx="${x - 2}" cy="489" r="2.5"/></g>`;
     }).join("")}
-    <g class="knife" transform="translate(700 300)">${hand(root, "knife", 70, 391, 0.45, 180)}</g>
+    <g class="knife" transform="translate(470 60)">${hand(root, "knife", 380.7, 30.7, 0.5, -95)}</g>
     <g class="towel" transform="translate(400 1100)">${hand(root, "cloth", 280, 300, 0.36)}</g>`);
 };
 

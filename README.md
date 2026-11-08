@@ -52,5 +52,8 @@ NOTION_TOKEN=secret_xxx NOTION_DATA_SOURCE_ID=12511c25-c997-4223-88d6-021f22b8b4
 - Styling: `static/styles.css` (site), `static/about.css` (About the Chef) and `static/menu.css` (menu)
 - Menu animation: `static/menu.js`; menu page layout: `src/menu.mjs`
 - About heading animation: `static/sauce.js` (GSAP); its letter shapes: `src/sauce.mjs`
+- Home page welcome: `static/welcome.css` and `static/welcome.js`; the waiter's lines are `welcome` and `welcomeCta` in `site.config.mjs`, and the photo is `static/menu/waiter.webp`. The header logo is `static/jam-logo.webp`.
+- Talking speech bubbles (home and About): `static/talk.js`. The voice is synthesised in the browser, so there's no audio file; sound stays off until a visitor turns it on.
+- About page résumé folder: `static/about.js`. Each Section in the Résumé database becomes a tab.
 - Kitchen project pages: `static/kitchen.js` and `static/kitchen.css`; objects: `src/kitchen-art.mjs`. A project with an entry in `src/kitchen.mjs` uses this layout. Its text comes from these headings on its Notion page, with or without numbering: Overview, The Challenge, Research & Team Planning, Low-Fidelity Design, Product Development, Final Product, Outcome, What I brought to the project. Any section that's missing uses the text in `src/kitchen.mjs`. Images under Low-Fidelity Design (up to three, left to right, with their captions as labels) replace the drawn wireframes on the paper, and the first image under Final Product becomes the phone screen in the oven and on the plate.
 - Supported Notion blocks (headings, paragraphs, lists, quotes, callouts, toggles, images, videos, code, dividers, columns, YouTube and Figma embeds): `src/render.mjs`
