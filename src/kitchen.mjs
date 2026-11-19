@@ -74,12 +74,80 @@ export const KITCHENS = {
       ["Outcome", "Delivered an award-winning interaction design concept within a two-week development period."],
     ],
   },
+  // Drawn from the PeriodT-V2 repository and the research interview notes in
+  // Notion, until the PeriodT Coach page in Notion has its own write-up.
+  "periodt-coach": {
+    heading: "Helping coaches understand and communicate with their athletes",
+    role: "Solo project",
+    course: "Advanced iOS Development, UTS",
+    overview: [
+      "PeriodT Coach is a companion app that improves how coaches understand and communicate with their high-performing athletes.",
+      "Built solo for Advanced iOS Development at UTS, it rebuilds PeriodT as a new project and takes it from a concept to a fuller iOS app, with a live backend, a home screen widget and Live Activities.",
+    ],
+    scenes: [
+      {
+        id: "challenge",
+        art: boardArt,
+        step: "01",
+        title: "The Challenge",
+        html: `<p>Coaches often work across several athletes in one session, so the small, session-level goals aren't always spelled out, and much of the feedback happens informally, on the spot.</p>
+          <p>Talking with a sports researcher about coach–athlete communication, and drawing on my own years as a competitive ice dancer, the same gaps kept coming up:</p>
+          <ul><li>Session goals</li><li>Feedback</li><li>Emotions</li><li>Cycle phase</li><li>Training load</li></ul>
+          <p>The aim was to give athletes a simple way to record how they're tracking, so conversations with their coach start from the same information.</p>`,
+      },
+      {
+        id: "research",
+        art: bowlArt,
+        opts: { chips: ["Sports researcher", "Physio insight", "Skating diary", "Market fit", "Netball clubs"], result: "Athlete × Coach" },
+        step: "02",
+        title: "Research",
+        html: `<p>I interviewed a sports researcher who studies coach–athlete interactions. Comparing notes on my own training, we found feedback was mostly qualitative, and that a record of what each session covered would have helped both sides.</p>
+          <p>A physiotherapist I'm working with at Zone 34 pointed to endometriosis as an under-acknowledged factor in female athlete performance.</p>
+          <p>The researcher's advice pointed to netball's all-female clubs as a first market, and to working alongside tools teams already use, such as TeamBuilder, rather than asking them to switch.</p>`,
+      },
+      {
+        id: "lofi",
+        art: paperArt,
+        opts: { papers: ["Home", "Calendar", "Journal"] },
+        step: "03",
+        title: "Low-Fidelity Design",
+        html: `<p>I carried PeriodT's screens across into a new project and mapped the expanded app around one daily loop: check in on the cycle, train, then reflect.</p>
+          <p>The main flows became the home dashboard, the cycle calendar, the journal and exercise programs.</p>`,
+      },
+      {
+        id: "development",
+        art: ovenArt,
+        step: "04",
+        title: "Product Development",
+        kicker: "From concept to a working iOS app",
+        html: `<p>Working solo, I built the app in SwiftUI on a repository layer, with a mock repository so the logic could be tested without the backend:</p>
+          <ul><li>Supabase for exercises, the calendar and check-in responses</li><li>A home screen widget counting down to the next period</li><li>A Live Activity that follows a workout in progress</li><li>Cycle reminders through scheduled notifications</li><li>Unit and UI tests across the main screens</li></ul>
+          <p>Conventional commits kept the project history readable as it grew.</p>`,
+      },
+      {
+        id: "plated",
+        art: plateArt,
+        opts: { award: null },
+        step: "05",
+        title: "Final Product",
+        html: `<p>The finished app brings an athlete's cycle, training and reflections together in one place:</p>
+          <ul><li>A cycle ring and period forecast on the home screen</li><li>Emotion and intensity check-ins after each session</li><li>A journal that syncs across the app</li><li>Exercise programs that track rep progression</li></ul>`,
+      },
+    ],
+    brought: [
+      ["Product design", "Took PeriodT from a team concept to a fuller app, shaped by research with a sports researcher and a physiotherapist."],
+      ["UX/UI", "Designed the home dashboard, calendar, journal and workout flows."],
+      ["Development", "Built the app solo in SwiftUI with Supabase, WidgetKit and Live Activities."],
+      ["Testing", "Wrote unit and UI tests across the app's logic and main screens."],
+    ],
+  },
 };
 
 // Headings are matched without their numbering, so "01 — The Challenge" works.
 const SECTIONS = {
   overview: "overview",
   "the challenge": "challenge",
+  research: "research",
   "research & team planning": "research",
   "research and team planning": "research",
   "low-fidelity design": "lofi",

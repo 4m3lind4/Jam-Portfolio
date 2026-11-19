@@ -58,6 +58,8 @@ export default {
   // The scroll-driven project menu on the home page.
   // Projects come from Notion; each Category becomes a menu section.
   menu: {
+    // Stickers on a dish's plate, by project Slug.
+    stickers: { periodt: "Exclusive Chef's Tour" },
     // Section order and the banner printed at the top of each menu page.
     sections: [
       { category: "Work", banner: "Main" },

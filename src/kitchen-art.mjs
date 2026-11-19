@@ -176,9 +176,10 @@ export const boardArt = (root, labels = SLICES) => {
     <g class="towel" transform="translate(400 1100)">${hand(root, "cloth", 280, 300, 0.36)}</g>`);
 };
 
+// `opts.chips` (five short names) fall into the bowl and mix into `opts.result`.
 const FOLDS = ["Athlete context", "Team strengths", "Interests", "Development goals", "Shared ownership"];
-export const bowlArt = () => {
-  const chips = FOLDS.map((name, i) => {
+export const bowlArt = (root, labels, shots, opts = {}) => {
+  const chips = (opts.chips || FOLDS).map((name, i) => {
     const x = [150, 400, 650, 215, 585][i];
     const y = [120, 80, 120, 222, 222][i];
     return `<g class="chip" data-x="${x}" data-y="${y}">
@@ -199,7 +200,7 @@ export const bowlArt = () => {
     ${chips}
     <g class="bowl-result">
       <rect x="282" y="252" width="236" height="46" rx="23" fill="#f9f7eb"/>
-      <text x="400" y="282" text-anchor="middle" class="k-sans" font-size="21" font-weight="700" fill="#ff0866">Cycle × Training</text>
+      <text x="400" y="282" text-anchor="middle" class="k-sans" font-size="21" font-weight="700" fill="#ff0866">${opts.result || "Cycle × Training"}</text>
     </g>
     <path d="M186,340 C192,450 280,520 400,520 C520,520 608,450 614,340 C600,382 500,384 400,384 C300,384 200,382 186,340 Z" fill="url(#k-bowl)"/>
     <path d="M200,398 C260,428 540,428 600,398" fill="none" stroke="#470b23" stroke-width="7" stroke-opacity=".85"/>`);
@@ -216,8 +217,10 @@ const shotIn = (shot, cx, label) => shot
     <text x="${cx}" y="168" text-anchor="middle" class="k-script draw-label" font-size="24" fill="#470b23">${shot.caption || label}</text>`
   : null;
 
-export const paperArt = (root, labels, shots = []) => {
-  const [left, mid, right] = [shotIn(shots[0], 160, "Onboarding"), shotIn(shots[1], 400, "Cycle home"), shotIn(shots[2], 640, "Calendar")];
+// `opts.papers` names the three drawn wireframes, left to right.
+export const paperArt = (root, labels, shots = [], opts = {}) => {
+  const names = opts.papers || ["Onboarding", "Cycle home", "Calendar"];
+  const [left, mid, right] = [shotIn(shots[0], 160, names[0]), shotIn(shots[1], 400, names[1]), shotIn(shots[2], 640, names[2])];
   return stage("paper", `
   ${shadow(400, 532, 320, 14)}
   <g class="paper-mid">
@@ -229,7 +232,7 @@ ${mid || `    ${wire(341)}
       <rect class="draw" pathLength="1" x="356" y="350" width="88" height="46"/>
       <path class="draw" pathLength="1" d="M352,412 H448"/>
     </g>
-    <text x="400" y="168" text-anchor="middle" class="k-script draw-label" font-size="24" fill="#470b23">Cycle home</text>`}
+    <text x="400" y="168" text-anchor="middle" class="k-script draw-label" font-size="24" fill="#470b23">${names[1]}</text>`}
   </g>
   <g class="paper-left">
     <rect x="40" y="120" width="240" height="400" fill="#f4f1e2"/>
@@ -241,7 +244,7 @@ ${left || `    ${wire(101)}
       <circle class="draw" pathLength="1" cx="130" cy="356" r="7"/><path class="draw" pathLength="1" d="M146,356 H198"/>
       <rect class="draw" pathLength="1" x="122" y="392" width="76" height="22" rx="11"/>
     </g>
-    <text x="160" y="168" text-anchor="middle" class="k-script draw-label" font-size="24" fill="#470b23">Onboarding</text>`}
+    <text x="160" y="168" text-anchor="middle" class="k-script draw-label" font-size="24" fill="#470b23">${names[0]}</text>`}
     <path class="draw" pathLength="1" d="M226,314 C250,300 306,300 334,314 M322,304 L335,314 L320,322" fill="none"/>
   </g>
   <g class="paper-right">
@@ -251,7 +254,7 @@ ${right || `    ${wire(581)}
       <path class="draw" pathLength="1" d="M600,240 H684 M600,270 H684 M600,300 H684 M600,330 H684 M600,360 H684 M628,240 V360 M656,240 V360"/>
       <rect class="draw" pathLength="1" x="600" y="380" width="84" height="32"/>
     </g>
-    <text x="640" y="168" text-anchor="middle" class="k-script draw-label" font-size="24" fill="#470b23">Calendar</text>`}
+    <text x="640" y="168" text-anchor="middle" class="k-script draw-label" font-size="24" fill="#470b23">${names[2]}</text>`}
     <path class="draw" pathLength="1" d="M466,314 C490,300 546,300 574,314 M562,304 L575,314 L560,322" fill="none"/>
   </g>
   <path d="M280,120 V520 M520,120 V520" stroke="#470b23" stroke-opacity=".14"/>
@@ -290,7 +293,8 @@ export const ovenArt = (root, labels, shots = []) => stage("oven", `
     <rect x="290" y="208" width="360" height="18" rx="9" fill="url(#k-steel-side)" stroke="#6f7178"/>
   </g>`);
 
-export const plateArt = (root, labels, shots = []) => stage("plate", `
+// `opts.award: null` leaves the award rosette off the plate.
+export const plateArt = (root, labels, shots = [], opts = {}) => stage("plate", `
   <g class="plate-group">
     ${shadow(400, 524, 240, 16)}
     <image href="${root}menu/plate-platter.webp" x="120" y="50" width="560" height="470" preserveAspectRatio="xMidYMid meet"/>
@@ -307,10 +311,10 @@ export const plateArt = (root, labels, shots = []) => stage("plate", `
     </g>
   </g>
   <g class="slicer" transform="translate(400 520)">${hand(root, "knife", 70, 587, 0.6)}</g>
-  <g class="award" transform="translate(640 150)">
+  ${opts.award === null ? "" : `  <g class="award" transform="translate(640 150)">
     <circle r="82" fill="#470b23"/><circle r="72" fill="none" stroke="#f9f7eb" stroke-dasharray="2 5"/>
     <text y="-22" text-anchor="middle" class="k-script" font-size="20" fill="#ff7ea8">Best</text>
     <text y="2" text-anchor="middle" class="k-sans" font-size="14" font-weight="700" fill="#f9f7eb">INTERACTION</text>
     <text y="20" text-anchor="middle" class="k-sans" font-size="14" font-weight="700" fill="#f9f7eb">DESIGN</text>
     <text y="42" text-anchor="middle" class="k-sans" font-size="12" fill="#f9f7eb">TechFest</text>
-  </g>`);
+  </g>`}`);

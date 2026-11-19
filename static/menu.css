@@ -258,6 +258,39 @@
   text-decoration: none;
 }
 .menu-section .dish.reverse { flex-direction: row-reverse; }
+.menu-section .dish { position: relative; }
+/* A scalloped seal stuck on the plate's edge. */
+.menu-section .dish-sticker {
+  position: absolute;
+  z-index: 2;
+  top: -0.6rem;
+  left: -1rem;
+  width: 6.4rem;
+  aspect-ratio: 1;
+  display: grid;
+  place-content: center;
+  padding: 1rem;
+  text-align: center;
+  font: 700 0.62rem / 1.15 var(--m-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream);
+  background: var(--hot);
+  clip-path: polygon(50% 0%, 61% 8%, 75% 5%, 80% 18%, 93% 23%, 91% 37%, 100% 50%, 91% 63%, 93% 77%, 80% 82%, 75% 95%, 61% 92%, 50% 100%, 39% 92%, 25% 95%, 20% 82%, 7% 77%, 9% 63%, 0% 50%, 9% 37%, 7% 23%, 20% 18%, 25% 5%, 39% 8%);
+  transform: rotate(-12deg);
+  filter: drop-shadow(0 4px 6px rgba(44, 7, 20, 0.35));
+  transition: transform 0.25s;
+}
+.menu-section .dish.reverse .dish-sticker { left: auto; right: -1rem; transform: rotate(12deg); }
+.menu-section .dish-sticker-top {
+  display: block;
+  font-family: var(--m-script);
+  font-size: 0.95rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.menu-section a.dish:hover .dish-sticker { transform: rotate(-4deg) scale(1.08); }
+.menu-section a.dish.reverse:hover .dish-sticker { transform: rotate(4deg) scale(1.08); }
 .menu-section .dish-media { flex: 0 0 auto; width: 46%; }
 
 /* The project image sits on a plate, like food on the table. */

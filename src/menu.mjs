@@ -30,7 +30,14 @@ function dishMedia(p, plate) {
   return `<div class="dish-media plate plate--${plate}">${media}</div>`;
 }
 
-function dish(p, pills, reverse, plate) {
+// A sticker on the plate, for projects listed in menu.stickers.
+function sticker(text) {
+  if (!text) return "";
+  const [top, ...rest] = text.split(" ");
+  return `<span class="dish-sticker"><span class="dish-sticker-top">${esc(top)}</span> ${esc(rest.join(" "))}</span>`;
+}
+
+function dish(p, pills, reverse, plate, label) {
   const tags = p.tools
     .map((t) => {
       const c = pills.get(t);
@@ -39,6 +46,7 @@ function dish(p, pills, reverse, plate) {
     .join("");
   return `<a class="dish anim${reverse ? " reverse" : ""}" href="projects/${esc(p.slug)}/" target="_top">
     ${dishMedia(p, plate)}
+    ${sticker(label)}
     <div class="dish-body">
       <p class="dish-title">${esc(p.title)}</p>
       ${tags ? `<div class="tags">${tags}</div>` : ""}
@@ -104,7 +112,7 @@ export function buildMenu(config, projects) {
       const withReviews = m.reviews && m.reviews.slug === p.slug;
       const need = withReviews ? 2 : 1;
       if (slots.length + need > PER_PAGE) flush();
-      slots.push(dish(p, pills, slots.length % 2 === 1, PLATES[served++ % PLATES.length]));
+      slots.push(dish(p, pills, slots.length % 2 === 1, PLATES[served++ % PLATES.length], m.stickers?.[p.slug]));
       if (withReviews) slots.push(reviewsBlock(m.reviews));
     }
     flush();
