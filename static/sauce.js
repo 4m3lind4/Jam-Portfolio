@@ -83,6 +83,69 @@
   var scale = svg.getBoundingClientRect().width / box.width;
   var bottleSize = scale < 0.55 ? 1.7 : 1.35;
 
+  // ---- The squirt: filtered noise that swells with the pressure, and a wet
+  // splurt each time the sauce starts to flow. It uses the talking bubbles'
+  // sound switch, so "Sound off" silences it too.
+  var squirt = null;
+  function squirtSound() {
+    if (squirt) return squirt;
+    var ac = window.JamTalk && JamTalk.audio();
+    if (!ac || ac.state !== "running") return null;
+    var noise = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
+    var data = noise.getChannelData(0);
+    for (var i = 0, last = 0; i < data.length; i++) {
+      last = (last + 0.06 * (Math.random() * 2 - 1)) / 1.06; // brown-ish: thick, not hissy
+      data[i] = last * 3.5;
+    }
+    var src = ac.createBufferSource();
+    src.buffer = noise;
+    src.loop = true;
+    var band = ac.createBiquadFilter();
+    band.type = "bandpass";
+    band.frequency.value = 520;
+    band.Q.value = 1.6;
+    var gain = ac.createGain();
+    gain.gain.value = 0;
+    src.connect(band).connect(gain).connect(ac.destination);
+    src.start();
+    squirt = { ac: ac, src: src, band: band, gain: gain, noise: noise };
+    return squirt;
+  }
+  function squirtLevel(flow, time) {
+    var s = flow > 0.02 ? squirtSound() : squirt;
+    if (!s) return;
+    var t = s.ac.currentTime;
+    // A gurgle: the pitch wobbles as air pockets come through the nozzle.
+    var gurgle = Math.sin(time * 37) * 0.5 + Math.sin(time * 61) * 0.3 + Math.random() * 0.4;
+    s.band.frequency.setTargetAtTime(380 + 420 * flow + 160 * gurgle * flow, t, 0.02);
+    s.gain.gain.setTargetAtTime(window.JamTalk.isOn() ? 0.5 * flow * flow : 0, t, 0.03);
+  }
+  function splurt() {
+    var s = squirtSound();
+    if (!s || !window.JamTalk.isOn()) return;
+    var t = s.ac.currentTime;
+    var src = s.ac.createBufferSource();
+    src.buffer = s.noise;
+    var f = s.ac.createBiquadFilter();
+    f.type = "lowpass";
+    f.Q.value = 6;
+    f.frequency.setValueAtTime(1400, t);
+    f.frequency.exponentialRampToValueAtTime(180, t + 0.22);
+    var g = s.ac.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.9, t + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.26);
+    src.connect(f).connect(g).connect(s.ac.destination);
+    src.start(t, Math.random());
+    src.stop(t + 0.3);
+  }
+  function squirtStop() {
+    if (!squirt) return;
+    squirt.gain.gain.setTargetAtTime(0, squirt.ac.currentTime, 0.05);
+    squirt.src.stop(squirt.ac.currentTime + 0.4);
+    squirt = null;
+  }
+
   // ---- Everything that changes on the timeline lives here.
   var st = { pressure: 0, word: 0, travel: 0, away: 1, rise: 0, tilt: 34 };
   var nozzle = null;
@@ -140,6 +203,7 @@
     // The stream is thickest at full pressure and thins until the goo filter
     // snaps it, which is what breaks the thread between words.
     var flow = st.pressure;
+    squirtLevel(st.travel === 0 ? flow : 0, time);
     var nearby = Math.hypot(nozzle.x - at.x, nozzle.y - at.y) < 120;
     if (flow > 0.05 && st.travel === 0 && nearby) {
       var midX = (nozzle.x + at.x) / 2 - dx * 1.4;
@@ -162,6 +226,7 @@
 
   // ---- The reveal underneath: portrait set down like a plate, then the rest.
   var intro = document.querySelectorAll(".about-intro .portrait");
+  var bubble = document.querySelector(".about-intro .bubble");
   var copy = document.querySelectorAll(".about-intro .label, .about-intro .comments > *, .about-intro .talk-sound, .folder");
 
   var tl = gsap.timeline({
@@ -172,6 +237,7 @@
     onComplete: function () {
       root.classList.remove("sauce-on");
       skipOff();
+      squirtStop();
       document.dispatchEvent(new Event("sauce:done"));
     },
   });
@@ -188,6 +254,7 @@
     // Pressure builds first, then sauce arrives: the squeeze leads the flow.
     tl.set(st, { word: i, travel: 0 }, cursor);
     tl.to(st, { pressure: 1, duration: 0.2, ease: "back.out(2.4)" }, cursor);
+    tl.call(splurt, null, cursor + 0.06);
     tl.to(w, { drawn: w.length, duration: seconds, ease: "sine.inOut" }, cursor + 0.09);
     var end = cursor + 0.09 + seconds;
 
@@ -210,6 +277,7 @@
   tl.to(st, { away: 1, duration: 0.75, ease: "back.in(1.2)" }, cursor);
   tl.to(st, { tilt: 70, duration: 0.75, ease: "sine.in" }, cursor);
   tl.set(bottle, { visibility: "hidden" }, cursor + 0.76);
+  tl.call(squirtStop, null, cursor);
   tl.to(
     liquid,
     { keyframes: [{ scaleY: 1.025, duration: 0.14, ease: "sine.out" }, { scaleY: 1, duration: 0.8, ease: "elastic.out(1, 0.4)" }], svgOrigin: box.width / 2 + " 160" },
@@ -218,7 +286,13 @@
 
   var reveal = cursor + 0.1;
   tl.fromTo(intro, { autoAlpha: 0, y: 26, scale: 0.94, rotation: -3 }, { autoAlpha: 1, y: 0, scale: 1, rotation: 0, duration: 0.8, ease: "back.out(1.5)" }, reveal);
-  tl.fromTo(copy, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out", stagger: 0.07, clearProps: "transform" }, reveal + 0.12);
+  // The speech bubble only pops up once the heading is finished, and the chef
+  // starts talking the moment it lands.
+  if (bubble) {
+    tl.fromTo(bubble, { autoAlpha: 0, scale: 0.6, transformOrigin: "0% 30%" }, { autoAlpha: 1, scale: 1, duration: 0.45, ease: "back.out(1.8)", clearProps: "transform" }, reveal + 0.2);
+    tl.call(function () { document.dispatchEvent(new Event("sauce:said")); }, null, reveal + 0.5);
+  }
+  tl.fromTo(copy, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out", stagger: 0.07, clearProps: "transform" }, reveal + 0.3);
 
   shapeBottle(0);
   render(0);

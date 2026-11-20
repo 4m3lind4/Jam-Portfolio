@@ -35,7 +35,7 @@ export default {
   // Add a row here if you add a new Category option.
   categories: {
     Work: { label: "Work", color: "#2F5BEA", ink: "#FFFFFF" },
-    University: { label: "University", color: "#C2306B", ink: "#FFFFFF" },
+    University: { label: "Education", color: "#C2306B", ink: "#FFFFFF" },
     Competition: { label: "Competition", color: "#F2A900", ink: "#1A1D24" },
   },
   defaultCategory: { label: "Project", color: "#5B6170", ink: "#FFFFFF" },

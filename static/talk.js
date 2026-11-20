@@ -1,14 +1,14 @@
 // Speech bubbles that "talk": the words type in with a little synthesised
 // babble, a blip per syllable. The real text stays in the page for screen
-// readers; the typed copy beside it is decoration. Sound is off until the
-// visitor turns it on (browsers only allow audio after a click), and the
-// choice is remembered across pages.
+// readers; the typed copy beside it is decoration. Sound is on unless the
+// visitor turns it off, and the choice is remembered across pages. Browsers
+// may still hold audio back until the first tap or key press; it starts then.
 (function () {
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   var KEY = "jam-sound";
   var ctx = null;
-  var on = false;
-  try { on = localStorage.getItem(KEY) === "on"; } catch (e) {}
+  var on = true;
+  try { on = localStorage.getItem(KEY) !== "off"; } catch (e) {}
 
   function audio() {
     if (!ctx) {
@@ -134,12 +134,20 @@
     if (on) { audio(); blip("a", 420); }
     sync();
   });
-  // A remembered "on" still needs one gesture before audio can start.
-  ["pointerdown", "keydown"].forEach(function (type) {
-    addEventListener(type, function () { if (on) audio(); }, { once: true, capture: true });
+  // Try to start right away; where the browser says no, the first gesture
+  // of any kind unlocks it.
+  if (on && !reduced) audio();
+  ["pointerdown", "touchstart", "keydown", "click"].forEach(function (type) {
+    addEventListener(type, function () { if (on) audio(); }, { capture: true, passive: true });
   });
   document.addEventListener("DOMContentLoaded", sync);
   sync();
 
-  window.JamTalk = { prepare: prepare, reduced: reduced };
+  window.JamTalk = {
+    prepare: prepare,
+    reduced: reduced,
+    // Other sounds on the page share the switch and the audio context.
+    audio: function () { return on && !reduced ? audio() : null; },
+    isOn: function () { return on && !reduced; },
+  };
 })();

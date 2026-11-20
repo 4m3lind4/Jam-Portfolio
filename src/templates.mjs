@@ -101,7 +101,7 @@ export function homePage({ config, menu }) {
       </div>
       <div class="welcome-floor"></div>
     </div>
-    <img class="waiter" src="menu/waiter.webp" alt="${esc(config.name)}, dressed for service, holding a plate" width="1259" height="769">
+    <img class="waiter" src="menu/waiter.webp" alt="${esc(config.name)}, dressed for service, holding a plate" width="1573" height="1000">
     <div class="bubble welcome-bubble">
       <h1 class="talk-text" id="welcome-title">${config.welcome.map(esc).join(" ")}</h1>
       ${SOUND_BUTTON}
@@ -247,7 +247,14 @@ export function kitchenPage({ config, project: p, next, story }) {
   </div>
 </section>
 ${scenes}
-<section class="kitchen-end" aria-labelledby="brought-title">
+<nav class="step-nav" aria-label="Steps in this project">
+  ${story.scenes
+    .map((s) => ({ id: s.id, title: s.title }))
+    .concat([{ id: "brought", title: "What I brought" }])
+    .map((s) => `<a href="#${s.id}"><span class="step-dot" aria-hidden="true"></span><span class="step-pill">${esc(s.title)}</span></a>`)
+    .join("\n  ")}
+</nav>
+<section class="kitchen-end" id="brought" aria-labelledby="brought-title">
   <div class="kitchen-end-inner">
     <div class="brought">
       <h2 id="brought-title">What I brought to the project</h2>
@@ -275,7 +282,7 @@ ${scenes}
     description: p.summary || config.intro,
     body,
     head: MENU_FONTS + KITCHEN_HEAD,
-    scripts: `<script src="../../vendor/gsap.min.js"></script>\n<script src="../../vendor/ScrollTrigger.min.js"></script>\n<script src="../../kitchen.js"></script>`,
+    scripts: `<script src="../../vendor/gsap.min.js"></script>\n<script src="../../vendor/ScrollTrigger.min.js"></script>\n<script src="../../kitchen.js"></script>\n<script src="../../stepnav.js"></script>`,
     bodyClass: "page-case page-kitchen",
     footer: false,
   });

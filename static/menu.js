@@ -450,6 +450,33 @@
     kick();
   });
 
+  // Every way into the menu (the Projects link, Back to the Menu, the
+  // browser's back button) starts at the front cover, never mid-turn.
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  function toCover(behavior) {
+    window.scrollTo({ top: section.getBoundingClientRect().top + window.scrollY, behavior: behavior || "instant" });
+    smooth = raw = progress();
+    render(withRests(smooth));
+    kick();
+  }
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest('a[href$="#projects"]');
+    if (!a || a.pathname !== location.pathname) return;
+    e.preventDefault();
+    history.replaceState(null, "", "#projects");
+    toCover();
+  });
+  // ScrollTrigger (used by the welcome) resets the browser's scroll memory,
+  // so this waits until it and the browser have both settled.
+  const fromHash = () => {
+    if (location.hash !== "#projects") return;
+    if (window.ScrollTrigger) ScrollTrigger.clearScrollMemory("manual");
+    toCover();
+    setTimeout(toCover, 60);
+  };
+  addEventListener("load", fromHash);
+  addEventListener("pageshow", (e) => { if (e.persisted) fromHash(); });
+
   buildSheets();
   layout();
   smooth = raw = progress();

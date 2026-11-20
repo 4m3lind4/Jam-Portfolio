@@ -386,3 +386,63 @@
 .b3-front .b3-title { font-size: 5.8cqw; }
 .b3-sub { font: 700 1.6cqw / 1.3 var(--font-body); letter-spacing: 0.15em; }
 .b3-back .b3-sub { letter-spacing: 0; font-weight: 400; }
+
+/* ---- The step dots down the left edge ---- */
+.step-nav {
+  position: fixed;
+  z-index: 20;
+  left: clamp(0.8rem, 2vw, 1.6rem);
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  transform: translate(-1rem, -50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, transform 0.3s, visibility 0s 0.3s;
+}
+.step-nav.is-shown { opacity: 1; visibility: visible; transform: translate(0, -50%); transition: opacity 0.3s, transform 0.3s; }
+.step-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #f9f7eb;
+  text-decoration: none;
+}
+.step-dot {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 3px solid #f9f7eb;
+  border-radius: 50%;
+  transition: background 0.2s, transform 0.2s;
+}
+.step-nav a:hover .step-dot { transform: scale(1.15); }
+.step-nav a[aria-current] .step-dot { background: #470b23; border-color: #470b23; box-shadow: 0 0 0 2px #f9f7eb; }
+.step-pill {
+  padding: 0.4rem 0.95rem;
+  border-radius: 999px;
+  background: var(--k-hot);
+  color: #fff;
+  font: 700 0.85rem / 1.1 var(--k-display, inherit);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(44, 7, 20, 0.3);
+  opacity: 0;
+  transform: translateX(-0.5rem);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.step-nav.is-announcing a[aria-current] .step-pill,
+.step-nav a:hover .step-pill,
+.step-nav a:focus-visible .step-pill { opacity: 1; transform: none; }
+@media (max-width: 760px) {
+  .step-nav { gap: 0.8rem; left: 0.5rem; }
+  .step-dot { width: 0.85rem; height: 0.85rem; border-width: 2px; }
+  .step-nav a:not(:hover):not(:focus-visible) .step-pill { opacity: 0; }
+}
+/* Keep the tickets clear of the dots. */
+@media (min-width: 761px) {
+  .kitchen-on .scene:not(.scene--intro) .scene-copy { left: max(clamp(1rem, 3vw, 3rem), 4.2rem); }
+}

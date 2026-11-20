@@ -1,6 +1,7 @@
 // Builds the printed pages of the project menu from Notion projects.
 // static/menu.js turns these pages into sheets and animates them on scroll.
 import { esc, isVideo } from "./render.mjs";
+import { zone } from "./templates.mjs";
 
 const PER_PAGE = 2;
 
@@ -37,7 +38,7 @@ function sticker(text) {
   return `<span class="dish-sticker"><span class="dish-sticker-top">${esc(top)}</span> ${esc(rest.join(" "))}</span>`;
 }
 
-function dish(p, pills, reverse, plate, label) {
+function dish(p, pills, reverse, plate, label, kind) {
   const tags = p.tools
     .map((t) => {
       const c = pills.get(t);
@@ -48,6 +49,7 @@ function dish(p, pills, reverse, plate, label) {
     ${dishMedia(p, plate)}
     ${sticker(label)}
     <div class="dish-body">
+      ${kind ? `<span class="dish-kind" style="background:${kind.color};color:${kind.ink}">${esc(kind.label)}</span>` : ""}
       <p class="dish-title">${esc(p.title)}</p>
       ${tags ? `<div class="tags">${tags}</div>` : ""}
       ${p.summary ? `<p class="dish-desc">${esc(p.summary)}</p>` : ""}
@@ -112,7 +114,7 @@ export function buildMenu(config, projects) {
       const withReviews = m.reviews && m.reviews.slug === p.slug;
       const need = withReviews ? 2 : 1;
       if (slots.length + need > PER_PAGE) flush();
-      slots.push(dish(p, pills, slots.length % 2 === 1, PLATES[served++ % PLATES.length], m.stickers?.[p.slug]));
+      slots.push(dish(p, pills, slots.length % 2 === 1, PLATES[served++ % PLATES.length], m.stickers?.[p.slug], p.category && zone(config, p.category)));
       if (withReviews) slots.push(reviewsBlock(m.reviews));
     }
     flush();

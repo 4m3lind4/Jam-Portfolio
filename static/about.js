@@ -11,7 +11,9 @@
     var seen = false;
     var ready = !root.classList.contains("sauce-on");
     var go = function () { if (seen && ready) talk.play(); };
-    document.addEventListener("sauce:done", function () { ready = true; go(); });
+    var heard = function () { ready = true; go(); };
+    document.addEventListener("sauce:said", heard);
+    document.addEventListener("sauce:done", heard);
     new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting) { seen = true; go(); }
     }, { threshold: 0.2 }).observe(bubble);
@@ -32,6 +34,11 @@
   var tabs = gsap.utils.toArray(folder.querySelectorAll(".folder-tab"));
   var sheets = gsap.utils.toArray(folder.querySelectorAll(".folder-sheet"));
   var OPEN = 0.5, HOLD = 1, CLOSE = 0.5;
+  // Wide screens lay the folder fully open; narrow ones have no room beside
+  // it, so the cover swings back just far enough to read the sheet.
+  var WIDE = matchMedia("(min-width: 761px)").matches;
+  var ANGLE = WIDE ? -180 : -168;
+  var caseEl = folder.querySelector(".folder-case");
   var current = -1;
 
   function show(i) {
@@ -53,7 +60,8 @@
     var at = tl.duration();
     starts.push(at);
     tl.call(show, [i], at);
-    tl.fromTo(cover, { rotationY: 0 }, { rotationY: -168, duration: OPEN, immediateRender: false }, at);
+    tl.fromTo(cover, { rotationY: 0 }, { rotationY: ANGLE, duration: OPEN, immediateRender: false }, at);
+    if (WIDE && i === 0) tl.fromTo(caseEl, { xPercent: 0 }, { xPercent: 50, duration: OPEN, immediateRender: false }, at);
     tl.fromTo(s, { y: 30, rotation: -1.5 }, { y: 0, rotation: 0, duration: OPEN, ease: "back.out(1.4)", immediateRender: false }, at + 0.1);
     tl.to({}, { duration: HOLD });
     if (i < sheets.length - 1) tl.to(cover, { rotationY: 0, duration: CLOSE });
@@ -74,13 +82,30 @@
   });
   show(0);
 
-  // A tab takes you to its part of the scroll, with that sheet open.
+  // A tab takes you to its part of the scroll, with that sheet open. It jumps
+  // there rather than scrolling past the tabs in between, which would flap the
+  // cover open and shut and flash each sheet on the way. Instead the open
+  // sheet slides out and the new one slides in.
+  var pocket = folder.querySelector(".folder-pocket");
+  var swapping = null;
   tabs.forEach(function (t, i) {
     t.addEventListener("click", function (e) {
       e.preventDefault();
+      if (i === current && !swapping) return;
       var at = (starts[i] + OPEN + HOLD / 2) / tl.duration();
-      window.scrollTo({ top: st.start + at * (st.end - st.start), behavior: "smooth" });
-      show(i);
+      var top = st.start + at * (st.end - st.start);
+      if (swapping) swapping.kill();
+      swapping = gsap.timeline({ onComplete: function () { swapping = null; } })
+        .to(pocket, { autoAlpha: 0, x: 24, duration: 0.16, ease: "power1.in" })
+        .call(function () {
+          window.scrollTo({ top: top, behavior: "instant" });
+          st.update();
+          var scrub = st.getTween();
+          if (scrub) scrub.progress(1);
+          tl.progress(at);
+          show(i);
+        })
+        .fromTo(pocket, { autoAlpha: 0, x: -24 }, { autoAlpha: 1, x: 0, duration: 0.28, ease: "power2.out", clearProps: "transform,opacity,visibility" });
     });
   });
 })();
