@@ -255,6 +255,10 @@ ${scenes}
     .join("\n  ")}
 </nav>
 <section class="kitchen-end" id="brought" aria-labelledby="brought-title">
+  ${story.slides ? `<div class="kitchen-slides prose">
+    <h2>${esc(story.slides.title)}</h2>
+    ${story.slides.html}
+  </div>` : ""}
   <div class="kitchen-end-inner">
     <div class="brought">
       <h2 id="brought-title">What I brought to the project</h2>

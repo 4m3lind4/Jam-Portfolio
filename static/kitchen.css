@@ -249,6 +249,9 @@
 /* ---------- The end of the meal ---------- */
 
 .kitchen-end { background: var(--cream); padding: 4rem var(--gutter, 1.5rem) 2rem; }
+/* The slide deck, full width above the summary. */
+.kitchen-slides { max-width: 64rem; margin: 0 auto 3.5rem; }
+.kitchen-slides h2 { font-family: var(--script); font-weight: 400; font-size: 2.3rem; margin: 0 0 1rem; color: var(--ink); }
 .kitchen-end-inner {
   max-width: 62rem;
   margin: 0 auto 3rem;

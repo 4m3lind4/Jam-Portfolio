@@ -155,6 +155,11 @@ const SECTIONS = {
   "final product": "plated",
   outcome: "outcome",
   "what i brought to the project": "brought",
+  // Optional: a slide deck (a Canva or Figma embed) shown full width at the end.
+  slides: "slides",
+  "the slides": "slides",
+  "pitch deck": "slides",
+  "flick through our pitch": "slides",
 };
 // How many images each scene takes from its section to use as art.
 const SHOT_SCENES = { lofi: 3, plated: 1 };
@@ -241,6 +246,11 @@ export async function storyFromNotion(fallback, blocks, asset) {
   if (rows.length) {
     story.brought = rows;
     fromNotion.push("What I brought");
+  }
+
+  if (found.slides?.length) {
+    story.slides = { title: titles.slides, html: await html(found.slides) };
+    fromNotion.push(titles.slides);
   }
 
   console.log(`Kitchen story: ${fromNotion.length ? `from Notion: ${fromNotion.join(", ")}` : "no matching sections in Notion"}.`);
