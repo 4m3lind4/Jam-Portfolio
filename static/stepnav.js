@@ -1,4 +1,4 @@
-// The dots down the left of a kitchen page: one per heading, the current one
+// The dots down the right of a kitchen page: one per heading, the current one
 // filled, with its name popping out beside it for a moment. They appear once you're past the first screen.
 (function () {
   var nav = document.querySelector(".step-nav");

@@ -177,7 +177,7 @@
   text-decoration: none;
   box-shadow: 0 8px 20px rgba(28, 4, 16, 0.4);
 }
-.welcome-go:hover { background: #d4004f; }
+.welcome-go:hover { background: var(--jam-pink); }
 
 @media (max-width: 760px) {
   .welcome-door { left: 72%; width: 44vw; height: 40svh; }

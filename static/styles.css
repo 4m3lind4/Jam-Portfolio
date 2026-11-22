@@ -12,6 +12,8 @@
   --board-ink: #f5f6f8;
   --board-line: rgba(245, 246, 248, 0.14);
   --focus: #2f5bea;
+  /* Jam pink: hovers on anything clickable, and key points in the text. */
+  --jam-pink: #e5567a;
 
   --font-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
@@ -43,7 +45,7 @@ body {
 img, video, iframe { display: block; max-width: 100%; }
 
 a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
-a:hover { text-decoration-thickness: 2px; }
+a:hover { text-decoration-thickness: 2px; color: var(--jam-pink); }
 
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
 
@@ -71,6 +73,14 @@ a:hover { text-decoration-thickness: 2px; }
   background: inherit;
   clip-path: polygon(0 0, 100% 0, 18% 100%);
 }
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 /* Once talk.js has made the typed copy, the real text is kept for screen readers only. */
 .talk-source {
   position: absolute;
@@ -94,6 +104,7 @@ a:hover { text-decoration-thickness: 2px; }
   cursor: pointer;
 }
 .talk-sound[aria-pressed="true"] { background: #470b23; color: #f9f7eb; border-color: #470b23; }
+.talk-sound:hover { background: var(--jam-pink); border-color: var(--jam-pink); color: #fff; }
 
 /* ---------- Header and footer ---------- */
 
@@ -119,7 +130,9 @@ a:hover { text-decoration-thickness: 2px; }
 
 .site-header nav { display: flex; gap: 1.5rem; }
 .site-header nav a { text-decoration: none; color: var(--muted); }
-.site-header nav a:hover { color: var(--ink); text-decoration: underline; }
+/* The page you're on is bold; the others underline (in pink) on hover. */
+.site-header nav a[aria-current="page"] { font-weight: 700; text-decoration: none; }
+.site-header nav a:not([aria-current]):hover { color: var(--jam-pink); text-decoration: underline; text-underline-offset: 0.25em; }
 
 .site-footer {
   margin-top: 6rem;
@@ -292,11 +305,11 @@ a:hover { text-decoration-thickness: 2px; }
   border-radius: 4px;
   border: 2px solid var(--ink);
 }
-.btn:hover { background: var(--ink); color: var(--bg); text-decoration: none; }
+.btn:hover { background: var(--jam-pink); border-color: var(--jam-pink); color: #fff; text-decoration: none; }
 .btn--zone { background: var(--zone); color: var(--zone-ink); border-color: var(--zone); }
-.btn--zone:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn--zone:hover { background: var(--jam-pink); border-color: var(--jam-pink); color: #fff; }
 .btn--light { border-color: currentColor; }
-.btn--light:hover { background: var(--zone-ink); color: var(--zone); }
+.btn--light:hover { background: var(--jam-pink); border-color: var(--jam-pink); color: #fff; }
 
 /* ---------- Case study ----------
    A project page is one dish from the menu: served on a platter on the same
@@ -417,7 +430,7 @@ a:hover { text-decoration-thickness: 2px; }
 .case-role { margin: 0 0 1.25rem; font-family: var(--script); opacity: 0.85; }
 .case-card .actions:last-child { margin-bottom: 0; }
 .btn--order { background: var(--maroon); border-color: var(--maroon); color: var(--cream); }
-.btn--order:hover { background: transparent; color: var(--maroon); }
+.btn--order:hover { background: var(--jam-pink); border-color: var(--jam-pink); color: #fff; }
 
 .case-body {
   max-width: var(--max);
@@ -513,7 +526,7 @@ a:hover { text-decoration-thickness: 2px; }
   font-size: var(--step-3);
   line-height: 1.1;
 }
-.case-nav a:hover .case-nav-title { text-decoration: underline; text-decoration-thickness: 2px; }
+.case-nav a:hover .case-nav-title { color: var(--jam-pink); text-decoration: underline; text-decoration-thickness: 2px; }
 
 /* ---------- Small screens ---------- */
 
@@ -535,3 +548,12 @@ a:hover { text-decoration-thickness: 2px; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* ---------- Key points ----------
+   Bold words in the write-ups are the key points, so they're picked out in
+   Jam pink. */
+.prose strong, .prose b,
+.scene-ticket strong, .scene-ticket b,
+.brought strong, .brought b,
+.about .comments strong, .about .comments b,
+.about .body strong { color: var(--jam-pink); }

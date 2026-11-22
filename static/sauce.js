@@ -309,6 +309,18 @@
   window.addEventListener("pointerdown", skip);
   window.addEventListener("keydown", skip);
 
+  // The skip button in the corner finishes everything at once: the heading
+  // pours through in a blink, and about.js finishes the chef's sentence.
+  var skipButton = document.querySelector(".skip-anim");
+  if (skipButton) {
+    skipButton.hidden = false;
+    skipButton.addEventListener("click", function () {
+      tl.timeScale(40);
+      if (!started) { started = true; tl.play(); }
+      document.dispatchEvent(new Event("jam:skip"));
+    });
+  }
+
   var started = false;
   new IntersectionObserver(function (entries) {
     var e = entries[0];

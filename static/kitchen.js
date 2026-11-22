@@ -32,18 +32,71 @@
     var svg = document.querySelector(".art--lamp");
     var cordSvg = document.querySelector(".art--pull");
     if (!dark || !svg || !cordSvg) return;
+    // The switch: a sharp plastic click, then the hum-and-tick of a bulb
+    // catching. It uses the site's sound switch (talk.js), so "Sound off"
+    // silences it, and browsers may hold it until the first tap.
+    function click(on) {
+      var ac = window.JamTalk && JamTalk.audio();
+      if (!ac || ac.state !== "running") return;
+      var t = ac.currentTime;
+      var len = Math.floor(ac.sampleRate * 0.05);
+      var buf = ac.createBuffer(1, len, ac.sampleRate);
+      var data = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 6);
+      var src = ac.createBufferSource();
+      src.buffer = buf;
+      var hp = ac.createBiquadFilter();
+      hp.type = "bandpass";
+      hp.frequency.value = on ? 3200 : 2400;
+      hp.Q.value = 1.4;
+      var g = ac.createGain();
+      g.gain.value = 0.55;
+      src.connect(hp).connect(g).connect(ac.destination);
+      src.start(t);
+      // The body of the switch: a tiny low knock under the click.
+      var knock = ac.createOscillator();
+      var kg = ac.createGain();
+      knock.frequency.setValueAtTime(on ? 180 : 140, t);
+      knock.frequency.exponentialRampToValueAtTime(60, t + 0.04);
+      kg.gain.setValueAtTime(0.25, t);
+      kg.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+      knock.connect(kg).connect(ac.destination);
+      knock.start(t);
+      knock.stop(t + 0.06);
+    }
+    // A fluorescent flicker: a quieter tick for each stutter of the light.
+    function tick() {
+      var ac = window.JamTalk && JamTalk.audio();
+      if (!ac || ac.state !== "running") return;
+      var t = ac.currentTime;
+      var o = ac.createOscillator();
+      var g = ac.createGain();
+      o.type = "square";
+      o.frequency.value = 120;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.05, t + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
+      o.connect(g).connect(ac.destination);
+      o.start(t);
+      o.stop(t + 0.05);
+    }
+
     gsap.set([cone, bulbs], { opacity: 0.1 });
     gsap
       .timeline({ delay: 0.5 })
+      .add(function () { click(true); })
       .to(dark, { opacity: 0.35, duration: 0.05 })
       .to([cone, bulbs], { opacity: 1, duration: 0.05 }, "<")
-      .to(dark, { opacity: 0.8, duration: 0.07 }, "+=0.08")
+      .add(tick, "+=0.08")
+      .to(dark, { opacity: 0.8, duration: 0.07 })
       .to([cone, bulbs], { opacity: 0.2, duration: 0.07 }, "<")
-      .to(dark, { opacity: 0, duration: 0.5, ease: "power2.out" }, "+=0.18")
+      .add(tick, "+=0.18")
+      .to(dark, { opacity: 0, duration: 0.5, ease: "power2.out" })
       .to([cone, bulbs], { opacity: 1, duration: 0.2 }, "<");
 
     function toggle() {
       var on = button.getAttribute("aria-pressed") !== "true";
+      click(on);
       button.setAttribute("aria-pressed", String(on));
       gsap.to(dark, { opacity: on ? 0 : 0.62, duration: 0.25 });
       gsap.to([cone, bulbs], { opacity: on ? 1 : 0.1, duration: 0.25 });

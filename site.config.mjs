@@ -53,6 +53,15 @@ export default {
     photo: "about/chef-photo.webp",
     // Link for the "Download PDF Resume" button. Leave empty to hide it.
     resumePdf: "",
+    // The ride at the end of the page: the chef pulls up, honks, and offers a
+    // lift to the restaurant (the home page). "No" gets a cheeky answer.
+    ride: {
+      car: "about/car.webp",
+      invite: "Get in the car, we're going to the restaurant!",
+      yes: "Okay, coming!",
+      no: "No",
+      noAnswer: "Aren't you supposed to recruit??",
+    },
   },
 
   // The scroll-driven project menu on the home page.

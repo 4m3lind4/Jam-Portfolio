@@ -61,7 +61,7 @@ ${head}
   <a class="wordmark" href="${root}"><img src="${root}jam-logo.webp" alt="${esc(config.name)}, home" width="44" height="44"></a>
   <nav aria-label="Main">
     ${config.about ? `<a href="${root}about/"${current === "about" ? ` aria-current="page"` : ""}>About</a>` : ""}
-    <a href="${root}#projects">Projects</a>
+    <a href="${root}#welcome"${current === "projects" ? ` aria-current="page"` : ""}>Projects</a>
     ${contact.length ? `<a href="${root}#contact">Contact</a>` : ""}
   </nav>
 </header>
@@ -142,7 +142,7 @@ export function homePage({ config, menu }) {
 <script src="welcome.js"></script>
 <script src="menu.js"></script>`;
 
-  return layout({ config, root: "", title: config.title, description: config.intro, body, head, scripts, bodyClass: "page-home", footer: false });
+  return layout({ config, root: "", title: config.title, description: config.intro, body, head, scripts, bodyClass: "page-home", footer: false, current: "projects" });
 }
 
 // Hide what the sauce animation will reveal before first paint. If sauce.js
@@ -174,7 +174,7 @@ export function aboutPage({ config, aboutHtml }) {
     scripts: `<script src="../talk.js"></script>
 <script src="../vendor/gsap.min.js"></script>
 <script src="../vendor/ScrollTrigger.min.js"></script>
-${sauce ? `<script src="../sauce.js"></script>\n` : ""}<script src="../about.js"></script>`,
+${sauce ? `<script src="../sauce.js"></script>\n` : ""}<script src="../about.js"></script>\n<script src="../ride.js"></script>`,
     bodyClass: "page-about",
     footer: false,
     current: "about",
@@ -279,10 +279,11 @@ ${scenes}
     config,
     root,
     title: `${p.title} | ${config.title}`,
+    current: "projects",
     description: p.summary || config.intro,
     body,
     head: MENU_FONTS + KITCHEN_HEAD,
-    scripts: `<script src="../../vendor/gsap.min.js"></script>\n<script src="../../vendor/ScrollTrigger.min.js"></script>\n<script src="../../kitchen.js"></script>\n<script src="../../stepnav.js"></script>`,
+    scripts: `<script src="../../talk.js"></script>\n<script src="../../vendor/gsap.min.js"></script>\n<script src="../../vendor/ScrollTrigger.min.js"></script>\n<script src="../../kitchen.js"></script>\n<script src="../../stepnav.js"></script>`,
     bodyClass: "page-case page-kitchen",
     footer: false,
   });
@@ -338,6 +339,7 @@ export function projectPage({ config, project: p, next, contentHtml }) {
     config,
     root: "../../",
     title: `${p.title} | ${config.title}`,
+    current: "projects",
     description: p.summary || config.intro,
     body,
     head: MENU_FONTS,

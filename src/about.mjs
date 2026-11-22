@@ -47,6 +47,7 @@ const RENDER = {
 
 export async function buildAbout(config, { blocks, rows }, asset, root = "") {
   const a = config.about;
+  const r = a.ride;
   const page = await splitPage(blocks, asset);
   const comments = await renderBlocks(page.blocks, asset);
   const photo = page.photo || (a.photo && root + a.photo);
@@ -88,6 +89,7 @@ export async function buildAbout(config, { blocks, rows }, asset, root = "") {
 
   return `<section class="about" id="about" aria-labelledby="about-heading">
   <h1 class="about-heading" id="about-heading">${sauceLettering(a.heading) || esc(a.heading)}</h1>
+  <button class="skip-anim" type="button" hidden>Skip animation <span aria-hidden="true">⏭</span></button>
   <div class="about-intro">
     ${photo ? `<div class="portrait"><img src="${esc(photo)}" alt="${esc(config.name)} in a chef's hat"></div>` : ""}
     <div class="intro-copy bubble">
@@ -98,5 +100,19 @@ export async function buildAbout(config, { blocks, rows }, asset, root = "") {
   </div>
   ${folder}
   ${a.resumePdf ? `<div class="about-block"><a class="pdf" href="${esc(a.resumePdf)}" rel="noopener">Download PDF resume</a></div>` : ""}
+</section>
+<section class="ride" aria-labelledby="ride-title" data-no-answer="${esc(r.noAnswer)}">
+  <h2 class="visually-hidden" id="ride-title">Next stop: the restaurant</h2>
+  <div class="ride-chat" aria-live="polite">
+    <div class="ride-bubble ride-bubble--jam"><p class="talk-text">${esc(r.invite)}</p></div>
+    <div class="ride-replies" role="group" aria-label="Your reply">
+      <a class="ride-reply" href="${root}#welcome" data-reply="yes">${esc(r.yes)}</a>
+      <button class="ride-reply" type="button" data-reply="no">${esc(r.no)}</button>
+    </div>
+  </div>
+  <button class="ride-car" type="button" aria-label="Honk the horn">
+    <img src="${root}${esc(r.car)}" alt="${esc(config.name)} in a chef's hat, waving from a pink convertible" width="2000" height="774">
+  </button>
+  <div class="ride-dark" aria-hidden="true"></div>
 </section>`;
 }
