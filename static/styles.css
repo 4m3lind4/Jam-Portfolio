@@ -483,6 +483,8 @@ a:hover { text-decoration-thickness: 2px; }
 .prose summary { cursor: pointer; font-weight: 700; }
 .prose .columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1.5rem; }
 .prose .embed iframe { width: 100%; aspect-ratio: 16 / 10; border: 0; border-radius: var(--radius); }
+.prose .embed--deck iframe { aspect-ratio: 16 / 9; }
+.prose .embed--tall iframe { width: min(100%, 22rem); aspect-ratio: 9 / 16; display: block; margin: 0 auto; }
 .prose .bookmark { word-break: break-all; }
 .empty { color: var(--muted); }
 

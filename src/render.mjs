@@ -103,12 +103,23 @@ async function renderBlock(b, asset) {
 
 function embed(url) {
   if (!url) return "";
+  // Shorts are portrait, so they get a tall frame.
+  const short = url.match(/youtube\.com\/shorts\/([\w-]{11})/);
+  if (short) {
+    return `<figure class="embed embed--tall"><iframe src="https://www.youtube-nocookie.com/embed/${short[1]}" title="Video" allowfullscreen loading="lazy"></iframe></figure>`;
+  }
   const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/);
   if (yt) {
     return `<figure class="embed"><iframe src="https://www.youtube-nocookie.com/embed/${yt[1]}" title="Video" allowfullscreen loading="lazy"></iframe></figure>`;
   }
   if (/figma\.com\/(file|design|proto)\//.test(url)) {
     return `<figure class="embed"><iframe src="https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(url)}" title="Figma prototype" allowfullscreen loading="lazy"></iframe></figure>`;
+  }
+  // A Canva deck plays as a slideshow you can flick through. Edit links are
+  // turned into the view-only player.
+  const canva = url.match(/canva\.com\/design\/([\w-]+)\/([\w-]+)/);
+  if (canva) {
+    return `<figure class="embed embed--deck"><iframe src="https://www.canva.com/design/${canva[1]}/${canva[2]}/view?embed" title="Slide deck" allowfullscreen loading="lazy"></iframe></figure>`;
   }
   return `<p><a class="bookmark" href="${esc(url)}" rel="noopener">${esc(url.replace(/^https?:\/\//, ""))}</a></p>`;
 }
