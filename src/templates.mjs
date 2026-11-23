@@ -135,7 +135,11 @@ export function homePage({ config, menu }) {
   <script type="application/json" id="menu-data">${JSON.stringify(menu).replace(/</g, "\\u003c")}</script>
 </section>`;
 
-  const head = `${MENU_FONTS}
+  // The site opens on About the Chef. Arriving at the bare address goes
+  // there; every way into the restaurant (the Projects link, the car ride,
+  // Back to the Menu, Contact) carries a #section, so those stay here.
+  const head = `<script>if (!location.hash) location.replace("about/");</script>
+${MENU_FONTS}
 <link rel="stylesheet" href="menu.css">
 <link rel="stylesheet" href="welcome.css">
 <script>
