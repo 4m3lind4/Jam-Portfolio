@@ -18,6 +18,9 @@ export const artDefs = `<svg class="art-defs" width="0" height="0" aria-hidden="
   <linearGradient id="k-arm-fade" x1="0" x2="0" y1="0" y2="1"><stop offset=".72" stop-color="#fff"/><stop offset=".97" stop-color="#000"/></linearGradient>
   <clipPath id="k-screen"><rect x="6" y="6" width="138" height="294" rx="18"/></clipPath>
   <mask id="k-arm" maskContentUnits="objectBoundingBox"><rect width="1" height="1" fill="url(#k-arm-fade)"/></mask>
+  <radialGradient id="k-berry" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#d23a6a"/><stop offset=".55" stop-color="#8c0f3a"/><stop offset="1" stop-color="#3e0619"/></radialGradient>
+  <radialGradient id="k-tomato" cx=".35" cy=".32" r=".75"><stop offset="0" stop-color="#ff7a5c"/><stop offset=".55" stop-color="#e0261f"/><stop offset="1" stop-color="#8f1210"/></radialGradient>
+  <radialGradient id="k-potato" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#ecd4a2"/><stop offset=".7" stop-color="#c9a066"/><stop offset="1" stop-color="#99713e"/></radialGradient>
   <radialGradient id="k-icing" cx=".42" cy=".36" r=".75"><stop offset="0" stop-color="#ffb1cb"/><stop offset=".55" stop-color="#ff5a96"/><stop offset="1" stop-color="#c90a55"/></radialGradient>
 </defs></svg>`;
 
@@ -166,20 +169,45 @@ export const bookArt = (cover, root, chapters = [], title = "", course = "") => 
 const SLICES = ["Training", "Energy levels", "Recovery", "Exercise", "Performance"];
 export const BOARD = { x0: 130, w: 80, gap: 30 };
 
+// Real ingredients for a board or bowl: a few berries, a tomato (whole or cut
+// to show its seeds) and a potato, each drawn around (cx, cy).
+const berries = (cx, cy, r = 15) => `<g>
+  ${[[-r * 1.05, r * 0.2], [r * 1.05, r * 0.25], [0, -r * 0.55]].map(([dx, dy]) => `<circle cx="${cx + dx}" cy="${cy + dy}" r="${r}" fill="url(#k-berry)"/><circle cx="${cx + dx - r * 0.35}" cy="${cy + dy - r * 0.35}" r="${r * 0.25}" fill="#fff" opacity=".55"/><path d="M${cx + dx - 3},${cy + dy - r + 2} l3,4 l3,-4" stroke="#3a0716" stroke-width="1.6" fill="none"/>`).join("")}
+  <path d="M${cx - 4},${cy - r * 1.5} C${cx + 6},${cy - r * 2.4} ${cx + 18},${cy - r * 2.2} ${cx + 20},${cy - r * 1.6} C${cx + 10},${cy - r * 1.4} ${cx + 2},${cy - r * 1.5} ${cx - 4},${cy - r * 1.5} Z" fill="#4f9a3a"/>
+</g>`;
+const tomato = (cx, cy, r = 30) => `<g>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#k-tomato)"/>
+  <ellipse cx="${cx - r * 0.35}" cy="${cy - r * 0.4}" rx="${r * 0.28}" ry="${r * 0.16}" fill="#fff" opacity=".5"/>
+  <path d="M${cx},${cy - r} l6,-6 l-1,8 l9,-3 l-7,7 l8,4 l-10,0 l-5,7 l-2,-8 l-8,3 l5,-7 l-8,-4 l9,-1 z" fill="#3f8a2e"/>
+</g>`;
+const cutTomato = (cx, cy, r = 30) => `<g>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="#e0261f"/>
+  <circle cx="${cx}" cy="${cy}" r="${r * 0.84}" fill="#ff6b52"/>
+  ${[0, 120, 240].map((a) => `<g transform="rotate(${a} ${cx} ${cy})"><path d="M${cx},${cy - r * 0.1} C${cx - r * 0.42},${cy - r * 0.3} ${cx - r * 0.4},${cy - r * 0.75} ${cx},${cy - r * 0.72} C${cx + r * 0.4},${cy - r * 0.75} ${cx + r * 0.42},${cy - r * 0.3} ${cx},${cy - r * 0.1} Z" fill="#c9171c"/><circle cx="${cx - r * 0.12}" cy="${cy - r * 0.45}" r="${r * 0.07}" fill="#ffe27a"/><circle cx="${cx + r * 0.14}" cy="${cy - r * 0.5}" r="${r * 0.07}" fill="#ffe27a"/></g>`).join("")}
+  <circle cx="${cx}" cy="${cy}" r="${r * 0.14}" fill="#ffb3a0"/>
+</g>`;
+const potato = (cx, cy, rx = 36, ry = 26) => `<g>
+  <path d="M${cx - rx},${cy + 2} C${cx - rx},${cy - ry} ${cx - rx * 0.2},${cy - ry * 1.1} ${cx + rx * 0.3},${cy - ry * 0.95} C${cx + rx * 1.05},${cy - ry * 0.7} ${cx + rx * 1.05},${cy + ry * 0.7} ${cx + rx * 0.2},${cy + ry} C${cx - rx * 0.6},${cy + ry * 1.05} ${cx - rx},${cy + ry * 0.6} ${cx - rx},${cy + 2} Z" fill="url(#k-potato)"/>
+  <g fill="#8a6234" opacity=".7"><circle cx="${cx - rx * 0.4}" cy="${cy - ry * 0.3}" r="2.2"/><circle cx="${cx + rx * 0.35}" cy="${cy + ry * 0.2}" r="2"/><circle cx="${cx - rx * 0.05}" cy="${cy + ry * 0.45}" r="1.8"/><circle cx="${cx + rx * 0.55}" cy="${cy - ry * 0.45}" r="1.6"/></g>
+  <ellipse cx="${cx - rx * 0.35}" cy="${cy - ry * 0.55}" rx="${rx * 0.28}" ry="${ry * 0.14}" fill="#fff" opacity=".35"/>
+</g>`;
+const PRODUCE = [berries, tomato, potato, tomato, potato];
+
 // A label's pill is as wide as its word (about 10.6 units a character at
 // this size, plus padding), never narrower than the short ones.
 const pill = (name) => Math.max(112, Math.round(name.length * 10.6 + 34));
 
-export const boardArt = (root, labels = SLICES) => {
+// `opts.produce` swaps the pink slices for berries, tomatoes and potatoes.
+export const boardArt = (root, labels = SLICES, shots, opts = {}) => {
   const { x0, w, gap } = BOARD;
   const slices = labels.map((name, i) => {
     const x = x0 + i * (w + gap);
     const high = i % 2 === 1;
     return `<g class="slice" data-i="${i}">
-      ${i === 0 ? `<path d="M${x + 6},428 C${x - 34},400 ${x - 44},444 ${x - 66},416 C${x - 40},452 ${x - 34},462 ${x + 6},454 Z" fill="#7d9a54"/>` : ""}
-      <rect x="${x}" y="412" width="${w}" height="66" rx="${i === 0 || i === 4 ? 26 : 8}" fill="url(#k-veg)"/>
+      ${i === 0 && !opts.produce ? `<path d="M${x + 6},428 C${x - 34},400 ${x - 44},444 ${x - 66},416 C${x - 40},452 ${x - 34},462 ${x + 6},454 Z" fill="#7d9a54"/>` : ""}
+      ${opts.produce ? PRODUCE[i % PRODUCE.length](x + w / 2, 448) : `<rect x="${x}" y="412" width="${w}" height="66" rx="${i === 0 || i === 4 ? 26 : 8}" fill="url(#k-veg)"/>
       <ellipse cx="${x + w - 3}" cy="445" rx="9" ry="31" fill="#ffc2d6" opacity="${i === 4 ? 0 : 1}"/>
-      <rect x="${x + 8}" y="420" width="${w - 22}" height="8" rx="4" fill="#fff" opacity=".35"/>
+      <rect x="${x + 8}" y="420" width="${w - 22}" height="8" rx="4" fill="#fff" opacity=".35"/>`}
       <g class="slice-tag">
         <path d="M${x + w / 2},${high ? 330 : 390} V412" stroke="#f9f7eb" stroke-width="2" stroke-dasharray="3 4"/>
         <rect x="${x + w / 2 - pill(name) / 2}" y="${high ? 292 : 352}" width="${pill(name)}" height="38" rx="19" fill="#f9f7eb"/>
@@ -208,7 +236,7 @@ export const bowlArt = (root, labels, shots, opts = {}) => {
     const x = [150, 400, 650, 215, 585][i];
     const y = [120, 80, 120, 222, 222][i];
     return `<g class="chip" data-x="${x}" data-y="${y}">
-      <circle cx="${x}" cy="${y - 42}" r="22" fill="url(#k-veg)"/><ellipse cx="${x - 6}" cy="${y - 49}" rx="9" ry="5" fill="#fff" opacity=".4"/>
+      ${opts.produce ? (i % 2 ? cutTomato(x, y - 44, 22) : berries(x, y - 40, 12)) : `<circle cx="${x}" cy="${y - 42}" r="22" fill="url(#k-veg)"/><ellipse cx="${x - 6}" cy="${y - 49}" rx="9" ry="5" fill="#fff" opacity=".4"/>`}
       <rect x="${x - 88}" y="${y - 18}" width="176" height="38" rx="19" fill="#f9f7eb"/>
       <text x="${x}" y="${y + 7}" text-anchor="middle" class="k-sans" font-size="18" font-weight="700" fill="#470b23">${name}</text>
     </g>`;

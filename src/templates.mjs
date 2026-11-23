@@ -267,7 +267,7 @@ ${scenes}
     .map((s) => `<a href="#${s.id}"><span class="step-dot" aria-hidden="true"></span><span class="step-pill">${esc(s.title)}</span></a>`)
     .join("\n  ")}
 </nav>
-${demo ? `<dialog class="app-box" aria-label="${esc(p.title)} app" data-src="${root}${esc(demo.path || demo.video)}" data-kind="${demo.path ? "demo" : "video"}">
+${demo ? `<dialog class="app-box" aria-label="${esc(p.title)} app" data-src="${root}${esc(demo.video || demo.path)}" data-kind="${demo.video ? "video" : "demo"}">
   <button class="app-close" type="button" aria-label="Close">×</button>
   <div class="app-phone"></div>
 </dialog>` : ""}

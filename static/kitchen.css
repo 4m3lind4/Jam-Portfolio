@@ -562,9 +562,10 @@
 @media (min-width: 761px) { .kitchen-on .bite-btn { left: 62%; } }
 
 /* On the PeriodT Coach page, where dinner is meatballs, the cursor is a fork. */
-.page-kitchen--periodt-coach { cursor: url("kitchen/fork-cursor.png") 6 5, auto; }
+.page-kitchen--periodt-coach, .page-kitchen--periodt-coach * { cursor: url("kitchen/fork-cursor.png") 6 5, auto; }
 .page-kitchen--periodt-coach a,
 .page-kitchen--periodt-coach button,
 .page-kitchen--periodt-coach .meatball-dish,
 .page-kitchen--periodt-coach .fork,
 .page-kitchen--periodt-coach .plate-phone.is-openable { cursor: url("kitchen/fork-cursor.png") 6 5, pointer; }
+.plate-video { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 18px; background: #fff; pointer-events: none; }

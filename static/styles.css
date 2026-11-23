@@ -668,3 +668,8 @@ a:hover { text-decoration-thickness: 2px; color: var(--jam-pink); }
   .dev-rig, .dev--photo img { transition: none; }
   .gal-box[open] { animation: none; }
 }
+
+/* On the project pages (the menu and each project) the cursor is a pointing
+   hand. PeriodT Coach's fork (kitchen.css) still takes over on its page. */
+.page-home, .page-home *, .page-case, .page-case * { cursor: pointer; }
+.page-home input, .page-home textarea, .page-case input, .page-case textarea { cursor: text; }

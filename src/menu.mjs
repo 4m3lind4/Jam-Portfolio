@@ -21,7 +21,7 @@ export function pillPalette(projects) {
 }
 
 // Every project is served on a plate, handed out in menu order.
-const PLATES = ["platter", "hearts", "scallop", "square", "rim"];
+const PLATES = ["hearts", "platter", "scallop", "square", "rim"];
 
 function dishMedia(p, plate, cutout) {
   if (!p.cover) return "";

@@ -383,21 +383,72 @@
       eaten += 1;
       var last = eaten === bites.length;
       if (btn) btn.textContent = last ? "Enjoy!" : "One more bite";
+      gsap.set(b, { svgOrigin: spot.x + " " + spot.y });
       gsap.timeline({ onComplete: function () {
         busy = false;
         if (last) {
           if (btn) gsap.to(btn, { autoAlpha: 0, duration: 0.3, delay: 0.6 });
           gsap.to(screen, { x: 325, y: 128, scale: 1, duration: 0.8, ease: "back.out(1.3)" });
+          playOnPlate();
         }
       } })
-        // The fork dips into the dish...
-        .to(fork, { x: spot.x + 70, y: spot.y + 40, rotation: 8, duration: 0.35, ease: "power2.in" })
-        .to(fork, { y: spot.y + 60, duration: 0.1 })
-        // ...and lifts the bite away with it.
-        .to(b, { scale: 0.35, x: (spot.x + 40 - 400) * 0.65, y: -260, autoAlpha: 0, duration: 0.55, ease: "power2.in" }, ">")
-        .to(fork, { x: 640, y: -60, rotation: 40, duration: 0.55, ease: "power2.in" }, "<")
-        .to(fork, { x: 600, y: 250, rotation: 28, duration: 0.5, ease: "power2.out" }, last ? "+=0.1" : "+=0.05");
+        // The fork digs in...
+        .to(fork, { x: spot.x + 22, y: spot.y + 128, rotation: 10, duration: 0.35, ease: "power2.in" })
+        // ...scoops up a forkful (the bite gathers onto the tines)...
+        .to(b, { scale: 0.34, duration: 0.25, ease: "power2.out" })
+        .to([fork, b], { y: "-=50", duration: 0.25, ease: "power1.out" }, "<0.1")
+        // ...and brings it up to you, growing as it nears the screen.
+        .to(fork, { x: 420, y: 780, scale: 2.6, rotation: -6, duration: 0.6, ease: "power2.in" }, ">0.05")
+        .to(b, { x: 400 - spot.x, y: 360 - spot.y, scale: 1.25, duration: 0.6, ease: "power2.in" }, "<")
+        // Munch.
+        .add(munch, ">-0.08")
+        .to(b, { autoAlpha: 0, duration: 0.12 }, "<")
+        // A clean fork comes back for the next bite.
+        .set(fork, { x: 780, y: 250, scale: 1, rotation: 28 }, ">0.25")
+        .to(fork, { x: 600, duration: 0.45, ease: "power2.out" });
     }
+    // The munch, on the site's sound switch (static/talk.js).
+    var munchSound = null;
+    function munch() {
+      if (window.JamTalk && !JamTalk.isOn()) return;
+      if (!munchSound) munchSound = new Audio(root() + "kitchen/munch.mp3");
+      munchSound.currentTime = 0;
+      munchSound.play().catch(function () {});
+    }
+    function root() {
+      var link = document.querySelector('link[href$="kitchen.css"]');
+      return link ? link.getAttribute("href").replace("kitchen.css", "") : "";
+    }
+    // Once the plate is clear, the app plays through on the phone's screen
+    // (muted, looping); tapping it opens the full walkthrough (static/appbox.js).
+    function playOnPlate() {
+      var box = document.querySelector(".app-box[data-kind='video']");
+      var phone = screen[0];
+      if (!box || !phone || phone.querySelector("foreignObject")) return;
+      var NS = "http://www.w3.org/2000/svg";
+      var fo = document.createElementNS(NS, "foreignObject");
+      fo.setAttribute("x", 6);
+      fo.setAttribute("y", 6);
+      fo.setAttribute("width", 138);
+      fo.setAttribute("height", 294);
+      fo.setAttribute("clip-path", "url(#k-screen)");
+      var v = document.createElement("video");
+      v.src = box.getAttribute("data-src");
+      v.muted = true;
+      v.loop = true;
+      v.playsInline = true;
+      v.autoplay = true;
+      v.setAttribute("aria-hidden", "true");
+      v.className = "plate-video";
+      fo.appendChild(v);
+      // On top of the still screenshot (the recording has its own island).
+      phone.appendChild(fo);
+      v.play().catch(function () {});
+      // The little one rests while the full screen one plays.
+      box.addEventListener("close", function () { v.play().catch(function () {}); });
+      document.querySelectorAll(".plate-phone, .app-open").forEach(function (t) { t.addEventListener("click", function () { v.pause(); }); });
+    }
+
     [$(".meatball-dish")[0], fork, btn].forEach(function (t) {
       if (!t) return;
       t.style.pointerEvents = "auto";

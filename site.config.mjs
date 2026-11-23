@@ -82,11 +82,14 @@ export default {
       title: "Try the app",
       intro: "A web version of PeriodT, rebuilt from the app's SwiftUI code. Tap through the tabs, log how you're feeling, and open an exercise.",
     },
+    // With both, the phone on the page is the tap-through demo, and the
+    // walkthrough video plays on the plate and opens full screen from it.
     "periodt-coach": {
+      path: "demos/periodt-coach/",
       video: "videos/periodt-coach-walkthrough.mp4",
       poster: "videos/periodt-coach-walkthrough.jpg",
-      title: "See it in action",
-      intro: "A full walkthrough of PeriodT Coach on iPhone: the team overview, each athlete's page, and how coaches see who's ready to train.",
+      title: "Try the app",
+      intro: "A web version of PeriodT Coach, rebuilt from the app's SwiftUI code with its own sample team. Check the team's readiness, open an athlete, send a check-in, and browse the exercise and Female libraries.",
     },
   },
 

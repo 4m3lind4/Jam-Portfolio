@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PeriodT Coach Demo</title>
+<!-- A web version of the PeriodT Coach iOS app (SwiftUI), rebuilt from the
+     app's code so visitors can tap through it in the portfolio: the same three
+     tabs, colours (CoreTokens), wording and the app's own preview data
+     (PreviewOverviewRepository, LocalStubPlayerOverviewRepository,
+     LocalStubFemaleLibraryRepository). Nothing here talks to Supabase. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #411471;            /* foreground */
+    --muted: #727272;         /* secondaryForeground */
+    --header: #9561a5;        /* header */
+    --surface: #f5e6f8;       /* surface */
+    --surface2: #f6f6f6;      /* secondarySurface */
+    --ink: #4a295e;
+    --accent: #a96ebb;
+    --highlight: #ff754a;
+    --menstrual: #e96795;
+    --list: #a96ebb;          /* libraryListBackground */
+    --hist: #ff894e;          /* exerciseHistoryPanel */
+    --r-low: #ffa687; --r-low-t: #652104;
+    --r-mod: #d9d6fb; --r-mod-t: #343173;
+    --r-high: #6864ca; --r-high-t: #ffffff;
+    --r-today: #f06625;
+    --e-high: #ffd5e4; --e-high-t: #f12970;
+    --e-mod: #ffcf9b;  --e-mod-t: #ff4c14;
+    --e-low: #d9f3e1;  --e-low-t: #008125;
+    --goal: #ffebf2; --goal-t: #ab4c6d;
+    --sent: #5548ba;
+    --font: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+  body { overflow: hidden; }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  input, textarea { font: inherit; color: inherit; }
+  .app { position: relative; height: 100%; }
+  .stack { position: absolute; inset: 0; overflow: hidden; }
+  .screen { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; background: var(--bg); padding-bottom: 120px; scrollbar-width: none; }
+  .screen::-webkit-scrollbar { display: none; }
+  .screen.push { animation: push 0.28s ease-out; }
+  @keyframes push { from { transform: translateX(30%); opacity: 0.4; } to { transform: none; opacity: 1; } }
+
+  /* Floating glass tab bar (OverviewNavigationBar) */
+  .tabbar { position: absolute; z-index: 10; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; gap: 14px; padding: 2px; width: 236px; height: 70px; align-items: center; justify-content: center; border-radius: 999px; background: rgba(250, 246, 252, 0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.7); }
+  .tab { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; color: var(--fg); transition: background 0.25s; }
+  .tab[aria-selected="true"] { background: rgba(65, 20, 113, 0.12); }
+  .tab svg { width: 30px; height: 30px; }
+
+  /* Shared bits */
+  .avatar { flex: none; width: 52px; height: 52px; border-radius: 50%; background: #a469b7 center / cover no-repeat; display: grid; place-items: center; overflow: hidden; }
+  .avatar.ph { background: #c5ced8; }
+  .avatar.ph svg { width: 60%; height: 60%; color: #4e5c6a; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .info-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--fg); color: #fff; display: grid; place-items: center; font-weight: 900; font-size: 18px; font-family: Georgia, serif; }
+  .back { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(255, 255, 255, 0.75); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15); color: var(--fg); }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: 13px; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+  .badge.high { background: var(--e-high); color: var(--e-high-t); }
+  .badge.moderate { background: var(--e-mod); color: var(--e-mod-t); }
+  .badge.low { background: var(--e-low); color: var(--e-low-t); }
+  .btn { display: inline-block; padding: 9px 26px; border-radius: 999px; background: var(--highlight); color: #fff; font-weight: 800; font-size: 15px; box-shadow: 0 2px 6px rgba(255, 117, 74, 0.35); }
+  .title-xl { font-size: 28px; font-weight: 900; margin: 0; }
+  .muted { color: var(--muted); }
+
+  /* Overview header */
+  .ov-head { padding: 54px 20px 14px; }
+  .greet { display: flex; justify-content: space-between; align-items: flex-start; }
+  .greet p { margin: 0; font-size: 22px; }
+  .greet strong { display: block; color: var(--highlight); font-size: 24px; font-weight: 900; }
+  .greet small { font-size: 15px; }
+  .greet .avatar { width: 72px; height: 72px; }
+  .ov-row { display: flex; justify-content: space-between; align-items: center; margin: 22px 0 14px; }
+  .seg { display: flex; padding: 3px; border-radius: 999px; background: var(--accent); }
+  .seg button { flex: 1; padding: 9px 0; border-radius: 999px; color: #fff; font-weight: 700; font-size: 14px; display: flex; justify-content: center; align-items: center; gap: 6px; transition: background 0.2s; }
+  .seg button[aria-pressed="true"] { background: var(--highlight); }
+  .orange { background: #ffcb9a; min-height: 100%; padding: 16px 16px 120px; }
+  .search { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 18px; background: #ffe9a7; color: #a38b7c; margin-bottom: 16px; }
+  .search input { flex: 1; border: 0; outline: 0; background: none; font-size: 16px; color: var(--fg); }
+  .search svg { width: 20px; height: 20px; color: var(--fg); }
+  .list-title { font-size: 24px; font-weight: 900; margin: 18px 0 8px; }
+  .person { display: flex; align-items: center; gap: 18px; width: 100%; padding: 10px 12px; margin-bottom: 10px; border-radius: 14px; background: var(--surface); text-align: left; font-size: 17px; }
+  .person .avatar { width: 60px; height: 60px; }
+  .person small { display: block; font-size: 12px; color: var(--muted); }
+
+  /* Team summary */
+  .notice { border-radius: 14px; overflow: hidden; margin-bottom: 12px; text-align: center; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+  .notice div:first-child { background: #a469b7; color: #fff; font-weight: 700; font-size: 13px; padding: 5px; }
+  .notice div:last-child { background: var(--highlight); color: #fff; padding: 12px; font-weight: 700; display: flex; justify-content: center; gap: 16px; align-items: baseline; }
+  .notice b { font-size: 24px; }
+  .team-grid { background: #fff; border-radius: 14px; padding: 12px 10px; }
+  .team-grid table { width: 100%; border-collapse: separate; border-spacing: 4px; }
+  .team-grid th { font-size: 12px; color: #9e99b4; font-weight: 700; }
+  .team-grid td.name { font-size: 12px; font-weight: 700; width: 34%; }
+  .team-grid td.name span { display: flex; align-items: center; gap: 6px; }
+  .team-grid td.name .avatar { width: 26px; height: 26px; }
+  .cell { border-radius: 8px; height: 38px; text-align: center; font-weight: 800; font-size: 14px; }
+  .cell.low { background: var(--r-low); color: var(--r-low-t); }
+  .cell.moderate { background: var(--r-mod); color: var(--r-mod-t); }
+  .cell.high { background: var(--r-high); color: var(--r-high-t); }
+  .days-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .days-nav button { width: 30px; height: 30px; border-radius: 50%; background: var(--highlight); color: #fff; font-weight: 900; }
+
+  /* Player overview */
+  .ath-head { background: var(--header); color: #fff; padding: 54px 18px 18px; }
+  .ath-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .ath-id { display: flex; align-items: center; gap: 14px; }
+  .ath-id .avatar { width: 78px; height: 78px; border: 3px solid #fff; }
+  .ath-id h1 { margin: 0; font-size: 26px; font-weight: 900; }
+  .ath-pills { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .ath-pills .pill { background: var(--menstrual); color: #fff; }
+  .ath-pills .check { background: #fff; color: var(--menstrual); }
+  .section { padding: 16px 16px 4px; }
+  .section h2 { margin: 0 0 10px; font-size: 20px; font-weight: 900; display: flex; justify-content: space-between; align-items: center; }
+  .toggle { display: flex; background: var(--surface2); border-radius: 999px; padding: 3px; font-size: 13px; }
+  .toggle button { padding: 5px 14px; border-radius: 999px; font-weight: 700; color: var(--muted); }
+  .toggle button[aria-pressed="true"] { background: #fff; color: var(--fg); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); }
+  .panel { background: #fff; border-radius: 16px; padding: 12px; box-shadow: 0 1px 6px rgba(65, 20, 113, 0.12); }
+  .cal-month { font-weight: 800; margin-bottom: 6px; }
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal span.wd { text-align: center; font-size: 11px; color: #9e99b4; font-weight: 700; }
+  .cal .d { position: relative; height: 40px; border-radius: 8px; display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+  .cal .d small { position: absolute; top: 2px; left: 5px; font-size: 9px; font-weight: 700; opacity: 0.7; }
+  .cal .d.low { background: var(--r-low); color: var(--r-low-t); }
+  .cal .d.moderate { background: var(--r-mod); color: var(--r-mod-t); }
+  .cal .d.high { background: var(--r-high); color: var(--r-high-t); }
+  .cal .d.today { outline: 2.5px solid var(--r-today); outline-offset: 1px; }
+  .cal .d.none { background: #f4f3f8; color: #c9c6d6; }
+  .insight { margin: 10px 2px 0; font-size: 13px; color: #4c4662; white-space: pre-line; }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .card { background: var(--surface); border-radius: 16px; padding: 14px; }
+  .note-title { font-weight: 900; text-align: center; font-size: 16px; }
+  .note-msg { text-align: center; margin: 2px 0 10px; font-size: 14px; }
+  .session { background: #fff; border-radius: 12px; overflow: hidden; margin: 8px 0; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+  .session-head { display: flex; align-items: center; width: 100%; text-align: left; }
+  .stripe { width: 14px; align-self: stretch; background: var(--highlight); }
+  .stripe.physio { background: #fad72c; }
+  .stripe.future { background: #a469b7; }
+  .session-head div { flex: 1; padding: 10px 12px; font-size: 13px; }
+  .session-head b { display: block; font-size: 14px; }
+  .session-head .tri { padding: 0 14px; color: #a469b7; font-size: 14px; transition: transform 0.2s; }
+  .session[open] .tri { transform: rotate(180deg); }
+  .ex-list { display: none; padding: 4px 12px 12px 26px; }
+  .session[open] .ex-list { display: block; }
+  .ex { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(164, 105, 183, 0.35); font-size: 13px; }
+  .ex:last-child { border-bottom: 0; }
+  .ex img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 2.5px solid var(--hist); }
+  .ex img.high { border-color: #e96795; } .ex img.moderate { border-color: #ff754a; } .ex img.low { border-color: #008927; }
+  .ex b { flex: 1; color: var(--fg); }
+  .ex .sets { color: #915da2; font-size: 12px; white-space: nowrap; }
+  .flag { width: 22px; height: 22px; border-radius: 50%; background: #ff9898; display: grid; place-items: center; color: #fff; font-size: 11px; }
+  .center { text-align: center; }
+  .sub-title { display: flex; justify-content: space-between; align-items: center; margin: 14px 0 4px; font-weight: 800; }
+  .plus { width: 30px; height: 30px; border-radius: 50%; background: var(--highlight); color: #fff; font-size: 20px; font-weight: 900; line-height: 1; }
+  .goal { background: var(--goal); border-radius: 14px; padding: 12px; text-align: center; }
+  .goal b { display: block; color: var(--goal-t); font-size: 13px; letter-spacing: 0.05em; }
+  .goal p { margin: 2px 0 8px; color: var(--goal-t); font-size: 13px; }
+  .goal .track { height: 22px; border-radius: 999px; background: #fff; overflow: hidden; }
+  .goal .fill { height: 100%; background: #e96795; color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; white-space: nowrap; min-width: 34%; }
+
+  /* Exercise history */
+  .hist-band { background: var(--hist); color: #fff; padding: 10px 16px; font-weight: 800; }
+  .hist-body { background: var(--hist); padding: 4px 12px 20px; }
+  .hist-row { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 12px; padding: 10px; margin-bottom: 8px; width: 100%; text-align: left; font-size: 14px; }
+  .hist-row img { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; }
+  .detail { padding: 16px; }
+  .detail h3 { margin: 14px 0 6px; font-size: 16px; font-weight: 900; }
+  .detail ul { margin: 0; padding-left: 18px; font-size: 14px; }
+  .intensity { display: flex; background: #eeeeef; border-radius: 999px; padding: 3px; }
+  .intensity button { flex: 1; padding: 6px 0; border-radius: 999px; font-size: 13px; font-weight: 700; color: #000; }
+  .intensity button[aria-pressed="true"].low { background: #c2f0d0; color: #008927; }
+  .intensity button[aria-pressed="true"].moderate { background: #ffcf9b; color: #ff4c14; }
+  .intensity button[aria-pressed="true"].high { background: #ffd5e4; color: #e96795; }
+  .rule { display: flex; align-items: center; gap: 8px; }
+  .rule::after { content: ""; flex: 1; height: 3px; border-radius: 2px; background: var(--highlight); }
+
+  /* Libraries (Training and Female) */
+  .lib-head { padding: 54px 18px 12px; display: flex; justify-content: space-between; align-items: center; }
+  .lib-head h1 { margin: 0; font-size: 24px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
+  .lib-body { background: var(--list); min-height: calc(100% - 110px); padding: 14px 16px 120px; }
+  .lib-body .search { background: #e3cfea; color: #7a5a88; }
+  .lib-intro { color: #fff; font-size: 13px; margin: -4px 0 10px; }
+  .lib-row-title { display: flex; justify-content: space-between; align-items: center; color: #fff; font-weight: 800; margin-bottom: 10px; font-size: 14px; }
+  .lib-card { display: flex; align-items: center; width: 100%; background: #f6f6f6; border-radius: 12px; overflow: hidden; margin-bottom: 10px; text-align: left; min-height: 74px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+  .lib-card .ph { width: 88px; align-self: stretch; background: #e4e4e7 center / cover no-repeat; display: grid; place-items: center; font-size: 11px; color: #000; }
+  .lib-card span { padding: 0 14px; color: #6b6b6b; font-size: 15px; font-weight: 600; }
+  .lib-card small { display: block; font-size: 12px; color: #9a9a9a; }
+  .title-pill { margin: 0 16px 12px; padding: 9px; border-radius: 999px; background: #fff; color: var(--fg); text-align: center; font-weight: 800; font-size: 14px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12); }
+  .video { margin: 0 16px 14px; aspect-ratio: 16 / 10; border-radius: 12px; background: #fff center / cover no-repeat; display: grid; place-items: center; color: #000; font-size: 12px; overflow: hidden; }
+  .article { background: var(--list); color: #fff; padding: 0 0 120px; min-height: 100%; }
+  .article .detail h3 { color: #fff; }
+  .article .detail li { margin: 0 0 8px; line-height: 1.45; }
+  .mention { display: flex; align-items: center; gap: 12px; background: #f6f6f6; color: var(--fg); border-radius: 12px; padding: 8px 10px; margin-bottom: 8px; font-weight: 700; }
+  .mention .avatar { width: 40px; height: 40px; }
+  .mention span { flex: 1; }
+  .mention button { width: 36px; height: 36px; border-radius: 50%; background: #e96795; color: #fff; display: grid; place-items: center; }
+
+  /* Check-in pop-up and the sent screen */
+  .overlay { position: absolute; inset: 0; z-index: 30; background: rgba(0, 0, 0, 0.4); display: grid; place-items: center; padding: 0 22px; animation: fade 0.2s ease-out; }
+  @keyframes fade { from { opacity: 0; } }
+  .popup { width: 100%; background: #f5e6f8; border-radius: 22px; padding: 18px; animation: rise 0.25s ease-out; }
+  @keyframes rise { from { transform: translateY(30px) scale(0.96); opacity: 0; } }
+  .popup-head { display: flex; justify-content: space-between; align-items: center; }
+  .popup-head h2 { margin: 0; font-size: 20px; font-weight: 900; }
+  .close { width: 34px; height: 34px; border-radius: 50%; background: var(--fg); color: #fff; font-size: 20px; line-height: 1; }
+  .popup p { text-align: center; margin: 14px 0 12px; font-size: 13px; }
+  .popup p b { display: block; font-size: 14px; }
+  .popup textarea { width: 100%; min-height: 70px; border: 0; border-radius: 12px; padding: 10px; resize: none; background: #fff; }
+  .saved { display: block; width: 100%; margin-top: 8px; padding: 14px; border-radius: 12px; background: var(--sent); color: #fff; font-weight: 800; font-size: 14px; }
+  .saved[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--highlight); }
+  .or { text-align: center; font-size: 12px; margin: 6px 0 0; }
+  .popup-actions { display: flex; justify-content: center; gap: 16px; margin-top: 14px; }
+  .popup-actions .btn[disabled] { opacity: 0.45; }
+  .sent { position: absolute; inset: 0; z-index: 40; display: grid; place-items: center; align-content: center; gap: 18px; color: #fff; font-weight: 900; font-size: 22px; text-align: center; background: radial-gradient(circle at 70% 10%, #ed7d59, transparent 45%), radial-gradient(circle at 20% 80%, #d9c4ef, transparent 50%), linear-gradient(180deg, #aa6dbc, #c58fd3); animation: fade 0.3s ease-out; }
+  .sent .tick { width: 110px; height: 110px; border-radius: 50%; background: #f6834d; box-shadow: 0 0 0 14px #fcece6; display: grid; place-items: center; animation: pop 0.5s cubic-bezier(.2, 1.6, .4, 1); }
+  @keyframes pop { from { transform: scale(0.3); } }
+  .dots { display: flex; gap: 10px; }
+  .dots i { width: 14px; height: 14px; border-radius: 50%; background: #fff; animation: dot 0.9s infinite ease-in-out; }
+  .dots i:nth-child(2) { animation-delay: 0.15s; background: #f7d4c9; } .dots i:nth-child(3) { animation-delay: 0.3s; background: #f7987b; }
+  @keyframes dot { 50% { transform: translateY(-10px); } }
+  .info-box { width: 100%; max-height: 80%; overflow: auto; background: #f5e6f8; border-radius: 18px; padding: 18px; font-size: 13px; animation: rise 0.25s ease-out; }
+  .info-box h2 { margin: 0 0 8px; font-size: 20px; font-weight: 900; display: flex; justify-content: space-between; }
+  .info-box h3 { margin: 12px 0 4px; font-size: 15px; font-weight: 900; }
+  .info-box p { margin: 0 0 6px; }
+  .key { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .key span { display: flex; align-items: center; gap: 6px; }
+  .key i { width: 16px; height: 16px; border-radius: 50%; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="stack" id="stack"></div>
+  <nav class="tabbar" role="tablist" aria-label="PeriodT Coach"></nav>
+</div>
+<script>
+(function () {
+  // ---------- Icons ----------
+  var I = {
+    training: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="15" cy="4" r="2.2"/><path d="M13.5 7.2 9 9.5l-2.3 3.4 1.6 1 1.9-2.6 1.6-.7-1 4.5-3.5 4.2 1.6 1.4 3.9-4.6.6-2.3 2.2 2.2V21h2v-6.6l-2.3-2.4.6-2.8c.8 1.4 2.3 2.4 4 2.6v-2c-1.4-.2-2.6-1.2-3.1-2.6l-.5-1.3c-.3-.9-1.4-1.3-2.2-.9z"/><path d="M3 11h4v1.6H3zM2 14h4v1.6H2z" opacity=".6"/></svg>',
+    team: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8.5" cy="7.5" r="3.5"/><circle cx="16.5" cy="8" r="3"/><path d="M1.5 19c0-3.6 3.1-6 7-6s7 2.4 7 6v1h-14zM16 13.2c3.6-.4 6.5 1.8 6.5 5.3V20h-5.2v-1c0-2.3-.5-4.1-1.3-5.8z"/></svg>',
+    cycle: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c3.2 4.3 7 8.5 7 12.4a7 7 0 0 1-14 0c0-3.9 3.8-8.1 7-12.4z"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>',
+    back: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+    person: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8.5" r="4.5"/><path d="M3.5 21c0-4.4 3.8-7.5 8.5-7.5s8.5 3.1 8.5 7.5z"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>',
+    clip: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 11h7M8.5 15h5"/></svg>',
+    tick: '<svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    flag: '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M5 3h2v18H5zM8 4h10l-2.5 4L18 12H8z"/></svg>',
+    pencil: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 20l1-4L16 5l3 3L8 19z"/></svg>',
+  };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function h(html) { var d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstChild; }
+  function avatar(p, extra) {
+    return p && p.photo
+      ? '<span class="avatar ' + (extra || "") + '"><img src="' + p.photo + '" alt=""></span>'
+      : '<span class="avatar ph ' + (extra || "") + '">' + I.person + "</span>";
+  }
+
+  // ---------- Dates ----------
+  var DAY = 86400000;
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function sameDay(a, b) { return a.getTime() === b.getTime(); }
+  var WD = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  var MON = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  function dateText(d) { return WD[d.getDay()] + " " + d.getDate() + " " + MON[d.getMonth()]; }
+  function level(score) { return score < 55 ? "low" : score < 75 ? "moderate" : "high"; }
+
+  // ---------- The app's preview data ----------
+  var PEXELS = function (id) { return "https://images.pexels.com/photos/" + id + "/pexels-photo-" + id + ".jpeg?auto=compress&cs=tinysrgb&fit=crop&w=360&h=372"; };
+  var PHOTOS = { "Goblet Squat": PEXELS(14623711), "Reverse Lunge to Row": PEXELS(38615522), "Single-Leg Romanian Deadlift": PEXELS(38615520), "Glute Bridge": PEXELS(4587402), "Clamshells": PEXELS(6339639), "Cat-Cow Stretch": PEXELS(7663035), "Easy Cycling": PEXELS(6551400) };
+  var EX_IMG = "img/exercise.png";
+  var LIBRARY = [["Goblet Squat", "moderate"], ["Reverse Lunge to Row", "high"], ["Single-Leg Romanian Deadlift", "moderate"], ["Glute Bridge", "low"], ["Clamshells", "low"], ["Cat-Cow Stretch", "low"]];
+  var COACH = { name: "Andres Navarro" };
+  var STAFF = [{ name: "Tom Keller", role: "Physio" }, { name: "Maya Collins", role: "Physio" }, { name: "Rachel Byrne", role: "Physio" }];
+  var WEEKS = [[82, 79, 74, 52, 48, 58, 76], [61, 58, 64, 66, 70, 72, 69], [84, 86, 82, 80, 85, 88, 83], [48, 52, 55, 60, 67, 71, 74]];
+
+  // Beth Mead's full overview, from LocalStubPlayerOverviewRepository.sample.
+  function bethOverview() {
+    var scores = [77, 81, 78, 80, 83, 85, 79, 82, 86, 84, 80, 83, 81, 78, 74, 68, 57, 48, 52, 56, 51, 49, 54, 58, 63, 66, 70, 75, 72, 74, 76];
+    var readiness = {};
+    scores.forEach(function (s, i) { readiness[addDays(today, -i).getTime()] = s; });
+    var plan = [
+      { name: "Lunge with scooter - rowing machine", energy: "high", sets: 3, flagged: true, photo: EX_IMG,
+        detail: { note: "Experiencing Functional hypothalamic amenorrhea", sets: ["2-3 Sets", "10-12 lunges per leg", "45-60 Seconds of rowing", "High resistance with 90 Seconds rest"], repeat: "Sep - Oct twice every week", coach: "Andree" } },
+      { name: "Exercise 2", energy: "moderate", sets: 3, photo: EX_IMG }, { name: "Exercise 3", energy: "low", sets: 3, photo: EX_IMG },
+      { name: "Exercise 4", energy: "high", sets: 3, photo: EX_IMG }, { name: "Exercise 5", energy: "moderate", sets: 3, photo: EX_IMG }, { name: "Exercise 6", energy: "low", sets: 3, photo: EX_IMG },
+    ];
+    var placeholders = function (n) { var out = []; for (var i = 1; i <= n; i++) out.push({ name: "Exercise " + i, energy: "moderate", sets: 3, photo: EX_IMG }); return out; };
+    return {
+      phase: "Menstrual Phase", readiness: readiness,
+      forecast: [52, 49, 58, 70, 78, 80], typical: [68, 84],
+      insight: "Pattern spotted: lower energy likely Thu–Sat.\nSuggest swapping sprint intervals for technical work.",
+      note: { title: "Struggling with Inconsistent Periods", message: "Causing lots of stress and worries resulting in appointments", session: { date: addDays(today, -2), day: 1, mins: 60, exercises: plan } },
+      physio: [{ date: addDays(today, 2), day: 1, mins: 60, exercises: placeholders(6) }, { date: addDays(today, 5), day: 1, mins: 60, exercises: placeholders(3) }],
+      strength: [{ date: addDays(today, 2), day: 1, mins: 60, exercises: plan.map(function (e) { return Object.assign({}, e, { flagged: false }); }) }],
+      goals: [{ n: 1, detail: "Complete physio exercises for hip improvement", progress: 0.2 }],
+    };
+  }
+  // The other athletes, from LocalStubPlayerOverviewRepository's DemoProfile.
+  var PROFILES = [
+    { phase: "Luteal Phase", week: [61, 58, 64, 66, 70, 72, 69], forecast: [57, 55, 60, 64, 68, 71], typical: [62, 78], insight: "Pattern spotted: lower energy likely before her period.\nSuggest lighter loads late in the week.", note: ["Feeling bloated and tired", "Heavier legs this week, finding the lunges hard to finish."], flags: [["Glute Bridge", "Cramping during the bridges, would like a lighter option"]], goal: ["Improve endurance", 0.35] },
+    { phase: "Ovulation Phase", week: [79, 81, 77, 74, 76, 80, 82], forecast: [80, 78, 76, 77, 79, 81], typical: [72, 84], insight: null, note: ["Knee feels a bit loose", "Nothing sore, just less stable on single-leg work."], flags: [["Single-Leg Romanian Deadlift", "Less stable on one leg this week"]], goal: ["Strengthen weaker left foot", 0.5] },
+    { phase: "Menstrual Phase", week: [48, 52, 55, 60, 67, 71, 74], forecast: [50, 56, 62, 68, 73, 76], typical: [60, 80], insight: "Pattern spotted: readiness dips on the first two days of her period.\nSuggest technical work on those days.", note: ["Heavy period this week", "Low on energy and sleeping badly, would like a gentler start."], flags: [["Glute Bridge", "Period pain made the bridges uncomfortable"], ["Cat-Cow Stretch", "Felt dizzy getting up from the floor"]], goal: ["Return from hamstring strain", 0.25] },
+  ];
+  function profileOverview(p) {
+    var readiness = {};
+    for (var o = 0; o < 120; o++) {
+      var dip = o % 28 >= 24 ? 12 : 0, wobble = (o * 7 % 5) - 2;
+      readiness[addDays(today, -o).getTime()] = Math.max(25, Math.min(98, p.week[o % 7] - dip + wobble));
+    }
+    function exercises(offset, flags) {
+      var out = [];
+      for (var i = 0; i < 4; i++) {
+        var e = LIBRARY[(i + offset) % LIBRARY.length];
+        var f = flags ? p.flags.find(function (x) { return x[0] === e[0]; }) : null;
+        out.push({ name: e[0], energy: e[1], sets: 3, flagged: !!f, photo: PHOTOS[e[0]],
+          detail: f ? { note: f[1], sets: ["3 Sets", "10 reps"], repeat: "Twice every week", coach: "Andres Navarro" } : null });
+      }
+      return out;
+    }
+    return {
+      phase: p.phase, readiness: readiness, forecast: p.forecast, typical: p.typical, insight: p.insight,
+      note: p.note ? { title: p.note[0], message: p.note[1], session: { date: addDays(today, -2), day: 1, mins: 60, exercises: exercises(2, true) } } : null,
+      physio: [{ date: addDays(today, 3), day: 1, mins: 45, exercises: ["Clamshells", "Glute Bridge", "Cat-Cow Stretch", "Easy Cycling"].map(function (n) { return { name: n, energy: "low", sets: 2, photo: PHOTOS[n] }; }) }],
+      strength: [{ date: addDays(today, 1), day: 1, mins: 60, exercises: exercises(0) }, { date: addDays(today, 4), day: 2, mins: 60, exercises: exercises(3) }],
+      goals: [{ n: 1, detail: p.goal[0], progress: p.goal[1] }],
+    };
+  }
+  var ATHLETES = [
+    { id: "beth", name: "Beth Mead", photo: "img/beth.png", week: WEEKS[0], overview: bethOverview },
+    { id: "ellie", name: "Ellie Hartwell", week: WEEKS[1], overview: function () { return profileOverview(PROFILES[0]); } },
+    { id: "mio", name: "Mio Tanaka", week: WEEKS[2], overview: function () { return profileOverview(PROFILES[1]); } },
+    { id: "freya", name: "Freya Lindqvist", week: WEEKS[3], overview: function () { return profileOverview(PROFILES[2]); } },
+  ];
+  var CATEGORIES = ["Strength & Conditioning", "Physio", "Period Exercises", "Recovery"];
+  var TOPICS = ["Period Support", "Endometriosis", "Mitigating Hypothalamic Amenorrhea", "How to help calm", "Period Focused", "High Intensity"];
+  var ARTICLE = {
+    title: "Mitigating Hypothalamic Amenorrhea",
+    sections: [
+      ["Background", [["What it is:", "Functional hypothalamic amenorrhea (FHA) is when periods stop for 3 months or more because the brain slows down its reproductive hormones. It isn’t caused by a disease. It’s the body saving energy."], ["Common causes in athletes:", "not eating enough for the amount of training (low energy availability), high training load, psychological stress, and weight loss. These often happen together."]]],
+      ["How a coach can help", [["Fuel first:", "encourage regular meals and snacks around sessions. Don’t comment on weight or body shape."], ["Adjust the load:", "lower the intensity or volume and add rest days. Swap high-impact work for lower-impact work until the athlete is cleared."], ["Reduce stress:", "check in on sleep, study or work, and wellbeing."], ["Refer, don’t diagnose:", "if periods have stopped for 3+ months, guide the athlete to a GP or sports doctor. Ideally they should also see a sports dietitian."], ["Keep it private:", "the athlete chooses what to share, and it stays between them and the support team."]]],
+    ],
+    mentioned: [{ name: "Beth Mead", photo: "img/beth.png" }, { name: "Chloe Brennan" }, { name: "Isla Fernandes" }],
+  };
+
+  // ---------- Navigation: one stack per tab, the team tab first ----------
+  var TABS = [["training", "Training", trainingScreen], ["team", "Team overview", overviewScreen], ["cycle", "Cycle", femaleLibraryScreen]];
+  var stacks = { training: [trainingScreen], team: [overviewScreen], cycle: [femaleLibraryScreen] };
+  var tab = "team";
+  var stackEl = document.getElementById("stack");
+  var bar = document.querySelector(".tabbar");
+  TABS.forEach(function (t) {
+    var b = h('<button class="tab" role="tab" type="button" aria-label="' + t[1] + '">' + I[t[0]] + "</button>");
+    b.addEventListener("click", function () {
+      if (tab === t[0] && stacks[tab].length > 1) stacks[tab] = [stacks[tab][0]];
+      tab = t[0];
+      render();
+    });
+    bar.appendChild(b);
+  });
+  function push(fn) { stacks[tab].push(fn); render(true); }
+  function pop() { if (stacks[tab].length > 1) { stacks[tab].pop(); render(); } }
+  function render(pushed) {
+    [].forEach.call(bar.children, function (b, i) { b.setAttribute("aria-selected", String(TABS[i][0] === tab)); });
+    var s = stacks[tab];
+    var el = s[s.length - 1]();
+    el.classList.add("screen");
+    if (pushed) el.classList.add("push");
+    stackEl.innerHTML = "";
+    stackEl.appendChild(el);
+  }
+  function backBtn(el) { var b = el.querySelector("[data-back]"); if (b) b.addEventListener("click", pop); }
+
+  // ---------- Pop-ups ----------
+  function overlay(content) {
+    var o = h('<div class="overlay"></div>');
+    o.appendChild(content);
+    o.addEventListener("click", function (e) { if (e.target === o) o.remove(); });
+    document.querySelector(".app").appendChild(o);
+    return o;
+  }
+  function infoPopup() {
+    var box = h('<div class="info-box" role="dialog" aria-label="More Info"><h2>More Info <button class="close" type="button" aria-label="Close">×</button></h2>' +
+      '<h3>Exercises Key</h3><div class="key"><span><i style="background:#fad72c"></i><b>Physio</b>&nbsp;is yellow</span><span><i style="background:#a469b7"></i><b>Future</b>&nbsp;is purple</span><span><i style="background:#ff754a"></i><b>Past</b>&nbsp;is orange</span><span><i style="background:#ec759f"></i><b>Today</b>&nbsp;is pink</span></div>' +
+      '<h3>Readiness score (0–100)</h3><p>How ready the athlete feels to train each day. It comes from their daily check-ins and the exercises they’ve completed. Higher means more ready.</p>' +
+      '<h3>Month view</h3><p>Dark purple: high readiness (75+). Light purple: moderate readiness (55–74). Orange: low readiness (under 55); consider lighter training. Outlined day: today.</p>' +
+      '<h3>Week view</h3><p><b>Solid line:</b> the athlete’s daily score over the last 4 weeks. <b>Shaded band:</b> their usual range. <b>Dashed orange line:</b> a forecast for the next 5 days, based on patterns from past cycles. It’s a guide, not a certainty.</p>' +
+      '<h3>Pattern spotted</h3><p>A suggestion based on repeated dips in past cycles. Check it with the athlete before changing their plan.</p></div>');
+    var o = overlay(box);
+    box.querySelector(".close").addEventListener("click", function () { o.remove(); });
+  }
+  // The check-in pop-up (AthleteCheckInPopupView): write a message or pick a
+  // saved one, send, then the "sent" screen.
+  function checkIn(name) {
+    var first = name.split(" ")[0];
+    var saved = ["Hey " + first + ", how’s your cycle?", "Hey " + first + ", how are you feeling this week?"];
+    var box = h('<div class="popup" role="dialog" aria-label="Send check in?">' +
+      '<div class="popup-head"><h2>Send check in?</h2><button class="close" type="button" aria-label="Close">×</button></div>' +
+      '<p><b>Checkin’s improves performance!</b>Send a message to your athlete<br>Either write or Select a message to send</p>' +
+      '<textarea placeholder="Write a message" aria-label="Write a message"></textarea><p class="or">or</p>' +
+      saved.map(function (m) { return '<button class="saved" type="button" aria-pressed="false">' + esc(m) + "</button>"; }).join("") +
+      '<div class="popup-actions"><button class="btn" type="button" data-send disabled>Send</button><button class="btn" type="button" data-go-back>Go Back</button></div></div>');
+    var o = overlay(box);
+    var ta = box.querySelector("textarea"), send = box.querySelector("[data-send]");
+    function update() { send.disabled = !ta.value.trim(); }
+    ta.addEventListener("input", function () { [].forEach.call(box.querySelectorAll(".saved"), function (b) { b.setAttribute("aria-pressed", "false"); }); update(); });
+    [].forEach.call(box.querySelectorAll(".saved"), function (b) {
+      b.addEventListener("click", function () {
+        [].forEach.call(box.querySelectorAll(".saved"), function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+        ta.value = b.textContent; update();
+      });
+    });
+    box.querySelector(".close").addEventListener("click", function () { o.remove(); });
+    box.querySelector("[data-go-back]").addEventListener("click", function () { o.remove(); });
+    send.addEventListener("click", function () {
+      if (send.disabled) return;
+      o.remove();
+      var s = h('<div class="sent" role="status"><div class="dots"><i></i><i></i><i></i></div></div>');
+      document.querySelector(".app").appendChild(s);
+      setTimeout(function () {
+        s.innerHTML = '<div class="tick">' + I.tick + "</div><div>Your Message<br>Was Sent!</div>";
+        setTimeout(function () { s.style.transition = "opacity .3s"; s.style.opacity = 0; setTimeout(function () { s.remove(); }, 300); }, 1500);
+      }, 1100);
+    });
+  }
+
+  // ---------- Team tab: Overview (Individual / Team Summary) ----------
+  var mode = "individual";
+  var dayOffset = 0;
+  function overviewScreen() {
+    var hour = new Date().getHours();
+    var el = h('<div><div class="ov-head">' +
+      '<div class="greet"><div><p>' + (hour < 12 ? "Good morning!" : hour < 18 ? "Good afternoon!" : "Good evening!") + '</p><strong>' + COACH.name + '</strong><small>' + today.getDate() + " " + today.toLocaleDateString(undefined, { month: "long" }) + "</small></div>" + avatar(null) + "</div>" +
+      '<div class="ov-row"><h1 class="title-xl">Overview</h1><button class="info-btn" type="button" aria-label="More Info" data-info>i</button></div>' +
+      '<div class="seg" role="group"><button type="button" data-mode="individual" aria-pressed="' + (mode === "individual") + '">' + I.person.replace("<svg", '<svg width="14" height="14"') + ' Individual</button><button type="button" data-mode="team" aria-pressed="' + (mode === "team") + '">' + I.team.replace("<svg", '<svg width="18" height="18"') + " Team Summary</button></div>" +
+      '</div><div class="orange" data-body></div></div>');
+    el.querySelector("[data-info]").addEventListener("click", infoPopup);
+    [].forEach.call(el.querySelectorAll("[data-mode]"), function (b) {
+      b.addEventListener("click", function () { mode = b.dataset.mode; render(); });
+    });
+    var body = el.querySelector("[data-body]");
+    if (mode === "individual") individual(body); else teamSummary(body);
+    return el;
+  }
+  function individual(body) {
+    body.innerHTML = '<label class="search">' + I.search + '<input type="search" placeholder="Search Person" aria-label="Search Person"></label><div data-lists></div>';
+    var lists = body.querySelector("[data-lists]");
+    function fill(q) {
+      q = q.toLowerCase();
+      var staff = STAFF.filter(function (p) { return p.name.toLowerCase().indexOf(q) >= 0; });
+      var aths = ATHLETES.filter(function (p) { return p.name.toLowerCase().indexOf(q) >= 0; });
+      lists.innerHTML = (staff.length ? '<h2 class="list-title">Staffing team</h2>' + staff.map(function (p) { return '<div class="person">' + avatar(p) + "<span>" + esc(p.name) + "<small>" + p.role + "</small></span></div>"; }).join("") : "") +
+        (aths.length ? '<h2 class="list-title">Athletes</h2>' + aths.map(function (a) { return '<button class="person" type="button" data-athlete="' + a.id + '">' + avatar(a) + "<span>" + esc(a.name) + "</span></button>"; }).join("") : "") +
+        (!staff.length && !aths.length ? '<p class="center">No matching people.</p>' : "");
+      [].forEach.call(lists.querySelectorAll("[data-athlete]"), function (b) {
+        b.addEventListener("click", function () { var a = ATHLETES.find(function (x) { return x.id === b.dataset.athlete; }); push(function () { return playerScreen(a); }); });
+      });
+    }
+    body.querySelector("input").addEventListener("input", function (e) { fill(e.target.value); });
+    fill("");
+  }
+  function teamSummary(body) {
+    var start = addDays(today, -today.getDay() + 1 + dayOffset);
+    var days = [0, 1, 2, 3].map(function (i) { return addDays(start, i); });
+    body.innerHTML = '<div class="notice"><div>Reminder</div><div>Women’s Super League <b>43 Days</b></div></div>' +
+      '<div class="notice"><div>Announcements Dashboard</div><div style="font-size:14px">Practice is cancelled on Friday due to weather</div></div>' +
+      '<h2 class="list-title">Team Readiness</h2><div class="team-grid"><table><thead><tr><th></th>' +
+      days.map(function (d) { return "<th>" + WD[d.getDay()].slice(0, 1) + WD[d.getDay()].slice(1).toLowerCase() + "<br>" + d.getDate() + "</th>"; }).join("") + "</tr></thead><tbody>" +
+      ATHLETES.map(function (a) {
+        return '<tr><td class="name"><span>' + avatar(a) + esc(a.name) + "</span></td>" + days.map(function (d, i) {
+          var s = a.week[(((dayOffset + i) % 7) + 7) % 7];
+          return '<td class="cell ' + level(s) + '">' + s + "</td>";
+        }).join("") + "</tr>";
+      }).join("") + '</tbody></table><div class="days-nav"><button type="button" data-days="-1" aria-label="Earlier days">‹</button><span>Swipe or tap to see other days</span><button type="button" data-days="1" aria-label="Later days">›</button></div></div>';
+    [].forEach.call(body.querySelectorAll("[data-days]"), function (b) {
+      b.addEventListener("click", function () { dayOffset += 4 * +b.dataset.days; teamSummary(body); });
+    });
+  }
+
+  // ---------- An athlete's overview (PlayerOverviewView) ----------
+  function playerScreen(a) {
+    var o = a.overview();
+    var view = "month";
+    var el = h('<div><div class="ath-head"><div class="ath-top"><button class="back" type="button" data-back aria-label="Back">' + I.back + '</button><button class="info-btn" type="button" data-info aria-label="More Info" style="background:#fff;color:#411471">i</button></div>' +
+      '<div class="ath-id">' + avatar(a) + '<div><h1>' + esc(a.name) + '</h1><div class="ath-pills"><span class="pill">' + esc(o.phase) + '</span><button class="pill check" type="button" data-check>' + I.chat + " Check-in</button></div></div></div></div>" +
+      '<div class="section"><h2>Readiness <span class="toggle" role="group"><button type="button" data-view="month" aria-pressed="true">Month</button><button type="button" data-view="week" aria-pressed="false">Week</button></span></h2><div class="panel" data-readiness></div></div>' +
+      (o.note ? '<div class="section"><h2>Recent journal</h2><div class="card"><div class="note-title">' + esc(o.note.title) + '</div><div class="note-msg">' + esc(o.note.message) + '</div><b style="font-size:14px">View note</b>' + sessionCard(o.note.session, "past", true) + '<div class="center" style="margin-top:8px"><button class="btn" type="button" data-more>View More</button></div></div></div>' : "") +
+      '<div class="section"><h2>Upcoming Exercises</h2><div class="card">' +
+        '<div class="sub-title">Physio <button class="plus" type="button" aria-label="Add physio session">+</button></div>' + o.physio.map(function (s) { return sessionCard(s, "physio"); }).join("") +
+        '<div class="sub-title">Strength &amp; Conditioning <button class="plus" type="button" aria-label="Add strength session">+</button></div>' + o.strength.map(function (s) { return sessionCard(s, "future", true); }).join("") +
+      '</div></div>' +
+      '<div class="section"><h2>Individual goals</h2>' + o.goals.map(function (g) {
+        return '<div class="goal"><b>GOAL ' + g.n + "</b><p>" + esc(g.detail) + '</p><div class="track"><div class="fill" style="width:' + Math.round(g.progress * 100) + '%">' + Math.round(g.progress * 100) + "% Completed</div></div></div>";
+      }).join("") + "</div></div>");
+    backBtn(el);
+    el.querySelector("[data-info]").addEventListener("click", infoPopup);
+    el.querySelector("[data-check]").addEventListener("click", function () { checkIn(a.name); });
+    var panel = el.querySelector("[data-readiness]");
+    function drawReadiness() { panel.innerHTML = view === "month" ? monthView(o) : weekView(o); }
+    [].forEach.call(el.querySelectorAll("[data-view]"), function (b) {
+      b.addEventListener("click", function () {
+        view = b.dataset.view;
+        [].forEach.call(el.querySelectorAll("[data-view]"), function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+        drawReadiness();
+      });
+    });
+    drawReadiness();
+    wireSessions(el, a);
+    var more = el.querySelector("[data-more]");
+    if (more) more.addEventListener("click", function () { push(function () { return historyScreen(a, o.note.session); }); });
+    return el;
+  }
+  function monthView(o) {
+    var first = new Date(today.getFullYear(), today.getMonth(), 1);
+    var days = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+    var lead = (first.getDay() + 6) % 7;
+    var html = '<div class="cal-month">' + today.toLocaleDateString(undefined, { month: "long" }) + '</div><div class="cal">' +
+      ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(function (d) { return '<span class="wd">' + d + "</span>"; }).join("");
+    for (var i = 0; i < lead; i++) html += "<span></span>";
+    for (var d = 1; d <= days; d++) {
+      var date = new Date(today.getFullYear(), today.getMonth(), d);
+      var s = o.readiness[date.getTime()];
+      var cls = s == null ? "none" : level(s);
+      html += '<span class="d ' + cls + (sameDay(date, today) ? " today" : "") + '"><small>' + d + "</small>" + (s == null ? "" : s) + "</span>";
+    }
+    return html + "</div>" + (o.insight ? '<p class="insight">' + esc(o.insight) + "</p>" : "");
+  }
+  // Week view: the last 28 days, the athlete's usual range, and a dashed
+  // forecast for the days ahead (WeeklyReadinessChart).
+  function weekView(o) {
+    var W = 320, H = 170, L = 26, B = 22, T = 10;
+    var past = [];
+    for (var i = 27; i >= 0; i--) past.push(o.readiness[addDays(today, -i).getTime()]);
+    var n = past.length + o.forecast.length;
+    var x = function (i) { return L + (W - L - 6) * i / (n - 1); };
+    var y = function (v) { return T + (H - T - B) * (1 - (v - 20) / 80); };
+    var line = past.map(function (v, i) { return (i ? "L" : "M") + x(i).toFixed(1) + "," + y(v).toFixed(1); }).join("");
+    var fc = [past[past.length - 1]].concat(o.forecast).map(function (v, i) { return (i ? "L" : "M") + x(past.length - 1 + i).toFixed(1) + "," + y(v).toFixed(1); }).join("");
+    var grid = [40, 60, 80, 100].map(function (v) { return '<line x1="' + L + '" x2="' + W + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="#e6e4ef"/><text x="2" y="' + (y(v) + 4) + '" font-size="9" fill="#8c86a5">' + v + "</text>"; }).join("");
+    return '<div class="chart"><svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Readiness over the last four weeks, with a forecast">' + grid +
+      '<rect x="' + L + '" y="' + y(o.typical[1]) + '" width="' + (W - L) + '" height="' + (y(o.typical[0]) - y(o.typical[1])) + '" fill="#f0effc"/>' +
+      '<path d="' + line + '" fill="none" stroke="#8277e5" stroke-width="2.5" stroke-linejoin="round"/>' +
+      '<path d="' + fc + '" fill="none" stroke="#e94f1d" stroke-width="2.5" stroke-dasharray="5 4"/>' +
+      '<circle cx="' + x(past.length - 1) + '" cy="' + y(past[past.length - 1]) + '" r="4" fill="#f06625"/>' +
+      '<text x="' + L + '" y="' + (H - 6) + '" font-size="9" fill="#8c86a5">4 weeks ago</text><text x="' + (W - 6) + '" y="' + (H - 6) + '" font-size="9" fill="#8c86a5" text-anchor="end">next 6 days</text></svg></div>' +
+      (o.insight ? '<p class="insight">' + esc(o.insight) + "</p>" : "");
+  }
+  function sessionCard(s, kind, detail) {
+    return '<div class="session" data-session><button class="session-head" type="button"><span class="stripe ' + kind + '"></span><div><span class="muted" style="font-size:12px">' + dateText(s.date) + "</span><b>Day " + s.day + "</b>" + s.exercises.length + " Exercises - " + s.mins + ' Mins</div><span class="tri">▼</span></button>' +
+      '<div class="ex-list">' + s.exercises.map(function (e, i) {
+        return '<div class="ex"><img class="' + e.energy + '" src="' + (e.photo || EX_IMG) + '" alt="" loading="lazy"><b>' + esc(e.name) + "</b>" + (e.flagged ? '<span class="flag" aria-label="Flagged by athlete">' + I.flag + "</span>" : "") + '<span class="badge ' + e.energy + '">' + e.energy[0].toUpperCase() + e.energy.slice(1) + '</span><span class="sets">' + e.sets + " sets</span></div>";
+      }).join("") + (detail ? '<div class="center" style="margin-top:10px"><button class="btn" type="button" data-detail>View Detail</button></div>' : "") + "</div></div>";
+  }
+  function wireSessions(el, a) {
+    [].forEach.call(el.querySelectorAll("[data-session]"), function (s) {
+      s.querySelector(".session-head").addEventListener("click", function () { s.toggleAttribute("open"); });
+    });
+    var o = a.overview();
+    [].forEach.call(el.querySelectorAll("[data-detail]"), function (b) {
+      b.addEventListener("click", function () {
+        var session = b.closest(".card").querySelector(".note-title") ? o.note.session : o.strength[0];
+        var ex = session.exercises.find(function (e) { return e.detail; }) || session.exercises[0];
+        push(function () { return exerciseHistoryDetail(a, o, session, ex); });
+      });
+    });
+  }
+
+  // ---------- Exercise history (ExerciseHistoryView) ----------
+  function historyScreen(a, session) {
+    var o = a.overview();
+    var el = h('<div><div class="ath-head" style="padding-bottom:14px"><div class="ath-top"><button class="back" type="button" data-back aria-label="Back">' + I.back + "</button></div>" +
+      '<div class="ath-id">' + avatar(a) + "<div><h1>" + esc(a.name) + '</h1><div class="ath-pills"><span class="pill">' + esc(o.phase) + "</span></div></div></div></div>" +
+      '<div class="hist-band">Exercise history | ' + dateText(session.date) + '</div><div class="hist-body">' +
+      session.exercises.map(function (e, i) {
+        return '<button class="hist-row" type="button" data-i="' + i + '"><img src="' + (e.photo || EX_IMG) + '" alt=""><b style="flex:1">' + esc(e.name) + "</b>" + (e.flagged ? '<span class="flag">' + I.flag + "</span>" : "") + '<span class="sets">' + e.sets + ' sets</span><span class="badge ' + e.energy + '">' + e.energy[0].toUpperCase() + e.energy.slice(1) + "</span></button>";
+      }).join("") + "</div></div>");
+    backBtn(el);
+    [].forEach.call(el.querySelectorAll("[data-i]"), function (b) {
+      b.addEventListener("click", function () { var e = session.exercises[+b.dataset.i]; push(function () { return exerciseHistoryDetail(a, o, session, e); }); });
+    });
+    return el;
+  }
+  function exerciseHistoryDetail(a, o, session, e) {
+    var d = e.detail || { note: null, sets: ["3 Sets", "10 reps"], repeat: "Twice every week", coach: "Andres Navarro" };
+    var past = session.date < today;
+    var el = h('<div><div class="ath-head" style="padding-bottom:14px"><div class="ath-top"><button class="back" type="button" data-back aria-label="Back">' + I.back + "</button></div>" +
+      '<div class="ath-id">' + avatar(a) + "<div><h1>" + esc(a.name) + '</h1><div class="ath-pills"><span class="pill">' + esc(o.phase) + "</span></div></div></div></div>" +
+      '<div class="hist-band">Exercise history | ' + dateText(session.date) + '</div><div class="detail">' +
+      '<div class="hist-row" style="background:#f5e6f8"><img src="' + (e.photo || EX_IMG) + '" alt=""><b style="flex:1">' + esc(e.name) + '</b><span class="sets">' + e.sets + ' sets</span><span class="badge ' + e.energy + '">' + e.energy[0].toUpperCase() + e.energy.slice(1) + "</span></div>" +
+      (d.note ? "<h3>Notes by " + esc(a.name.split(" ")[0]) + ' <span class="flag" style="display:inline-grid;vertical-align:middle">' + I.flag + "</span></h3><p style=\"margin:0\">" + esc(d.note) + "</p>" : "") +
+      '<h3 class="rule">Selection</h3><p style="margin:0 0 6px">Intensity Mode:</p><div class="intensity" role="group">' +
+      ["low", "moderate", "high"].map(function (lv) { return '<button type="button" class="' + lv + '" aria-pressed="' + (lv === e.energy) + '"' + (past ? " disabled" : "") + ">" + lv[0].toUpperCase() + lv.slice(1) + "</button>"; }).join("") + "</div>" +
+      "<h3>Number of set:</h3><ul>" + d.sets.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ul>" +
+      "<h3>Repeating:</h3><p style=\"margin:0\">" + esc(d.repeat) + "</p><h3>Assigned: <span style=\"font-weight:600\">" + esc(d.coach) + "</span></h3>" +
+      (past ? '<p style="font-weight:800">This is in the past, no edits can be made...</p>' : "") + "</div></div>");
+    backBtn(el);
+    [].forEach.call(el.querySelectorAll(".intensity button:not([disabled])"), function (b) {
+      b.addEventListener("click", function () { [].forEach.call(el.querySelectorAll(".intensity button"), function (x) { x.setAttribute("aria-pressed", String(x === b)); }); });
+    });
+    return el;
+  }
+
+  // ---------- Training tab: Exercise Library ----------
+  function libHeader(title, back) {
+    return '<div class="lib-head"><h1>' + (back ? '<button class="back" type="button" data-back aria-label="Back">' + I.back + "</button>" : "") + esc(title) + '</h1><button class="info-btn" type="button" data-info aria-label="More Info">i</button></div>';
+  }
+  function searchable(el, cards, empty) {
+    var input = el.querySelector("input");
+    input.addEventListener("input", function () {
+      var q = input.value.toLowerCase(), shown = 0;
+      [].forEach.call(el.querySelectorAll(cards), function (c) { var on = c.textContent.toLowerCase().indexOf(q) >= 0; c.hidden = !on; shown += on; });
+      el.querySelector("[data-empty]").hidden = shown > 0;
+    });
+    el.querySelector("[data-empty]").textContent = empty;
+  }
+  function trainingScreen() {
+    var el = h("<div>" + libHeader("Exercise Library") + '<div class="lib-body"><label class="search">' + I.search + '<input type="search" placeholder="Search exercise categories" aria-label="Search exercise categories"></label>' +
+      '<p class="lib-intro">Browse exercise categories, or search for a category by name.</p><div class="lib-row-title">Categories</div>' +
+      CATEGORIES.map(function (c, i) { return '<button class="lib-card" type="button" data-cat="' + i + '"><span class="ph" style="background-image:url(' + PHOTOS[LIBRARY[i][0]] + ')"></span><span>' + esc(c) + "</span></button>"; }).join("") +
+      '<p data-empty hidden style="color:#fff"></p></div></div>');
+    el.querySelector("[data-info]").addEventListener("click", infoPopup);
+    searchable(el, ".lib-card", "No categories found. Try another search.");
+    [].forEach.call(el.querySelectorAll("[data-cat]"), function (b) { b.addEventListener("click", function () { push(function () { return exerciseList(CATEGORIES[+b.dataset.cat]); }); }); });
+    return el;
+  }
+  function exerciseList(category) {
+    var items = [["Lunge with scooter - rowing machine", "high", EX_IMG]].concat(LIBRARY.map(function (e) { return [e[0], e[1], PHOTOS[e[0]]]; }));
+    var el = h("<div>" + libHeader("Exercise Library", true) + '<div class="lib-body"><label class="search">' + I.search + '<input type="search" placeholder="Search exercises" aria-label="Search exercises"></label>' +
+      '<p class="lib-intro">Browse exercises in ' + esc(category) + ', or search for an exercise by name.</p><div class="lib-row-title">' + esc(category) + "</div>" +
+      items.map(function (e, i) { return '<button class="lib-card" type="button" data-ex="' + i + '"><span class="ph" style="background-image:url(' + e[2] + ')"></span><span>' + esc(e[0]) + '<small>Context of the exercise</small></span></button>'; }).join("") +
+      '<p data-empty hidden style="color:#fff"></p></div></div>');
+    backBtn(el);
+    el.querySelector("[data-info]").addEventListener("click", infoPopup);
+    searchable(el, ".lib-card", "No exercises match. Try another search or clear your filters.");
+    [].forEach.call(el.querySelectorAll("[data-ex]"), function (b) { b.addEventListener("click", function () { var e = items[+b.dataset.ex]; push(function () { return exerciseDetail(e); }); }); });
+    return el;
+  }
+  // The library's suggested prescription for each intensity, and who it's
+  // assigned to (ExerciseDetailView).
+  function exerciseDetail(e) {
+    var RX = {
+      low: ["1-2 Sets", "8-10 reps per side", "Light resistance with 60 Seconds rest"],
+      moderate: ["2-3 Sets", "10-12 reps per side", "Moderate resistance with 75 Seconds rest"],
+      high: ["2-3 Sets", "10-12 lunges per leg", "45-60 Seconds of rowing", "High resistance with 90 Seconds rest"],
+    };
+    var assigned = { low: [ATHLETES[3]], moderate: [ATHLETES[1], ATHLETES[2]], high: [ATHLETES[0], ATHLETES[2]] };
+    var current = e[1];
+    var el = h("<div>" + libHeader("Exercise Library", true) + '<div class="article" style="padding-top:12px"><div class="title-pill">' + esc(e[0]) + '</div><div class="video" style="background-image:url(' + e[2] + ')"></div>' +
+      '<div class="detail"><h3>Background</h3><ul><li>Builds lower- and upper-body strength.</li><li>Develops cardiovascular endurance.</li><li>Improves coordination and stability.</li></ul>' +
+      '<h3>Coach Consideration</h3><p style="margin:0">Equipment Required</p><h3>Intensity Modes:</h3><div class="intensity" role="group" style="background:#fff">' +
+      ["low", "moderate", "high"].map(function (lv) { return '<button type="button" class="' + lv + '" data-lv="' + lv + '" aria-pressed="' + (lv === current) + '">' + lv[0].toUpperCase() + lv.slice(1) + "</button>"; }).join("") +
+      '</div><div data-rx></div><h3>Assigned for:</h3><div data-assigned></div><p style="font-size:12px;opacity:.85">Intensity modes show the library’s suggested prescription. Use an athlete’s pencil button to edit only their assignment.</p></div></div></div>');
+    backBtn(el);
+    el.querySelector("[data-info]").addEventListener("click", infoPopup);
+    function fill() {
+      el.querySelector("[data-rx]").innerHTML = "<h3>Number of set:</h3><ul>" + RX[current].map(function (s) { return "<li>" + s + "</li>"; }).join("") + "</ul>";
+      el.querySelector("[data-assigned]").innerHTML = assigned[current].map(function (a) { return '<div class="mention">' + avatar(a) + "<span>" + esc(a.name) + '</span><button type="button" aria-label="Edit ' + esc(a.name) + '’s assignment" style="background:#ff754a">' + I.pencil + "</button></div>"; }).join("");
+      [].forEach.call(el.querySelectorAll("[data-lv]"), function (b) { b.setAttribute("aria-pressed", String(b.dataset.lv === current)); });
+    }
+    [].forEach.call(el.querySelectorAll("[data-lv]"), function (b) { b.addEventListener("click", function () { current = b.dataset.lv; fill(); }); });
+    fill();
+    return el;
+  }
+
+  // ---------- Cycle tab: Female Library ----------
+  function femaleLibraryScreen() {
+    var el = h("<div>" + libHeader("Female Library") + '<div class="lib-body"><label class="search">' + I.search + '<input type="search" placeholder="Search Female Library topics" aria-label="Search Female Library topics"></label><div class="lib-row-title">Categories</div>' +
+      TOPICS.map(function (t, i) { return '<button class="lib-card" type="button" data-topic="' + i + '"><span class="ph">Photo</span><span>' + esc(t) + "</span></button>"; }).join("") +
+      '<p data-empty hidden style="color:#fff"></p></div></div>');
+    el.querySelector("[data-info]").addEventListener("click", infoPopup);
+    searchable(el, ".lib-card", "No topics found. Try another search.");
+    [].forEach.call(el.querySelectorAll("[data-topic]"), function (b) { b.addEventListener("click", function () { var t = TOPICS[+b.dataset.topic]; push(function () { return topicScreen(t); }); }); });
+    return el;
+  }
+  function topicScreen(topic) {
+    var has = topic === ARTICLE.title;
+    var el = h("<div>" + libHeader("Female Library", true) + '<div class="lib-body"><div class="lib-row-title">' + esc(topic) + "</div>" +
+      (has ? '<button class="lib-card" type="button" data-article><span class="ph">Photo</span><span>' + esc(ARTICLE.title) + "</span></button>" : '<p style="color:#fff">There are no articles in this topic yet. Check back soon.<br><br>Try “Mitigating Hypothalamic Amenorrhea”.</p>') + "</div></div>");
+    backBtn(el);
+    el.querySelector("[data-info]").addEventListener("click", infoPopup);
+    var b = el.querySelector("[data-article]");
+    if (b) b.addEventListener("click", function () { push(articleScreen); });
+    return el;
+  }
+  function articleScreen() {
+    var el = h("<div>" + libHeader("Female Library", true) + '<div class="article" style="padding-top:12px"><div class="title-pill">' + esc(ARTICLE.title) + '</div><div class="video">VIDEO</div><div class="detail">' +
+      ARTICLE.sections.map(function (s) { return "<h3>" + esc(s[0]) + "</h3><ul>" + s[1].map(function (p) { return "<li><b>" + esc(p[0]) + "</b> " + esc(p[1]) + "</li>"; }).join("") + "</ul>"; }).join("") +
+      "<h3>Who mentioned</h3>" + ARTICLE.mentioned.map(function (m) { return '<div class="mention">' + avatar(m) + "<span>" + esc(m.name) + '</span><button type="button" data-check="' + esc(m.name) + '" aria-label="Send a check-in to ' + esc(m.name) + '">' + I.clip + "</button></div>"; }).join("") +
+      "</div></div></div>");
+    backBtn(el);
+    el.querySelector("[data-info]").addEventListener("click", infoPopup);
+    [].forEach.call(el.querySelectorAll("[data-check]"), function (b) { b.addEventListener("click", function () { checkIn(b.dataset.check); }); });
+    return el;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
