@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PeriodT Demo</title>
+<!-- A web version of the PeriodT iOS app (SwiftUI), rebuilt screen for
+     screen from the app's code so visitors can tap through it in the
+     portfolio. Same tabs, wording, colours, journal rules, calendar logic,
+     exercise list and recommendation scoring as the Swift source. -->
+<style>
+  :root {
+    --primary: #d96f93; /* Primary.colorset */
+    --third: #fdecf2;   /* Third.colorset */
+    --secondary: #dec6e8;
+    --ink: #1e1e1e;     /* Default.colorset */
+    --muted: #8a8a8e;
+    --line: rgba(0, 0, 0, 0.12);
+    --pink: #ff2d55;    /* SwiftUI Color.pink */
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #fff; color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+  body { overflow: hidden; }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  .app { position: relative; height: 100%; display: flex; flex-direction: column; }
+  .stack { position: relative; flex: 1; overflow: hidden; }
+  .screen { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; background: #fff; padding-bottom: 24px; scrollbar-width: none; }
+  .screen::-webkit-scrollbar { display: none; }
+  .screen.push { animation: push 0.28s ease-out; }
+  @keyframes push { from { transform: translateX(30%); opacity: 0.4; } to { transform: none; opacity: 1; } }
+
+  /* Titles */
+  .large-title { font-size: 34px; font-weight: 400; text-align: center; margin: 14px 0 8px; }
+  .nav-title { display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; padding: 12px 12px 10px; }
+  .nav-title h1 { margin: 0; font-size: 28px; font-weight: 400; text-align: center; }
+  .back { width: 40px; height: 40px; display: grid; place-items: center; }
+  .rule { height: 1px; background: rgba(0, 0, 0, 0.25); }
+  .divider { height: 1px; background: var(--line); margin: 0 0 6px; }
+
+  /* Cycle */
+  .card { width: calc(100% - 32px); margin: 14px auto 0; border: 2px solid var(--primary); border-radius: 15px; background: var(--third); overflow: hidden; }
+  .card-head { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 0 7px; color: var(--primary); font-weight: 600; font-size: 16px; }
+  .card-head.col { flex-direction: column; gap: 2px; }
+  .card-body { background: #fff; border-top: 2px solid var(--primary); border-radius: 0 0 13px 13px; padding: 14px 16px; text-align: center; font-weight: 600; font-size: 16px; }
+  .card-body.video { position: relative; padding: 0; height: 118px; background: var(--primary); display: block; width: 100%; color: #fff; }
+  .card-body.video img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-body.video .veil { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.35); display: grid; place-items: center; align-content: center; gap: 4px; padding: 0 16px; }
+  .card-body.video .veil small { font-size: 12px; font-weight: 600; }
+  .ring-wrap { position: relative; width: 260px; height: 260px; margin: 46px auto 26px; }
+  .ring-wrap svg { width: 100%; height: 100%; overflow: visible; }
+  .ring-arc { transition: stroke-dashoffset 2s ease-in-out; }
+  .ring-label { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; color: var(--primary); text-align: center; pointer-events: none; }
+  .ring-label span { font-size: 20px; }
+  .ring-label strong { font-size: 40px; line-height: 1.1; }
+  .ring-node { position: absolute; width: 32px; height: 32px; margin: -16px 0 0 -16px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 8px; font-weight: 700; display: grid; place-items: center; transition: left 2s ease-in-out, top 2s ease-in-out; }
+  .ring-node.go { background: #8e8e93; }
+
+  /* Calendar */
+  .cal-banner { display: flex; align-items: center; justify-content: center; background: var(--primary); color: #fff; padding: 12px 0; }
+  .cal-banner div { text-align: center; padding: 0 22px; }
+  .cal-banner strong { display: block; font-size: 34px; font-weight: 400; }
+  .cal-banner span { font-size: 14px; }
+  .cal-banner i { width: 2px; height: 70px; background: #fff; margin: 0 14px; }
+  .month { padding: 14px 14px 0; }
+  .month h2 { margin: 0 0 6px; font-size: 20px; font-weight: 400; color: var(--muted); text-align: center; }
+  .grid7 { display: grid; grid-template-columns: repeat(7, 1fr); }
+  .dow { color: var(--muted); text-align: center; padding: 6px 0; font-size: 14px; }
+  .day { height: 40px; display: grid; place-items: center; position: relative; font-size: 16px; margin: 4px 0; }
+  .day .bg { position: absolute; inset: 0; }
+  .day span { position: relative; }
+  .day.today .bg { inset: 0 calc(50% - 20px); border-radius: 50%; background: rgba(142, 142, 147, 0.3); }
+  .day.period .bg { background: rgba(217, 111, 147, 0.5); }
+  .day.pre .bg { background: rgba(253, 236, 242, 0.8); }
+  .day.first .bg { border-radius: 30px 0 0 30px; }
+  .day.last .bg { border-radius: 0 30px 30px 0; }
+  .day.first.last .bg { border-radius: 30px; }
+  button.day { width: 100%; }
+  .cal-key { display: flex; gap: 14px; justify-content: center; font-size: 12px; color: var(--muted); padding: 10px 0 0; }
+  .cal-key i { display: inline-block; width: 12px; height: 12px; border-radius: 6px; vertical-align: -2px; margin-right: 5px; }
+
+  /* Journal */
+  .journal-head { font-size: 17px; font-weight: 600; text-align: center; padding: 12px 0 0; }
+  .section { padding: 0 20px; margin-top: 24px; }
+  .section h3 { margin: 0; font-size: 17px; font-weight: 600; }
+  .section p.sub { margin: 4px 0 10px; font-size: 15px; color: var(--muted); }
+  .ratings { display: flex; justify-content: space-between; align-items: flex-start; }
+  .rating { width: 72px; display: grid; justify-items: center; gap: 6px; font-size: 12px; text-align: center; white-space: pre-line; }
+  .rating i { width: 50px; height: 50px; border-radius: 50%; background: rgba(255, 45, 85, 0.2); display: grid; place-items: center; font-style: normal; font-size: 32px; line-height: 1; transition: background 0.15s; }
+  .rating[aria-pressed="true"] i { background: var(--pink); }
+  .pills { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 9px 14px; }
+  .pill { border: 1px solid var(--pink); color: var(--pink); border-radius: 999px; padding: 7px 6px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background 0.15s, color 0.15s; }
+  .pill[aria-pressed="true"] { background: var(--pink); color: #fff; }
+  textarea { width: 100%; min-height: 110px; border-radius: 10px; border: 1px solid rgba(255, 45, 85, 0.35); background: rgba(255, 45, 85, 0.06); padding: 10px; font: 15px var(--font); resize: vertical; }
+  .date-row { display: flex; align-items: center; justify-content: space-between; }
+  .date-row input { font: 15px var(--font); border: 0; background: rgba(118, 118, 128, 0.12); border-radius: 8px; padding: 6px 10px; color: var(--ink); }
+  .save { display: block; width: calc(100% - 40px); margin: 26px auto 0; background: var(--pink); color: #fff; font-weight: 600; font-size: 17px; border-radius: 12px; padding: 14px 0; }
+
+  /* Journal history */
+  .empty { text-align: center; color: var(--muted); padding: 120px 30px 0; }
+  .empty svg { width: 44px; height: 44px; }
+  .empty h2 { color: var(--ink); font-size: 22px; margin: 10px 0 6px; }
+  .entry { margin: 14px 16px 0; padding: 14px 16px; border-radius: 12px; background: #f2f2f7; }
+  .entry h3 { margin: 0 0 8px; font-size: 17px; }
+  .entry dt { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .entry dd { margin: 2px 0 0; font-size: 15px; }
+
+  /* Exercise */
+  .filters { display: flex; gap: 12px; padding: 10px 20px; overflow-x: auto; scrollbar-width: none; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter { position: relative; flex: none; display: flex; align-items: center; gap: 8px; border: 1px solid var(--primary); color: var(--primary); border-radius: 16px; padding: 10px 16px; font-size: 15px; }
+  .filter.on { background: var(--third); }
+  .filter select { position: absolute; inset: 0; opacity: 0; cursor: pointer; font-size: 16px; }
+  .filter .clear { position: relative; z-index: 1; font-size: 11px; }
+  .cat { margin-top: 26px; }
+  .cat-title { display: flex; align-items: center; gap: 8px; padding: 0 16px 16px; font-size: 24px; font-weight: 500; text-align: left; width: 100%; }
+  .cat-title svg { color: var(--muted); }
+  .row { display: flex; gap: 15px; overflow-x: auto; padding: 0 16px; scrollbar-width: none; }
+  .row::-webkit-scrollbar { display: none; }
+  .vcard { flex: none; width: 220px; text-align: left; }
+  .vcard img, .vlist img { width: 100%; height: 115px; object-fit: cover; border-radius: 14px; background: #d1d1d6; display: block; }
+  .vcard p { margin: 12px 0 0; font-size: 16px; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .none { padding: 0 16px; color: var(--muted); font-weight: 500; }
+  .vlist { display: block; width: calc(100% - 32px); margin: 22px auto 0; text-align: left; }
+  .vlist img { height: 190px; }
+  .vlist p { margin: 12px 0 0; font-size: 19px; }
+  .detail h2 { font-size: 24px; font-weight: 500; margin: 24px 20px 20px; }
+  .player { width: calc(100% - 30px); aspect-ratio: 16 / 9; margin: 0 auto; border-radius: 14px; overflow: hidden; background: #000; }
+  .player iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .info { padding: 10px 25px 90px; }
+  .info dt { margin-top: 20px; font-size: 21px; font-weight: 600; color: var(--primary); }
+  .info dd { margin: 4px 0 0; font-size: 18px; color: rgba(0, 0, 0, 0.6); }
+  .fab { position: absolute; right: 24px; bottom: 28px; width: 58px; height: 58px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; box-shadow: 0 4px 11px rgba(0, 0, 0, 0.25); z-index: 2; }
+
+  /* Sheets and alerts */
+  .overlay { position: absolute; inset: 0; z-index: 20; background: rgba(0, 0, 0, 0.35); display: grid; place-items: center; padding: 0 28px; animation: fade 0.25s ease-out; }
+  @keyframes fade { from { opacity: 0; } }
+  .share { width: 100%; background: #fff; border-radius: 24px; padding: 22px; text-align: center; box-shadow: 0 0 13px rgba(0, 0, 0, 0.25); animation: rise 0.25s ease-out; }
+  @keyframes rise { from { transform: translateY(40px); opacity: 0; } }
+  .share .x { display: block; margin-left: auto; color: var(--secondary); }
+  .share h2 { margin: 12px 0 8px; font-size: 22px; font-weight: 600; }
+  .share p { margin: 0 0 14px; color: #8e8e93; font-size: 15px; }
+  .share code { display: block; padding: 14px; border-radius: 14px; background: rgba(142, 142, 147, 0.12); color: #8e8e93; font: 13px var(--font); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .share .btn { display: flex; justify-content: center; gap: 8px; width: 100%; margin-top: 14px; padding: 15px; border-radius: 16px; font-weight: 600; font-size: 16px; }
+  .share .btn.fill { background: var(--primary); color: #fff; }
+  .share .btn.line { border: 1px solid var(--primary); color: var(--primary); }
+  .share small { display: block; margin-top: 10px; color: var(--muted); }
+  .alert { width: 270px; background: rgba(242, 242, 247, 0.97); border-radius: 14px; text-align: center; overflow: hidden; animation: pop 0.2s ease-out; }
+  @keyframes pop { from { transform: scale(1.1); opacity: 0; } }
+  .alert h2 { margin: 18px 16px 4px; font-size: 17px; }
+  .alert p { margin: 0 16px 18px; font-size: 13px; }
+  .alert button { display: block; width: 100%; border-top: 1px solid rgba(60, 60, 67, 0.29); padding: 11px; color: #007aff; font-weight: 600; font-size: 17px; }
+
+  /* Tab bar */
+  .tabbar { display: flex; border-top: 1px solid var(--line); background: rgba(249, 249, 249, 0.96); padding: 6px 0 calc(8px + env(safe-area-inset-bottom)); }
+  .tab { flex: 1; display: grid; justify-items: center; gap: 2px; font-size: 10px; font-weight: 500; color: #8e8e93; }
+  .tab[aria-selected="true"] { color: var(--pink); }
+  .tab svg { width: 24px; height: 24px; }
+  svg { display: inline-block; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="stack" id="stack"></div>
+  <nav class="tabbar" role="tablist" aria-label="PeriodT"></nav>
+</div>
+<script>
+(function () {
+  // ---------- Icons (SF Symbols stand-ins) ----------
+  var I = {
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 4.5h11a2 2 0 0 1 2 2V20H7a2 2 0 0 1-2-2z"/><path d="M5 17a2 2 0 0 1 2-2h11"/></svg>',
+    play: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M7 4.5v15l12-7.5z"/></svg>',
+    playFill: '<svg viewBox="0 0 24 24" width="50" height="50" fill="#d96f93"><path d="M7 4.5v15l12-7.5z"/></svg>',
+    chevR: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+    chevL: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+    chevD: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></svg>',
+    x: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    share: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5"/><path d="M7 11H5.5v9.5h13V11H17"/></svg>',
+    copy: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>',
+    alert: '<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm7 3v5h2V7zm0 7v2h2v-2z"/></svg>',
+    sun: '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><circle cx="9" cy="8" r="3.4"/><path d="M9 1.5v1.8M2.5 8h1.8M4.3 3.3l1.2 1.2M13.7 3.3l-1.2 1.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M8 20h10a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.4 1.5A3.3 3.3 0 0 0 8 20z"/></svg>',
+    figure: '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><circle cx="12" cy="4" r="2.3"/><path d="M9.5 7.5h5l3 8h-3.2l-.8 7h-3l-.8-7H6.5z"/></svg>',
+    bookLg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M5 4.5h11a2 2 0 0 1 2 2V20H7a2 2 0 0 1-2-2z"/><path d="M5 17a2 2 0 0 1 2-2h11"/></svg>',
+  };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function h(html) { var d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstChild; }
+
+  // ---------- Data (Models/JournalEntry.swift, Views/Suggestions/VideoListView.swift) ----------
+  var MOODS = [["Happy", "😀"], ["Calm", "🙂"], ["Neutral", "😐"], ["Sad", "🙁"]];
+  var CRAMPS = [["No Pain", "😀"], ["Mild", "🙂"], ["Moderate", "😐"], ["Strong", "🙁"]];
+  var ENDO = [["No Diagnosis", "😐", "No\nDiagnosis"], ["Suspected Symptoms", "🙁", "Suspected\nSymptoms"], ["Diagnosed", "😀", "Diagnosed"]];
+  var CRAVINGS = [["Sweet", "🍬"], ["Salty", "🥨"], ["Spicy", "🌶️"], ["Healthy", "🥗"], ["Protein", "🥩"], ["Carb", "🥖"], ["No Craving", "×"]];
+  var SYMPTOMS = [["Bleeding", "🩸"], ["Headache", "🤕"], ["Nausea", "🤢"], ["Fatigue", "😴"], ["Bloating", "🎈"], ["Dizziness", "💫"], ["Brain fog", "🌫️"], ["Back Pain", "🧍"], ["No Symptom", "×"]];
+  var SUPPLEMENTS = [["Pain Relief", "💊"], ["Magnesium", "🧂"], ["Iron", "🩸"], ["Vitamin D", "☀️"], ["Herbal Remedies", "🌿"], ["No Supplements", "×"]];
+  var VIDEOS = [
+    ["Luteal Phase Yoga | Nourish & Calm", "Df4XI5VEKFg", 19, "Yoga", "Low", "Pre-period"],
+    ["Luteal Phase Yoga | Ease PMS", "BR0HW1-Ci3w", 25, "Yoga", "Medium", "Pre-period"],
+    ["Pre-period Full Body Workout | Luteal Phase", "Wu2WV6QPVdA", 13, "Cardio", "Medium", "Pre-period"],
+    ["15 Min Period & PMS Stretch", "2X78NWuRfJU", 15, "Stretching", "Low", "Pre-period"],
+    ["12 Min Slow Workout | Relieve Tension/Full Body", "S4UfZ2TV_uA", 12, "Stretching", "Low", "Period"],
+    ["Gentle Yoga | All Levels Full Body Stretch", "WPBi5cgmsL0", 20, "Yoga", "Low", "Period"],
+    ["Relaxing Yoga Flow During Menstruation", "VaVIvmQx_Xw", 33, "Yoga", "Low", "Period"],
+    ["Full-body Mat Workout for Period and PMS", "evQcsWf54qY", 27, "Cardio", "Low", "Period"],
+    ["Full Body Workout for Period & PMS", "vRDuE4k6zq0", 14, "Cardio", "Medium", "Post-period"],
+    ["Slow & Low—full Body Strength Workout For PMS & Period", "o8gVtlrAwhg", 35, "Weight", "Medium", "Post-period"],
+    ["Full-body mat workout for period and PMS", "evQcsWf54qY", 27, "Cardio", "Low", "Post-period"],
+  ].map(function (v, i) { return { key: i, title: v[0], id: v[1], duration: v[2], workoutType: v[3], intensity: v[4], category: v[5] }; });
+  var thumb = function (v, q) { return "https://img.youtube.com/vi/" + v.id + "/" + (q || "hqdefault") + ".jpg"; };
+
+  // ---------- Calendar logic (ViewModels/CalendarViewModel.swift) ----------
+  var DAY = 86400000;
+  function startOfDay(d) { var x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
+  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  var today = startOfDay(new Date());
+  var PRE_DAYS = 3, PERIOD_DAYS = 6;
+  var prePeriod = [];
+  for (var p = 0; p < PRE_DAYS; p++) prePeriod.push(addDays(today, -(p + 1)));
+  prePeriod.sort(function (a, b) { return a - b; });
+  function periodRun(start) { var out = []; for (var i = 0; i < PERIOD_DAYS; i++) out.push(addDays(start, i)); return out; }
+  var batches = [periodRun(addDays(today, 7))];
+  batches.push(periodRun(addDays(batches[0][PERIOD_DAYS - 1], 21)));
+  var same = function (a, b) { return startOfDay(a).getTime() === startOfDay(b).getTime(); };
+  var inList = function (list, d) { return list.some(function (x) { return same(x, d); }); };
+  var preVideos = VIDEOS.filter(function (v) { return v.category === "Pre-period"; });
+
+  // ---------- Exercise logic (SuggestionsView.swift) ----------
+  var filters = { duration: "All", workout: "All", intensity: "All" };
+  var FILTERS = [
+    ["duration", "Duration", ["All", "0-10 min", "10-20 min", "20-30 min", "30+"]],
+    ["workout", "Workout Type", ["All", "Stretching", "Yoga", "Cardio", "Weight"]],
+    ["intensity", "Intensity", ["All", "Low", "Medium", "High"]],
+  ];
+  function matchesDuration(d, f) {
+    if (f === "0-10 min") return d < 10;
+    if (f === "10-20 min") return d >= 10 && d < 20;
+    if (f === "20-30 min") return d >= 20 && d < 30;
+    if (f === "30+") return d >= 30;
+    return true;
+  }
+  function filtered(list) {
+    return list.filter(function (v) {
+      return (filters.duration === "All" || matchesDuration(v.duration, filters.duration)) &&
+        (filters.workout === "All" || v.workoutType === filters.workout) &&
+        (filters.intensity === "All" || v.intensity === filters.intensity);
+    });
+  }
+  // The app's cycle phase is "Period", so these are its scoring rules.
+  function score(v) {
+    var s = 0;
+    if (v.intensity === "Low") s += 3;
+    if (v.workoutType === "Stretching") s += 3;
+    if (v.workoutType === "Yoga") s += 2;
+    if (v.workoutType === "Weight") s -= 3;
+    if (v.intensity === "Medium") s -= 2;
+    if (v.intensity === "High") s -= 3;
+    return s;
+  }
+  function categories() {
+    var byCat = function (c) { return VIDEOS.filter(function (v) { return v.category === c; }); };
+    return [
+      ["Personalised Exercise", VIDEOS.filter(function (v) { return score(v) >= 3; }).sort(function (a, b) { return score(b) - score(a); })],
+      ["Pre-period Workout", byCat("Pre-period")],
+      ["Period Workout", byCat("Period")],
+      ["Post-period Workout", byCat("Post-period")],
+      ["More Videos", byCat("More")],
+    ];
+  }
+
+  // ---------- Journal state (ViewModels/JournalViewModel.swift) ----------
+  var KEY = "periodt-demo-entries";
+  var entries = [];
+  try { entries = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) {}
+  var form;
+  function resetForm() {
+    form = { date: isoDate(today), mood: "Neutral", cramp: "No Pain", endo: "No Diagnosis", cravings: ["No Craving"], symptoms: ["No Symptom"], supplements: ["No Supplements"], notes: "" };
+  }
+  function isoDate(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  resetForm();
+  // Picking a "No ..." option clears the rest; any real choice removes it;
+  // an empty selection falls back to it.
+  function toggle(list, value, none) {
+    if (value === none) return [none];
+    list = list.filter(function (x) { return x !== none; });
+    list = list.indexOf(value) >= 0 ? list.filter(function (x) { return x !== value; }) : list.concat(value);
+    return list.length ? list : [none];
+  }
+
+  // ---------- Navigation: one stack per tab, like the app's NavigationStacks ----------
+  var TABS = [["Cycle", "clock", cycleScreen], ["Calendar", "calendar", calendarScreen], ["Track", "plus", trackScreen], ["Journal", "book", journalScreen], ["Excercise", "play", exerciseScreen]];
+  var stacks = TABS.map(function (t) { return [t[2]]; });
+  var tab = 0;
+  var stackEl = document.getElementById("stack");
+  var bar = document.querySelector(".tabbar");
+  TABS.forEach(function (t, i) {
+    var b = h('<button class="tab" role="tab" type="button">' + I[t[1]] + "<span>" + t[0] + "</span></button>");
+    b.addEventListener("click", function () {
+      if (tab === i && stacks[i].length > 1) stacks[i] = [stacks[i][0]];
+      tab = i;
+      render();
+    });
+    bar.appendChild(b);
+  });
+  function push(screenFn) { stacks[tab].push(screenFn); render(true); }
+  function pop() { if (stacks[tab].length > 1) { stacks[tab].pop(); render(); } }
+  function render(pushed) {
+    [].forEach.call(bar.children, function (b, i) { b.setAttribute("aria-selected", String(i === tab)); });
+    var s = stacks[tab];
+    var el = s[s.length - 1]();
+    el.classList.add("screen");
+    if (pushed) el.classList.add("push");
+    stackEl.innerHTML = "";
+    stackEl.appendChild(el);
+  }
+  function overlay(content, onClose) {
+    var o = h('<div class="overlay"></div>');
+    o.appendChild(content);
+    o.addEventListener("click", function (e) { if (e.target === o) { o.remove(); if (onClose) onClose(); } });
+    stackEl.appendChild(o);
+    return o;
+  }
+  function alertBox(title, message) {
+    var a = h('<div class="alert" role="alertdialog"><h2>' + esc(title) + "</h2><p>" + esc(message) + '</p><button type="button">OK</button></div>');
+    var o = overlay(a);
+    a.querySelector("button").addEventListener("click", function () { o.remove(); });
+  }
+  function navTitle(title, back) {
+    return '<div class="nav-title">' + (back ? '<button class="back" type="button" data-back aria-label="Back">' + I.chevL + "</button>" : "<span></span>") + "<h1>" + esc(title) + "</h1><span></span></div>";
+  }
+  function wireBack(el) { var b = el.querySelector("[data-back]"); if (b) b.addEventListener("click", pop); }
+
+  // ---------- Cycle tab (Views/Cycle) ----------
+  function cycleScreen() {
+    var pre = preVideos[0];
+    var el = h('<div>' +
+      '<h1 class="large-title">Your Cycle</h1><div class="divider"></div>' +
+      '<div class="card"><div class="card-head">Upcomming event ' + I.alert + '</div><div class="card-body">29 days till Competition</div></div>' +
+      '<div class="ring-wrap"><svg viewBox="0 0 260 260" aria-hidden="true">' +
+        '<circle cx="130" cy="130" r="130" fill="none" stroke="#dec6e8" stroke-opacity="0.2" stroke-width="40"/>' +
+        '<circle class="ring-arc" cx="130" cy="130" r="130" fill="none" stroke="#d96f93" stroke-width="32" stroke-linecap="round" transform="rotate(200 130 130)"/>' +
+      '</svg>' +
+      '<span class="ring-node" data-node="start">Day 1</span><span class="ring-node" data-node="end">End</span>' +
+      '<button class="ring-node go" type="button" data-go aria-label="Exercise suggestions">' + I.chevR.replace('width="18" height="18"', 'width="10" height="10"') + '</button>' +
+      '<div class="ring-label"><span>Period in</span><strong>7</strong><span>Days</span></div></div>' +
+      '<div class="card"><div class="card-head col">' + I.sun + '<span>Feeling Forecast</span></div><div class="card-body">It\'s okay to be tired! You are running low on emotional energy</div></div>' +
+      '<div class="card"><div class="card-head col">' + I.figure + '<span>Personalised Suggestion</span></div>' +
+        '<button class="card-body video" type="button" data-video><img src="' + thumb(pre, "mqdefault") + '" alt=""><span class="veil">' + I.playFill + '<small>' + esc(pre.title) + '</small></span></button></div>' +
+    '</div>');
+    // The ring fills to 30% when it appears, as in CycleRingView.
+    var R = 130, C = 2 * Math.PI * R, arc = el.querySelector(".ring-arc");
+    arc.setAttribute("stroke-dasharray", C);
+    arc.setAttribute("stroke-dashoffset", C);
+    function at(deg) { var r = deg * Math.PI / 180, rad = R; return [130 + rad * Math.cos(r), 130 + rad * Math.sin(r)]; }
+    function place(node, deg) { var pt = at(deg); node.style.left = pt[0] + "px"; node.style.top = pt[1] + "px"; }
+    var start = 200 - 360;
+    place(el.querySelector('[data-node="start"]'), start);
+    place(el.querySelector('[data-node="end"]'), start);
+    place(el.querySelector("[data-go]"), start - 80);
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+      arc.setAttribute("stroke-dashoffset", C * (1 - 0.3));
+      place(el.querySelector('[data-node="end"]'), start + 0.3 * 360);
+    }); });
+    el.querySelector("[data-go]").addEventListener("click", function () { push(function () { return exerciseScreen(true); }); });
+    el.querySelector("[data-video]").addEventListener("click", function () { push(function () { return detailScreen(pre); }); });
+    return el;
+  }
+
+  // ---------- Calendar tab (Views/Calendar/CalendarView.swift) ----------
+  function calendarScreen() {
+    var periods = [].concat.apply([], batches);
+    var months = [new Date(today.getFullYear(), today.getMonth(), 1), new Date(today.getFullYear(), today.getMonth() + 1, 1)];
+    var dows = ["S", "M", "T", "W", "T", "F", "S"].map(function (d) { return '<span class="dow">' + d + "</span>"; }).join("");
+    var html = '<div><h1 class="large-title">Calendar</h1>' +
+      '<div class="cal-banner"><div><strong>7</strong><span>days till period</span></div><i></i><div><strong>' + PERIOD_DAYS + '</strong><span>day of cycle</span></div></div>' +
+      '<div class="cal-key"><span><i style="background:rgba(217,111,147,.5)"></i>Period</span><span><i style="background:#fdecf2;border:1px solid #f3c6d6"></i>Pre-period prep (tap a day)</span></div>';
+    months.forEach(function (m) {
+      html += '<div class="month"><h2>' + m.toLocaleDateString(undefined, { month: "long" }) + '</h2><div class="divider"></div><div class="grid7">' + dows + "</div><div class=\"grid7\">";
+      for (var i = 0; i < m.getDay(); i++) html += '<span class="day"></span>';
+      var days = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate();
+      for (var d = 1; d <= days; d++) {
+        var date = new Date(m.getFullYear(), m.getMonth(), d);
+        var pi = prePeriod.findIndex(function (x) { return same(x, date); });
+        if (pi >= 0 && pi < preVideos.length) {
+          var cls = "day pre" + (pi === 0 ? " first" : "") + (pi === prePeriod.length - 1 ? " last" : "");
+          html += '<button type="button" class="' + cls + '" data-pre="' + pi + '" aria-label="Pre-period exercise for ' + date.toDateString() + '"><i class="bg"></i><span>' + d + "</span></button>";
+        } else {
+          var c = "day";
+          if (same(date, today)) c += " today";
+          else if (inList(periods, date)) {
+            c += " period";
+            batches.forEach(function (b) { if (same(b[0], date)) c += " first"; if (same(b[b.length - 1], date)) c += " last"; });
+          }
+          html += '<span class="' + c + '"><i class="bg"></i><span>' + d + "</span></span>";
+        }
+      }
+      html += "</div></div>";
+    });
+    var el = h(html + "</div>");
+    [].forEach.call(el.querySelectorAll("[data-pre]"), function (b) {
+      b.addEventListener("click", function () { var v = preVideos[+b.dataset.pre]; push(function () { return detailScreen(v); }); });
+    });
+    return el;
+  }
+
+  // ---------- Track tab (Views/Journal/JournalView.swift) ----------
+  function ratingRow(items, selected, field, useDisplay) {
+    return '<div class="ratings">' + items.map(function (it) {
+      return '<button type="button" class="rating" data-single="' + field + '" data-value="' + esc(it[0]) + '" aria-pressed="' + (selected === it[0]) + '"><i>' + it[1] + "</i>" + esc(useDisplay ? it[2] : it[0]) + "</button>";
+    }).join("") + "</div>";
+  }
+  function pillRow(items, selected, field, none) {
+    return '<div class="pills">' + items.map(function (it) {
+      return '<button type="button" class="pill" data-multi="' + field + '" data-none="' + esc(none) + '" data-value="' + esc(it[0]) + '" aria-pressed="' + (selected.indexOf(it[0]) >= 0) + '">' + it[1] + " " + esc(it[0]) + "</button>";
+    }).join("") + "</div>";
+  }
+  function section(title, sub, body) { return '<div class="section"><h3>' + title + '</h3><p class="sub">' + sub + "</p>" + body + "</div>"; }
+  function trackScreen() {
+    var el = h('<div>' +
+      '<h1 class="large-title">Track</h1><div class="divider"></div>' +
+      '<div class="journal-head">How are you today?</div>' +
+      '<div class="section"><div class="date-row"><h3>Date</h3><input type="date" data-date value="' + form.date + '"></div></div>' +
+      section("Mood", "How are you feeling today", ratingRow(MOODS, form.mood, "mood")) +
+      section("Endometriosis", "How are you feeling today", ratingRow(ENDO, form.endo, "endo", true)) +
+      section("Cramp Tolerance", "How painful are your cramps at the moment?", ratingRow(CRAMPS, form.cramp, "cramp")) +
+      section("Cravings", "Do you crave any specific food at the moment?", pillRow(CRAVINGS, form.cravings, "cravings", "No Craving")) +
+      section("Symptom", "Are you experiencing any symptoms?", pillRow(SYMPTOMS, form.symptoms, "symptoms", "No Symptom")) +
+      section("Supplements", "Do you take any supplements?", pillRow(SUPPLEMENTS, form.supplements, "supplements", "No Supplements")) +
+      section("Notes", "Anything else you want to record?", '<textarea data-notes aria-label="Notes">' + esc(form.notes) + "</textarea>") +
+      '<button class="save" type="button" data-save>Save Entry</button>' +
+    "</div>");
+    el.addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (!b) return;
+      if (b.dataset.single) {
+        form[b.dataset.single] = b.dataset.value;
+        [].forEach.call(el.querySelectorAll('[data-single="' + b.dataset.single + '"]'), function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      } else if (b.dataset.multi) {
+        var f = b.dataset.multi;
+        form[f] = toggle(form[f], b.dataset.value, b.dataset.none);
+        [].forEach.call(el.querySelectorAll('[data-multi="' + f + '"]'), function (x) { x.setAttribute("aria-pressed", String(form[f].indexOf(x.dataset.value) >= 0)); });
+      } else if ("save" in b.dataset) {
+        save();
+      }
+    });
+    el.querySelector("[data-date]").addEventListener("change", function (e) { form.date = e.target.value; });
+    el.querySelector("[data-notes]").addEventListener("input", function (e) { form.notes = e.target.value; });
+    return el;
+  }
+  function save() {
+    // Future dates are not valid journal records.
+    var picked = new Date(form.date + "T00:00:00");
+    if (picked > today) {
+      alertBox("Unable to Save", "Oops! You can only record symptoms for today or the past. Please select a valid date.");
+      return;
+    }
+    entries.unshift(JSON.parse(JSON.stringify(form)));
+    try { localStorage.setItem(KEY, JSON.stringify(entries)); } catch (e) {}
+    resetForm();
+    render();
+    alertBox("Saved", "Your journal entry has been saved.");
+  }
+
+  // ---------- Journal tab (Views/Journal/JournalHistoryView.swift) ----------
+  function emojiFor(list, v) { var f = list.find(function (x) { return x[0] === v; }); return f ? f[1] + " " + v : v; }
+  function journalScreen() {
+    if (!entries.length) {
+      return h('<div><h1 class="large-title">Journal</h1><div class="empty">' + I.bookLg + '<h2>No Journal Entries</h2><p>Saved entries will appear here. Try the Track tab.</p></div></div>');
+    }
+    return h('<div><h1 class="large-title">Journal</h1>' + entries.map(function (e) {
+      var row = function (t, v) { return "<dt>" + t + "</dt><dd>" + esc(v) + "</dd>"; };
+      var many = function (list, vals) { return vals.map(function (v) { return emojiFor(list, v); }).join(", "); };
+      return '<div class="entry"><h3>' + new Date(e.date + "T00:00:00").toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) + "</h3><dl>" +
+        row("Mood", emojiFor(MOODS, e.mood)) + row("Cramp", emojiFor(CRAMPS, e.cramp)) +
+        row("Cravings", many(CRAVINGS, e.cravings)) + row("Symptoms", many(SYMPTOMS, e.symptoms)) +
+        row("Supplements", many(SUPPLEMENTS, e.supplements)) + row("Endometriosis", emojiFor(ENDO, e.endo)) +
+        (e.notes ? row("Notes", e.notes) : "") + "</dl></div>";
+    }).join("") + "</div>");
+  }
+
+  // ---------- Exercise tab (Views/Suggestions) ----------
+  function filterBar(onChange) {
+    var wrap = h('<div class="filters"></div>');
+    FILTERS.forEach(function (f) {
+      var key = f[0], val = filters[key];
+      var chip = h('<div class="filter' + (val !== "All" ? " on" : "") + '">' +
+        (val !== "All" ? '<button class="clear" type="button" aria-label="Clear ' + f[1] + '">' + I.x.replace('width="18" height="18"', 'width="11" height="11"') + "</button>" : "") +
+        "<span>" + esc(val === "All" ? f[1] : val) + "</span>" + I.chevD +
+        '<select aria-label="' + f[1] + '">' + f[2].map(function (o) { return "<option" + (o === val ? " selected" : "") + ">" + o + "</option>"; }).join("") + "</select></div>");
+      chip.querySelector("select").addEventListener("change", function (e) { filters[key] = e.target.value; onChange(); });
+      var clear = chip.querySelector(".clear");
+      if (clear) clear.addEventListener("click", function () { filters[key] = "All"; onChange(); });
+      wrap.appendChild(chip);
+    });
+    return wrap;
+  }
+  function exerciseScreen(back) {
+    var el = h("<div>" + navTitle("Exercise", back) + '<div class="rule"></div><div data-filters></div><div data-cats></div></div>');
+    wireBack(el);
+    function fill() {
+      el.querySelector("[data-filters]").replaceChildren(filterBar(fill));
+      var cats = el.querySelector("[data-cats]");
+      cats.innerHTML = "";
+      categories().forEach(function (c) {
+        var list = filtered(c[1]);
+        var block = h('<div class="cat"><button class="cat-title" type="button">' + esc(c[0]) + I.chevR + "</button>" +
+          (list.length ? '<div class="row">' + list.map(function (v) {
+            return '<button class="vcard" type="button" data-key="' + v.key + '"><img src="' + thumb(v) + '" alt="" loading="lazy"><p>' + esc(v.title) + "</p></button>";
+          }).join("") + "</div>" : '<p class="none">No results found</p>') + "</div>");
+        block.querySelector(".cat-title").addEventListener("click", function () { push(function () { return categoryScreen(c[0], c[1]); }); });
+        [].forEach.call(block.querySelectorAll("[data-key]"), function (b) { b.addEventListener("click", function () { push(function () { return detailScreen(VIDEOS[+b.dataset.key]); }); }); });
+        cats.appendChild(block);
+      });
+    }
+    fill();
+    return el;
+  }
+  function categoryScreen(title, videos) {
+    var el = h("<div>" + navTitle("Exercise", true) + '<div class="rule"></div><div data-filters></div><h2 class="cat-title" style="padding-top:18px">' + esc(title) + '</h2><div data-list></div></div>');
+    wireBack(el);
+    function fill() {
+      el.querySelector("[data-filters]").replaceChildren(filterBar(fill));
+      var list = filtered(videos);
+      el.querySelector("[data-list]").innerHTML = list.length ? list.map(function (v) {
+        return '<button class="vlist" type="button" data-key="' + v.key + '"><img src="' + thumb(v) + '" alt="" loading="lazy"><p>' + esc(v.title) + "</p></button>";
+      }).join("") : '<p class="none" style="text-align:center;padding-top:40px">No results found</p>';
+      [].forEach.call(el.querySelectorAll("[data-key]"), function (b) { b.addEventListener("click", function () { push(function () { return detailScreen(VIDEOS[+b.dataset.key]); }); }); });
+    }
+    fill();
+    return el;
+  }
+  function detailScreen(v) {
+    var link = "https://www.youtube.com/watch?v=" + v.id;
+    var el = h('<div class="detail">' + navTitle("Exercise", true) + '<div class="rule"></div>' +
+      "<h2>" + esc(v.title) + "</h2>" +
+      '<div class="player"><iframe src="https://www.youtube-nocookie.com/embed/' + v.id + '?playsinline=1&rel=0" title="' + esc(v.title) + '" allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>' +
+      '<dl class="info"><dt>Duration</dt><dd>' + v.duration + " min</dd><dt>Workout Type</dt><dd>" + v.workoutType + "</dd><dt>Intensity</dt><dd>" + v.intensity + "</dd></dl>" +
+      '<button class="fab" type="button" aria-label="Share with your coach">' + I.share + "</button></div>");
+    wireBack(el);
+    el.querySelector(".fab").addEventListener("click", function () {
+      var sheet = h('<div class="share" role="dialog" aria-label="Share with your coach">' +
+        '<button class="x" type="button" aria-label="Close">' + I.x + "</button>" +
+        '<span style="color:var(--primary)">' + I.share.replace('width="22" height="22"', 'width="38" height="38"') + "</span>" +
+        "<h2>Share with your coach</h2><p>Send this link to your coach so they can check your exercise video.</p>" +
+        "<code>" + esc(link) + "</code>" +
+        '<button class="btn fill" type="button" data-share>' + I.share.replace('width="22" height="22"', 'width="18" height="18"') + "Share Link</button>" +
+        '<button class="btn line" type="button" data-copy>' + I.copy + "Copy Link</button><small hidden>Link copied</small></div>");
+      var o = overlay(sheet);
+      sheet.querySelector(".x").addEventListener("click", function () { o.remove(); });
+      sheet.querySelector("[data-copy]").addEventListener("click", function () {
+        try { navigator.clipboard.writeText(link); } catch (e) {}
+        sheet.querySelector("small").hidden = false;
+      });
+      sheet.querySelector("[data-share]").addEventListener("click", function () {
+        if (navigator.share) navigator.share({ title: v.title, text: "I want to share this exercise video with you.", url: link }).catch(function () {});
+        else { try { navigator.clipboard.writeText(link); } catch (e) {} sheet.querySelector("small").hidden = false; }
+      });
+    });
+    return el;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

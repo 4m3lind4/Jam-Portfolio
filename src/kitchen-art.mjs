@@ -40,7 +40,9 @@ const shadow = (cx, cy, rx, ry, cls = "") =>
 // The PeriodT home screen at three fidelities. The final layer is rebuilt from
 // the "Your Cycle" screen in the portfolio design; lo and mid are its structure.
 // A screenshot from Notion (`screen`) takes the place of the drawn final layer.
-export function phone(cls = "", screen = null) {
+// `lo` and `mid` are images of the real low-fi and mid-fi designs; when given
+// they replace the drawn stand-ins in those layers.
+export function phone(cls = "", screen = null, lo = null, mid = null) {
   const tabs = ["Cycle", "Calendar", "Track", "Journal", "Exercise"]
     .map((t, i) => `<circle cx="${23 + i * 26}" cy="270" r="4" fill="${i ? "#3a2230" : "#ff2d6f"}"/><text x="${23 + i * 26}" y="282" text-anchor="middle" font-size="5" fill="#3a2230">${t}</text>`)
     .join("");
@@ -67,7 +69,7 @@ export function phone(cls = "", screen = null) {
       <text x="75" y="230" text-anchor="middle" font-size="6.5" fill="#2b1a22">emotional energy</text>
       ${tabs}
     </g>`}
-    <g class="ph-mid k-sans">
+    ${mid ? `<g class="ph-mid"><rect x="6" y="6" width="138" height="294" rx="18" fill="#fff"/><image href="${mid}" x="6" y="6" width="138" height="294" preserveAspectRatio="xMidYMin slice" clip-path="url(#k-screen)"/></g>` : `<g class="ph-mid k-sans">
       <rect x="6" y="6" width="138" height="294" rx="18" fill="#f3f2ee"/>
       <rect x="52" y="11" width="46" height="12" rx="6" fill="#1d1118"/>
       <text x="75" y="42" text-anchor="middle" font-size="12" fill="#555">Your Cycle</text>
@@ -78,8 +80,8 @@ export function phone(cls = "", screen = null) {
       <rect x="16" y="178" width="118" height="70" rx="4" fill="#d8d7d1"/>
       <text x="75" y="212" text-anchor="middle" font-size="7" fill="#555">Feeling Forecast</text>
       <rect x="14" y="262" width="122" height="24" rx="4" fill="#c6c5be"/>
-    </g>
-    <g class="ph-lo" fill="none" stroke="#6b6660" stroke-width="1.6">
+    </g>`}
+    ${lo ? `<g class="ph-lo"><rect x="6" y="6" width="138" height="294" rx="18" fill="#fff"/><image href="${lo}" x="-2" y="-2" width="154" height="310" preserveAspectRatio="xMidYMid meet"/></g>` : `<g class="ph-lo" fill="none" stroke="#6b6660" stroke-width="1.6">
       <rect x="6" y="6" width="138" height="294" rx="18" fill="#fbfaf3" stroke="none"/>
       <rect x="52" y="11" width="46" height="12" rx="6" fill="#1d1118" stroke="none"/>
       <path d="M50,40 H100"/>
@@ -87,7 +89,7 @@ export function phone(cls = "", screen = null) {
       <circle cx="75" cy="130" r="38"/><circle cx="75" cy="130" r="26"/>
       <rect x="16" y="178" width="118" height="70"/><path d="M26,198 H124 M26,212 H124 M26,226 H90"/>
       <path d="M14,262 H136 M14,286 H136 M38,262 V286 M62,262 V286 M88,262 V286 M112,262 V286"/>
-    </g>
+    </g>`}
   </g>`;
 }
 
@@ -98,20 +100,39 @@ export function phone(cls = "", screen = null) {
 export const bookArt = (cover, root, chapters = [], title = "", course = "") => `<div class="art art--book"><div class="art-box">
   ${stage("lamp", `
   <defs>
-    <radialGradient id="k-dome" cx=".34" cy=".3" r=".9"><stop offset="0" stop-color="#ff7fab"/><stop offset=".35" stop-color="#ff0866"/><stop offset=".8" stop-color="#8a0d3c"/><stop offset="1" stop-color="#470b23"/></radialGradient>
-    <radialGradient id="k-dome-in" cx=".5" cy=".2" r=".8"><stop offset="0" stop-color="#ffe7a8"/><stop offset=".6" stop-color="#e0a35a"/><stop offset="1" stop-color="#5a1a1a"/></radialGradient>
+    <!-- The shade is lit from the upper left: a cylinder-style sweep across it,
+         a soft hotspot, and darkening towards the rim where it curls under. -->
+    <linearGradient id="k-shade" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#5c0a2c"/><stop offset=".16" stop-color="#b81052"/><stop offset=".36" stop-color="#ff3d82"/><stop offset=".52" stop-color="#ff1a6e"/><stop offset=".8" stop-color="#a30c47"/><stop offset="1" stop-color="#4a0822"/></linearGradient>
+    <radialGradient id="k-shade-hot" cx=".34" cy=".28" r=".42"><stop offset="0" stop-color="#ffd0e0" stop-opacity=".85"/><stop offset=".5" stop-color="#ff8db4" stop-opacity=".25"/><stop offset="1" stop-color="#ff8db4" stop-opacity="0"/></radialGradient>
+    <linearGradient id="k-shade-rim" x1="0" x2="0" y1="0" y2="1"><stop offset=".6" stop-color="#2c0714" stop-opacity="0"/><stop offset="1" stop-color="#2c0714" stop-opacity=".55"/></linearGradient>
+    <linearGradient id="k-collar" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#1c0510"/><stop offset=".3" stop-color="#6b3a4e"/><stop offset=".45" stop-color="#c8a3b2"/><stop offset=".6" stop-color="#5a2a3d"/><stop offset="1" stop-color="#1c0510"/></linearGradient>
+    <!-- Inside the shade: dark up in the crown, warm where the bulb lights it. -->
+    <radialGradient id="k-inside" cx=".5" cy=".15" r=".95"><stop offset="0" stop-color="#fff1c8"/><stop offset=".35" stop-color="#f2be6e"/><stop offset=".75" stop-color="#9a4a2a"/><stop offset="1" stop-color="#3a0b1c"/></radialGradient>
+    <radialGradient id="k-bulb" cx=".42" cy=".38" r=".62"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#fff6dc"/><stop offset="1" stop-color="#ffd98a"/></radialGradient>
     <radialGradient id="k-bulb-glow"><stop offset="0" stop-color="#fff6d9"/><stop offset=".45" stop-color="#ffe9a6" stop-opacity=".7"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
   </defs>
   <path class="lamp-cone" d="M334,104 L466,104 L720,520 L80,520 Z" fill="url(#k-cone)"/>
   <g class="lamp-rig">
-    <rect x="398" y="-260" width="4" height="232" fill="#2c0714"/>
-    <path d="M386,-28 H414 L418,-14 H382 Z" fill="#2c0714"/>
-    <path class="lamp" d="M322,100 C322,40 360,-14 400,-14 C440,-14 478,40 478,100 Z" fill="url(#k-dome)"/>
-    <path d="M342,86 C340,44 366,6 394,-4" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="6" stroke-linecap="round"/>
-    <ellipse cx="400" cy="100" rx="78" ry="15" fill="url(#k-dome-in)"/>
-    <ellipse class="bulb-glow bulb" cx="400" cy="108" rx="70" ry="34" fill="url(#k-bulb-glow)"/>
-    <ellipse class="bulb" cx="400" cy="104" rx="26" ry="11" fill="#fff6d9"/>
-    <ellipse cx="400" cy="100" rx="78" ry="15" fill="none" stroke="#470b23" stroke-width="3"/>
+    <rect x="398" y="-260" width="4" height="226" fill="#2c0714"/>
+    <!-- Collar: a little metal cylinder where the cord meets the shade. -->
+    <rect x="384" y="-36" width="32" height="26" rx="3" fill="url(#k-collar)"/>
+    <ellipse cx="400" cy="-36" rx="16" ry="4" fill="#8f6375"/>
+    <path d="M378,-12 H422 L428,-2 H372 Z" fill="url(#k-collar)"/>
+    <!-- The shade, a bell that flares slightly at the rim. -->
+    <path class="lamp" d="M318,100 C318,56 340,8 376,-4 C390,-8 410,-8 424,-4 C460,8 482,56 482,100 Z" fill="url(#k-shade)"/>
+    <path d="M318,100 C318,56 340,8 376,-4 C390,-8 410,-8 424,-4 C460,8 482,56 482,100 Z" fill="url(#k-shade-hot)"/>
+    <path d="M318,100 C318,56 340,8 376,-4 C390,-8 410,-8 424,-4 C460,8 482,56 482,100 Z" fill="url(#k-shade-rim)"/>
+    <!-- Specular streak and a faint rim light on the shadow side. -->
+    <path d="M338,84 C336,48 354,16 380,4" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round"/>
+    <path d="M344,90 C343,76 344,66 346,58" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"/>
+    <path d="M472,88 C470,60 458,32 440,14" fill="none" stroke="#ff9fbf" stroke-opacity=".35" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Looking up into it: the lit inside, the bulb, then the rolled lip. -->
+    <ellipse cx="400" cy="100" rx="82" ry="17" fill="url(#k-inside)"/>
+    <ellipse class="bulb-glow bulb" cx="400" cy="108" rx="74" ry="36" fill="url(#k-bulb-glow)"/>
+    <circle class="bulb" cx="400" cy="104" r="21" fill="url(#k-bulb)"/>
+    <path d="M318,100 A82,17 0 0 0 482,100" fill="none" stroke="#470b23" stroke-width="5"/>
+    <path d="M318,100 A82,17 0 0 1 482,100" fill="none" stroke="#2c0714" stroke-width="2.5" stroke-opacity=".8"/>
+    <path d="M330,106 A76,14 0 0 0 470,106" fill="none" stroke="#ff7fab" stroke-opacity=".45" stroke-width="1.5"/>
   </g>
   ${shadow(400, 526, 300, 16)}`)}
   <p class="pull-hint" aria-hidden="true">pull me</p>
@@ -133,8 +154,8 @@ export const bookArt = (cover, root, chapters = [], title = "", course = "") => 
   </div>
   ${stage("pull", `
     <g class="pull" aria-hidden="true">
-      <path class="pull-cord" d="M452,104 V220" fill="none" stroke="#f9f7eb" stroke-width="2.5" stroke-linecap="round"/>
-      <g class="pull-bead" transform="translate(452 230)">
+      <path class="pull-cord" d="M452,115 V231" fill="none" stroke="#f9f7eb" stroke-width="2.5" stroke-linecap="round"/>
+      <g class="pull-bead" transform="translate(452 241)">
         <circle r="22" fill="transparent"/>
         <path d="M-7,-12 H7 L9,10 Q0,16 -9,10 Z" fill="#c4c6cc" stroke="#6f7178"/>
         <ellipse cy="-12" rx="7" ry="2.5" fill="#eeeef0"/>
@@ -265,7 +286,7 @@ ${right || `    ${wire(581)}
   <g class="flip-hand" transform="translate(400 1000)">${hand(root, "open", 210, 420, 0.5)}</g>`);
 };
 
-export const ovenArt = (root, labels, shots = []) => stage("oven", `
+export const ovenArt = (root, labels, shots = [], opts = {}) => stage("oven", `
   ${shadow(470, 528, 250, 12)}
   <rect x="240" y="120" width="460" height="400" rx="10" fill="url(#k-steel-side)"/>
   <rect x="240" y="120" width="460" height="66" rx="10" fill="#2c0714"/>
@@ -284,7 +305,7 @@ export const ovenArt = (root, labels, shots = []) => stage("oven", `
   <g class="tray" transform="translate(60 214)">
     <rect x="-34" y="292" width="218" height="14" rx="4" fill="url(#k-steel)"/>
     ${shadow(75, 292, 92, 7)}
-    ${phone("oven-phone", shots[0]?.src)}
+    ${phone("oven-phone", shots[0]?.src, opts.lo && root + opts.lo, opts.mid && root + opts.mid)}
   </g>
   <g class="door" transform="translate(0 500) scale(1 -0.2) translate(0 -500)">
     <path fill-rule="evenodd" d="M260,192 H680 Q688,192 688,200 V492 Q688,500 680,500 H260 Q252,500 252,492 V200 Q252,192 260,192 Z M298,246 Q290,246 290,254 V460 Q290,468 298,468 H642 Q650,468 650,460 V254 Q650,246 642,246 Z" fill="url(#k-steel)"/>
@@ -294,12 +315,41 @@ export const ovenArt = (root, labels, shots = []) => stage("oven", `
   </g>`);
 
 // `opts.award: null` leaves the award rosette off the plate.
+// PeriodT Coach's dish: two piles of jam-glazed meatballs that part like the
+// cake halves (same classes, same animation), with a pot of jam on the side.
+const meatball = (cx, cy, r) => `<g>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#k-meatball)"/>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#k-meatball-crust)" opacity=".55"/>
+  <path d="M${cx - r * 0.62},${cy - r * 0.2} C${cx - r * 0.3},${cy - r * 0.78} ${cx + r * 0.4},${cy - r * 0.8} ${cx + r * 0.66},${cy - r * 0.18} C${cx + r * 0.3},${cy - r * 0.05} ${cx + r * 0.1},${cy + r * 0.12} ${cx - r * 0.05},${cy - r * 0.02} C${cx - r * 0.25},${cy + r * 0.1} ${cx - r * 0.45},${cy + r * 0.05} ${cx - r * 0.62},${cy - r * 0.2} Z" fill="#c90a55" opacity=".88"/>
+  <ellipse cx="${cx - r * 0.28}" cy="${cy - r * 0.5}" rx="${r * 0.2}" ry="${r * 0.08}" fill="#fff" opacity=".55" transform="rotate(-20 ${cx - r * 0.28} ${cy - r * 0.5})"/>
+  <g fill="#2f6b2a"><ellipse cx="${cx + r * 0.25}" cy="${cy - r * 0.62}" rx="${r * 0.1}" ry="${r * 0.05}"/><ellipse cx="${cx - r * 0.05}" cy="${cy - r * 0.7}" rx="${r * 0.08}" ry="${r * 0.04}" transform="rotate(30 ${cx} ${cy})"/></g>
+</g>`;
+const meatballs = () => `<defs>
+      <radialGradient id="k-meatball" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#b8683c"/><stop offset=".55" stop-color="#7a3a1c"/><stop offset="1" stop-color="#3a160a"/></radialGradient>
+      <radialGradient id="k-meatball-crust" cx=".5" cy=".5" r=".5"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#1c0804"/></radialGradient>
+    </defs>
+    <g class="cake cake--left" transform="translate(400 285) translate(-260 150) scale(.5) translate(-400 -285)">
+      ${meatball(300, 190, 72)}${meatball(350, 330, 84)}${meatball(270, 420, 70)}${meatball(330, 470, 58)}
+      <path class="seam" d="M396,110 V470" stroke="#fff3f7" stroke-width="0"/>
+    </g>
+    <g class="cake cake--right" transform="translate(400 285) translate(260 150) scale(.5) translate(-400 -285)">
+      ${meatball(500, 200, 70)}${meatball(450, 320, 82)}${meatball(530, 410, 72)}${meatball(460, 460, 60)}
+    </g>
+    <g class="jam-pot" transform="translate(640 150)">
+      <ellipse cx="0" cy="58" rx="74" ry="16" fill="#2c0714" opacity=".25"/>
+      <path d="M-62,0 C-62,48 -40,62 0,62 C40,62 62,48 62,0 Z" fill="url(#k-bowl)"/>
+      <ellipse cx="0" cy="0" rx="62" ry="18" fill="#efe9d6"/>
+      <ellipse cx="0" cy="2" rx="52" ry="13" fill="#b00848"/>
+      <ellipse cx="-14" cy="-2" rx="18" ry="4" fill="#ff7fab" opacity=".7"/>
+      <text y="38" text-anchor="middle" class="k-script" font-size="22" fill="#470b23">Jam</text>
+    </g>`;
+
 export const plateArt = (root, labels, shots = [], opts = {}) => stage("plate", `
   <g class="plate-group">
     ${shadow(400, 524, 240, 16)}
     <image href="${root}menu/plate-platter.webp" x="120" y="50" width="560" height="470" preserveAspectRatio="xMidYMid meet"/>
     <g class="plate-phone" transform="translate(325 128)">${phone("plate-screen", shots[0]?.src)}</g>
-    <g class="cake cake--left" transform="translate(400 285) translate(-260 150) scale(.5) translate(-400 -285)">
+    ${opts.dish === "meatballs" ? meatballs() : `    <g class="cake cake--left" transform="translate(400 285) translate(-260 150) scale(.5) translate(-400 -285)">
       <path d="M400,90 A195,195 0 0 0 400,480 Z" fill="url(#k-icing)"/>
       <path class="seam" d="M396,90 V480" stroke="#fff3f7" stroke-width="7"/>
       <g fill="#fff"><circle cx="300" cy="200" r="5"/><circle cx="340" cy="320" r="5"/><circle cx="270" cy="350" r="5"/><circle cx="350" cy="170" r="5"/><circle cx="310" cy="420" r="5"/></g>
@@ -308,7 +358,7 @@ export const plateArt = (root, labels, shots = [], opts = {}) => stage("plate", 
       <path d="M400,90 A195,195 0 0 1 400,480 Z" fill="url(#k-icing)"/>
       <path class="seam" d="M404,90 V480" stroke="#fff3f7" stroke-width="7"/>
       <g fill="#fff"><circle cx="470" cy="210" r="5"/><circle cx="520" cy="300" r="5"/><circle cx="450" cy="380" r="5"/><circle cx="500" cy="170" r="5"/><circle cx="490" cy="430" r="5"/></g>
-    </g>
+    </g>`}
   </g>
   <g class="slicer" transform="translate(400 520)">${hand(root, "knife", 70, 587, 0.6)}</g>
   ${opts.award === null ? "" : `  <g class="award" transform="translate(640 150)">

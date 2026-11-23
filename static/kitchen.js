@@ -111,7 +111,7 @@
     var cordPath = cordSvg.querySelector(".pull-cord");
     var bead = cordSvg.querySelector(".pull-bead");
     var N = 12, SEG = 10.5, LEN = N * SEG;
-    var AX = 452, AY = 104;
+    var AX = 452, AY = 115; // the front lip of the shade, below the lit inside
     var pts = [];
     for (var i = 0; i <= N; i++) pts.push({ x: AX, y: AY + i * SEG, px: AX, py: AY + i * SEG });
     var drag = null, running = false, armed = false;

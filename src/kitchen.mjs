@@ -7,6 +7,18 @@ import { boardArt, bowlArt, paperArt, ovenArt, plateArt } from "./kitchen-art.mj
 
 export const KITCHENS = {
   periodt: {
+    // The app's own final screen, served on the plate (and baked in the oven)
+    // when the Final Product section in Notion has no image of its own.
+    plateShot: "kitchen/periodt-final.jpg",
+    // The real low-fi sketches, laid out on the paper in step 3 when Notion's
+    // Low-Fidelity section has no images, captioned left to right.
+    lofiShots: [
+      ["kitchen/designs/periodt-lofi-checkin.png", "Check-in"],
+      ["kitchen/designs/periodt-lofi-cycle.png", "Cycle home"],
+      ["kitchen/designs/periodt-lofi-calendar.png", "Calendar"],
+    ],
+    // What bakes in the oven: the low-fi sketch, then the Figma mid-fi.
+    oven: { lo: "kitchen/designs/periodt-lofi-cycle.png", mid: "kitchen/designs/periodt-mid-cycle.png" },
     heading: "A Period Tracker Designed Around Athletic Performance",
     role: "UX/UI Designer · Developer · Team Coordinator",
     course: "Introduction to iOS Development, UTS",
@@ -77,6 +89,13 @@ export const KITCHENS = {
   // Drawn from the PeriodT-V2 repository and the research interview notes in
   // Notion, until the PeriodT Coach page in Notion has its own write-up.
   "periodt-coach": {
+    plateShot: "kitchen/periodt-coach-final.jpg",
+    lofiShots: [
+      ["kitchen/designs/coach-lofi-library.png", "Exercise library"],
+      ["kitchen/designs/coach-lofi-exercise.png", "Exercise"],
+      ["kitchen/designs/coach-lofi-female.png", "Female library"],
+    ],
+    oven: { lo: "kitchen/designs/coach-lofi-library.png", mid: "kitchen/designs/coach-mid-team.png" },
     heading: "Helping coaches understand and communicate with their athletes",
     role: "Solo project",
     course: "Advanced iOS Development, UTS",
@@ -127,7 +146,7 @@ export const KITCHENS = {
       {
         id: "plated",
         art: plateArt,
-        opts: { award: null },
+        opts: { award: null, dish: "meatballs" },
         step: "05",
         title: "Final Product",
         html: `<p>The finished app brings an athlete's cycle, training and reflections together in one place:</p>
@@ -231,6 +250,24 @@ export async function storyFromNotion(fallback, blocks, asset) {
       return out;
     })
   );
+
+  // No images in Notion's Low-Fidelity section: lay out the real sketches.
+  if (fallback.lofiShots) {
+    story.scenes = story.scenes.map((s) =>
+      s.id === "lofi" && !s.shots ? { ...s, shots: fallback.lofiShots.map(([src, caption]) => ({ src: "../../" + src, caption })) } : s
+    );
+  }
+  if (fallback.oven) {
+    story.scenes = story.scenes.map((s) => (s.id === "development" ? { ...s, opts: { ...s.opts, ...fallback.oven } } : s));
+  }
+
+  // No screenshot in Notion's Final Product section: serve the app's own
+  // final screen instead of the drawn stand-in.
+  if (fallback.plateShot) {
+    story.scenes = story.scenes.map((s) =>
+      s.id === "plated" && !s.shots ? { ...s, shots: [{ src: "../../" + fallback.plateShot, caption: "" }] } : s
+    );
+  }
 
   // The oven bakes the same finished screen that's served on the plate.
   const plated = story.scenes.find((s) => s.id === "plated");

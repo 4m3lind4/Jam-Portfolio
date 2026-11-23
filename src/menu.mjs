@@ -14,7 +14,7 @@ const PILLS = [
   { bg: "#aeb0ac", ink: "#2C0714" },
 ];
 
-function pillPalette(projects) {
+export function pillPalette(projects) {
   const map = new Map();
   for (const p of projects) for (const t of p.tools) if (!map.has(t)) map.set(t, PILLS[map.size % PILLS.length]);
   return map;
@@ -23,12 +23,12 @@ function pillPalette(projects) {
 // Every project is served on a plate, handed out in menu order.
 const PLATES = ["platter", "hearts", "scallop", "square", "rim"];
 
-function dishMedia(p, plate) {
+function dishMedia(p, plate, cutout) {
   if (!p.cover) return "";
   const media = isVideo(p.cover)
     ? `<video src="${esc(p.cover)}" muted loop playsinline autoplay aria-hidden="true"></video>`
     : `<img src="${esc(p.cover)}" alt="" loading="lazy">`;
-  return `<div class="dish-media plate plate--${plate}">${media}</div>`;
+  return `<div class="dish-media plate plate--${plate}${cutout ? " plate--cutout" : ""}">${media}</div>`;
 }
 
 // A sticker on the plate, for projects listed in menu.stickers.
@@ -38,7 +38,7 @@ function sticker(text) {
   return `<span class="dish-sticker"><span class="dish-sticker-top">${esc(top)}</span> ${esc(rest.join(" "))}</span>`;
 }
 
-function dish(p, pills, reverse, plate, label, kind) {
+function dish(p, pills, reverse, plate, label, kind, cutout) {
   const tags = p.tools
     .map((t) => {
       const c = pills.get(t);
@@ -46,7 +46,7 @@ function dish(p, pills, reverse, plate, label, kind) {
     })
     .join("");
   return `<a class="dish anim${reverse ? " reverse" : ""}" href="projects/${esc(p.slug)}/" target="_top">
-    ${dishMedia(p, plate)}
+    ${dishMedia(p, plate, cutout)}
     ${sticker(label)}
     <div class="dish-body">
       ${kind ? `<span class="dish-kind" style="background:${kind.color};color:${kind.ink}">${esc(kind.label)}</span>` : ""}
@@ -114,7 +114,7 @@ export function buildMenu(config, projects) {
       const withReviews = m.reviews && m.reviews.slug === p.slug;
       const need = withReviews ? 2 : 1;
       if (slots.length + need > PER_PAGE) flush();
-      slots.push(dish(p, pills, slots.length % 2 === 1, PLATES[served++ % PLATES.length], m.stickers?.[p.slug], p.category && zone(config, p.category)));
+      slots.push(dish(p, pills, slots.length % 2 === 1, PLATES[served++ % PLATES.length], m.stickers?.[p.slug], p.category && zone(config, p.category), m.cutouts?.includes(p.slug)));
       if (withReviews) slots.push(reviewsBlock(m.reviews));
     }
     flush();

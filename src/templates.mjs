@@ -17,6 +17,14 @@ function media(src, alt, cls = "") {
   return `<img class="media ${cls}" src="${esc(src)}" alt="${esc(alt)}" loading="lazy">`;
 }
 
+// A project's tags as on the menu: where it came from (Work, Education or
+// Competition), and its tools, each in the colour the menu gives it.
+const kindTag = (z) => `<p class="tag-kind" style="background:${z.color};color:${z.ink}">${esc(z.label)}</p>`;
+const toolTags = (p) =>
+  p.tags?.length
+    ? `<ul class="tags" aria-label="Tools">${p.tags.map((t) => `<li class="tag" style="background:${t.bg};color:${t.ink}">${esc(t.name)}</li>`).join("")}</ul>`
+    : "";
+
 function zoneStyle(z) {
   return `--zone:${z.color};--zone-ink:${z.ink}`;
 }
@@ -195,6 +203,7 @@ const KITCHEN_HEAD = `
 export function kitchenPage({ config, project: p, next, story }) {
   const root = "../../";
   const z = zone(config, p.category);
+  const demo = config.demos?.[p.slug];
   const ticket = [
     ["Role", esc(story.role)],
     ["Course", esc(story.course)],
@@ -214,6 +223,7 @@ export function kitchenPage({ config, project: p, next, story }) {
         <h2 id="${s.id}-title">${esc(s.title)}</h2>
         ${s.kicker ? `<p class="ticket-kicker">${esc(s.kicker)}</p>` : ""}
         ${s.html}
+        ${s.id === "plated" && demo ? `<p class="ticket-links"><button class="app-open" type="button">Open the app <span aria-hidden="true">↗</span></button></p>` : ""}
       </div>
     </div>
   </div>
@@ -229,7 +239,9 @@ export function kitchenPage({ config, project: p, next, story }) {
     ${bookArt(p.cover, "", story.scenes.map((s) => ({ id: s.id, step: s.step, title: esc(s.title) })), esc(p.title), esc(story.course))}
     <div class="scene-copy">
       <div class="scene-ticket">
+        ${kindTag(z)}
         <h1 id="intro-title" class="ticket-title">${esc(p.title)}</h1>
+        ${toolTags(p)}
         <p class="ticket-kicker">${esc(story.heading)}</p>
         ${story.overview.map((t) => `<p>${t}</p>`).join("")}
         <dl class="ticket-meta">
@@ -254,7 +266,23 @@ ${scenes}
     .map((s) => `<a href="#${s.id}"><span class="step-dot" aria-hidden="true"></span><span class="step-pill">${esc(s.title)}</span></a>`)
     .join("\n  ")}
 </nav>
+${demo ? `<dialog class="app-box" aria-label="${esc(p.title)} app" data-src="${root}${esc(demo.path || demo.video)}" data-kind="${demo.path ? "demo" : "video"}">
+  <button class="app-close" type="button" aria-label="Close">×</button>
+  <div class="app-phone"></div>
+</dialog>` : ""}
 <section class="kitchen-end" id="brought" aria-labelledby="brought-title">
+  ${demo ? `<div class="kitchen-demo">
+    <div class="kitchen-demo-copy">
+      <h2>${esc(demo.title)}</h2>
+      <p>${esc(demo.intro)}</p>
+      ${demo.path ? `<p><a href="${root}${esc(demo.path)}" target="_blank" rel="noopener">Open it full screen <span aria-hidden="true">↗</span></a></p>` : ""}
+    </div>
+    <div class="phone">${
+      demo.path
+        ? `<iframe src="${root}${esc(demo.path)}" title="${esc(p.title)} app demo" loading="lazy"></iframe>`
+        : `<video src="${root}${esc(demo.video)}"${demo.poster ? ` poster="${root}${esc(demo.poster)}"` : ""} controls playsinline preload="none" aria-label="${esc(p.title)} app walkthrough"></video>`
+    }</div>
+  </div>` : ""}
   ${story.slides ? `<div class="kitchen-slides prose">
     <h2>${esc(story.slides.title)}</h2>
     ${story.slides.html}
@@ -287,10 +315,43 @@ ${scenes}
     description: p.summary || config.intro,
     body,
     head: MENU_FONTS + KITCHEN_HEAD,
-    scripts: `<script src="../../talk.js"></script>\n<script src="../../vendor/gsap.min.js"></script>\n<script src="../../vendor/ScrollTrigger.min.js"></script>\n<script src="../../kitchen.js"></script>\n<script src="../../stepnav.js"></script>`,
+    scripts: `<script src="../../talk.js"></script>\n<script src="../../vendor/gsap.min.js"></script>\n<script src="../../vendor/ScrollTrigger.min.js"></script>\n<script src="../../kitchen.js"></script>\n<script src="../../stepnav.js"></script>${demo ? "\n<script src=\"../../appbox.js\"></script>" : ""}`,
     bodyClass: "page-case page-kitchen",
     footer: false,
   });
+}
+
+// A project's gallery: each piece in a 3D frame (a kiosk on a stand, a
+// freestanding totem, a screen in a wall) that opens in a close-up.
+function gallery(g, root) {
+  const parts = {
+    stand: (img) => `<div class="dev-screen">${img}</div><div class="dev-neck"></div><div class="dev-base"></div>`,
+    totem: (img) => `<div class="dev-body"><div class="dev-screen">${img}</div><div class="dev-grille"></div></div><div class="dev-plinth"></div>`,
+    wall: (img) => `<div class="dev-wall"><div class="dev-recess"><div class="dev-screen">${img}</div></div></div>`,
+    photo: (img) => img,
+  };
+  const items = g.items
+    .map((it, i) => {
+      const img = `<img src="${root}${esc(it.src)}" alt="" loading="lazy">`;
+      return `<li class="gal-item gal-item--${esc(it.frame)}">
+      <button class="gal-open" type="button" data-gal="${i}" aria-label="Close-up: ${esc(it.title)}">
+        <span class="dev dev--${esc(it.frame)}"><span class="dev-rig">${parts[it.frame](img)}</span></span>
+      </button>
+      <p class="gal-title">${esc(it.title)}</p>
+      <template class="gal-text"><h3>${esc(it.title)}</h3><p>${esc(it.text)}</p>${it.link ? `<p class="gal-link"><a href="${esc(it.link)}" target="_blank" rel="noopener">${esc(it.linkText || "Read more")} <span aria-hidden="true">↗</span></a></p>` : ""}</template>
+    </li>`;
+    })
+    .join("\n");
+  return `<section class="gallery" aria-labelledby="gallery-title">
+  <h2 id="gallery-title">${esc(g.title)}</h2>
+  ${g.intro ? `<p class="gallery-intro">${esc(g.intro)}</p>` : ""}
+  <ul class="gal-list">${items}</ul>
+  <dialog class="gal-box" aria-labelledby="gal-box-title">
+    <button class="gal-close" type="button" aria-label="Close">×</button>
+    <div class="gal-box-stage"></div>
+    <div class="gal-box-copy" id="gal-box-title"></div>
+  </dialog>
+</section>`;
 }
 
 export function projectPage({ config, project: p, next, contentHtml }) {
@@ -308,12 +369,13 @@ export function projectPage({ config, project: p, next, contentHtml }) {
 <article class="case">
   <header class="case-hero">
     <div class="case-hero-inner">
-      <div class="case-plate">${media(p.cover, p.title)}</div>
+      <div class="case-plate">${media(p.cover, p.title, config.menu.cutouts?.includes(p.slug) ? "media--cutout" : "")}</div>
       <div class="case-card">
         <p class="case-banner">${esc(banner)}</p>
         <div class="case-card-body">
+          ${kindTag(z)}
           <h1>${esc(p.title)}</h1>
-          ${p.tools.length ? `<ul class="case-tags" aria-label="Tools">${p.tools.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+          ${toolTags(p)}
           ${p.summary ? `<p class="case-summary">${esc(p.summary)}</p>` : ""}
           ${p.role ? `<p class="case-role">${esc(p.role)}${p.year ? `, ${p.year}` : ""}</p>` : ""}
           ${p.link ? `<p class="actions"><a class="btn btn--order" href="${esc(p.link)}" rel="noopener">${linkLabel(p.link)}</a></p>` : ""}
@@ -333,6 +395,7 @@ export function projectPage({ config, project: p, next, contentHtml }) {
       </div>
     </aside>
   </div>
+  ${config.galleries?.[p.slug] ? gallery(config.galleries[p.slug], "../../") : ""}
   <nav class="case-nav" aria-label="More projects">
     <a class="case-back" href="../../#projects"><span class="case-nav-label">Back to the</span><span class="case-nav-title">Menu</span></a>
     ${next ? `<a class="case-next" href="../${esc(next.slug)}/"><span class="case-nav-label">Next course</span><span class="case-nav-title">${esc(next.title)}</span></a>` : ""}
@@ -344,6 +407,7 @@ export function projectPage({ config, project: p, next, contentHtml }) {
     root: "../../",
     title: `${p.title} | ${config.title}`,
     current: "projects",
+    scripts: config.galleries?.[p.slug] ? `<script src="../../gallery.js"></script>` : "",
     description: p.summary || config.intro,
     body,
     head: MENU_FONTS,

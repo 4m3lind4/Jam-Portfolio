@@ -1,6 +1,7 @@
 // The end of the About page: the chef pulls up in her car, honks, and offers
 // you a lift to the restaurant. "Okay, coming!" drives off and fades to the
-// home page; "No" gets a cheeky reply. Clicking the car honks again.
+// home page; "No" starts a cheeky argument the visitor can only lose.
+// Clicking the car honks again.
 (function () {
   var section = document.querySelector(".ride");
   if (!section) return;
@@ -93,14 +94,34 @@
   car.addEventListener("click", function () { if (!leaving) honk(); });
   if (talk) invite.addEventListener("click", function () { talk.finish(); });
 
+  // Saying no starts a running argument. Each no gets a cheekier answer
+  // and a new way to say no, until the only reply left is yes.
+  var refusals = JSON.parse(section.getAttribute("data-refusals") || "[]");
+  var round = 0;
+  function honks(n) {
+    for (var i = 0; i < n; i++) setTimeout(honk, i * 480);
+  }
   no.addEventListener("click", function () {
-    if (answered) return;
+    if (answered || leaving) return;
+    var r = refusals[round++];
+    if (!r) return;
     answered = true;
     no.disabled = true;
     message(no.textContent, "you");
     setTimeout(function () {
-      honk();
-      message(section.getAttribute("data-no-answer"), "jam");
+      honks(r.honk || (round === 1 ? 1 : 0));
+      message(r.answer, "jam");
+      if (r.next) {
+        no.textContent = r.next;
+        no.disabled = false;
+        answered = false;
+      } else {
+        // Out of excuses: the only button left is yes.
+        no.hidden = true;
+        yes.textContent = section.getAttribute("data-give-in");
+      }
+      if (motion) gsap.from(replies.children, { autoAlpha: 0, y: 8, stagger: 0.08, duration: 0.3, ease: "power2.out" });
+      chat.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }, 500);
   });
 

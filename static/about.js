@@ -1,6 +1,6 @@
 // About the Chef: the chef talks through her comments once the heading has
-// been squeezed out, then the résumé folder opens to each tab in turn as you
-// scroll, closing again before the next one.
+// been squeezed out, then the résumé folder opens and, as you scroll, its
+// sheets slide out one by one onto a pile beside it.
 (function () {
   var root = document.documentElement;
 
@@ -48,11 +48,13 @@
   var caseEl = folder.querySelector(".folder-case");
   var tabs = gsap.utils.toArray(folder.querySelectorAll(".folder-tab"));
   var sheets = gsap.utils.toArray(folder.querySelectorAll(".folder-sheet"));
-  var OPEN = 0.5, HOLD = 1, FLIP = 0.7;
+  var OPEN = 0.5, HOLD = 1, MOVE = 0.8;
   // Each part draws with its own perspective rather than sharing one 3D
-  // scene, so z-index alone decides what's in front (in a shared 3D scene the
-  // open cover and a turning page sit at the same depth and fight).
+  // scene, so z-index alone decides what's in front.
   var DEPTH = 1600;
+  // How each sheet lands on the pile: a slight turn and nudge, so the four
+  // read as a hand-made stack rather than one block.
+  var LAND = [{ r: -3, x: 0, y: 6 }, { r: 2.2, x: 10, y: -4 }, { r: -1.4, x: -6, y: 2 }, { r: 1, x: 6, y: -2 }];
   var current = -1;
   var tl = null;
   var st = null;
@@ -77,65 +79,61 @@
     show(i);
   }
 
-  // The cover opens once. After that, each tab turns the page over like a
-  // book: the open sheet lifts from the folder's spine and lands face down on
-  // the left, uncovering the next one, which is already lying underneath.
-  // Wide screens lay the cover fully open beside the folder; narrow ones have
-  // no room, so it swings back just far enough to read the sheet. matchMedia
-  // rebuilds the timeline if the window crosses between the two.
+  // The cover opens once and lies flat on the left, showing the four sheets
+  // tucked inside. Then, one per stretch of scroll, the top sheet slides out
+  // and lands on the open pink cover, so a pile grows there from one sheet to
+  // four and the newest one, on top, is the one to read. On narrow screens
+  // the cover can't lie flat beside the folder, so the pile builds on top of
+  // the folder itself.
+  // matchMedia rebuilds the timeline if the window crosses between the two.
   gsap.matchMedia().add({ wide: "(min-width: 761px)", narrow: "(max-width: 760px)" }, function (mm) {
     var wide = mm.conditions.wide;
     current = -1;
     starts = [];
     gsap.set(cover, { transformPerspective: DEPTH, rotationY: 0, zIndex: 3 });
-    gsap.set(sheets, { autoAlpha: 0, rotationY: 0, zIndex: 0, transformPerspective: DEPTH });
-    // Hinge every page on the spine: its own left edge sits a little in from it.
-    sheets.forEach(function (s) { gsap.set(s, { transformOrigin: -s.offsetLeft + "px 50%" }); });
-    // Headings of the later sheets start hidden, so fading them in never
-    // means first snapping them out.
-    sheets.forEach(function (s, i) { if (i) gsap.set(s.querySelector(".label"), { autoAlpha: 0 }); });
+    // In the folder, the first sheet is on top.
+    sheets.forEach(function (s, i) { gsap.set(s, { autoAlpha: 1, x: 0, y: 0, rotation: 0, zIndex: sheets.length - i }); });
+    // Sheets still waiting in the folder are dimmed; the pile is where you
+    // read, so each one comes up to full strength as it lands there.
+    sheets.forEach(function (s) { gsap.set(s.children, { opacity: 0.35 }); });
+    // Where the pile sits: centred on the open cover, which lies flat to the
+    // left of the folder, exactly one folder-width across.
+    var pileX = function (s) { return wide ? -caseEl.offsetWidth + (caseEl.offsetWidth - s.offsetWidth) / 2 - s.offsetLeft : 0; };
 
     tl = gsap.timeline({ defaults: { ease: "power2.inOut" }, onUpdate: sync });
+    tl.fromTo(cover, { rotationY: 0 }, { rotationY: wide ? -180 : -168, duration: OPEN, immediateRender: false }, 0);
+    // Once the cover is past upright it's behind the pages, not over them.
+    tl.set(cover, { zIndex: 0 }, OPEN / 2);
+    // The folder slides right as it opens, so cover and folder are centred.
+    if (wide) tl.fromTo(caseEl, { xPercent: 0 }, { xPercent: 50, duration: OPEN, immediateRender: false }, 0);
     sheets.forEach(function (s, i) {
       var at = tl.duration();
-      if (i === 0) {
-        starts.push(at);
-        tl.set(s, { autoAlpha: 1, zIndex: 1 }, at);
-        tl.fromTo(cover, { rotationY: 0 }, { rotationY: wide ? -180 : -168, duration: OPEN, immediateRender: false }, at);
-        // Once the cover is past upright it's behind the pages, not over them.
-        tl.set(cover, { zIndex: 0 }, at + OPEN / 2);
-        if (wide) tl.fromTo(caseEl, { xPercent: 0 }, { xPercent: 50, duration: OPEN, immediateRender: false }, at);
-      } else {
-        var prev = sheets[i - 1];
-        var label = s.querySelector(".label");
-        starts.push(at + FLIP / 2);
-        // The next sheet is already lying underneath; the turning one is on top.
-        tl.set(s, { autoAlpha: 1, zIndex: 1 }, at);
-        tl.set(prev, { zIndex: 2 }, at);
-        tl.fromTo(prev, { rotationY: 0 }, { rotationY: -180, duration: FLIP, ease: "power1.inOut", immediateRender: false }, at);
-        // Paper lifts: the shadow deepens as it rises and settles as it lands.
-        tl.fromTo(prev, { boxShadow: "0 12px 20px rgba(71, 11, 35, 0.18)" }, { keyframes: [{ boxShadow: "0 30px 40px rgba(71, 11, 35, 0.32)", duration: FLIP / 2 }, { boxShadow: "0 6px 10px rgba(71, 11, 35, 0.12)", duration: FLIP / 2 }], immediateRender: false }, at);
-        // Past halfway it's the back of the page we see, so its words go.
-        tl.set(prev.children, { autoAlpha: 0 }, at + FLIP / 2);
-        // The page settles on the left, then lifts away to keep the pink inside showing.
-        tl.to(prev, { autoAlpha: 0, duration: 0.2, ease: "none" }, at + FLIP + 0.1);
-        // The new section's heading fades in where it is, without moving.
-        tl.fromTo(label, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: "none", immediateRender: false }, at + FLIP * 0.5);
-      }
+      var land = LAND[i % LAND.length];
+      starts.push(at + MOVE / 2);
+      // On top of the pile as soon as it lifts out, so it never slips under.
+      tl.set(s, { zIndex: 10 + i }, at);
+      tl.fromTo(s,
+        { x: 0, y: 0, rotation: 0 },
+        { x: function () { return pileX(s) + land.x; }, y: land.y, rotation: land.r, duration: MOVE, immediateRender: false },
+        at);
+      // A little lift on the way, like paper picked up and set down.
+      tl.fromTo(s.children, { opacity: 0.35 }, { opacity: 1, duration: MOVE * 0.6, ease: "none", immediateRender: false }, at + MOVE * 0.4);
+      tl.fromTo(s, { scale: 1 }, { keyframes: [{ scale: 1.03, duration: MOVE / 2, ease: "power1.out" }, { scale: 1, duration: MOVE / 2, ease: "power1.in" }], immediateRender: false }, at);
+      tl.fromTo(s, { boxShadow: "0 12px 20px rgba(71, 11, 35, 0.18)" }, { keyframes: [{ boxShadow: "0 30px 40px rgba(71, 11, 35, 0.3)", duration: MOVE / 2 }, { boxShadow: "0 6px 12px rgba(71, 11, 35, 0.16)", duration: MOVE / 2 }], immediateRender: false }, at);
       tl.to({}, { duration: HOLD });
     });
 
-    st = ScrollTrigger.create({ trigger: folder, start: "top top", end: "bottom bottom", scrub: 0.5, animation: tl });
+    st = ScrollTrigger.create({ trigger: folder, start: "top top", end: "bottom bottom", scrub: 0.5, animation: tl, invalidateOnRefresh: true });
     sync();
   });
 
-  // A tab takes you to its part of the scroll. The scrub then turns the pages
-  // in between in order, like flicking through, and always ends on that sheet,
-  // however quickly or often the tabs are clicked.
+  // A tab takes you to its part of the scroll. The scrub then moves the
+  // sheets in between in order, and always ends with that sheet on top of the
+  // pile, however quickly or often the tabs are clicked.
   tabs.forEach(function (t, i) {
     t.addEventListener("click", function (e) {
       e.preventDefault();
-      var at = (starts[i] + FLIP / 2 + HOLD / 2) / tl.duration();
+      var at = (starts[i] + MOVE / 2 + HOLD / 2) / tl.duration();
       window.scrollTo({ top: st.start + at * (st.end - st.start), behavior: "instant" });
     });
   });

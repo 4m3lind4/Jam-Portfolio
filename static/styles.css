@@ -380,15 +380,22 @@ a:hover { text-decoration-thickness: 2px; color: var(--jam-pink); }
   background: url("menu/plate-platter.webp") center / contain no-repeat;
   filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.45));
 }
+/* The whole image sits on the plate, never cropped. */
 .case-plate .media {
   position: relative;
-  width: 60%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  width: auto;
+  max-width: 62%;
+  height: auto;
+  max-height: 78%;
+  aspect-ratio: auto;
+  object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 6px 14px rgba(44, 7, 20, 0.35);
 }
 .case-plate .media--empty { display: none; }
+/* A cut-out (like the 3D kiosk) has no backing card, and its shadow falls
+   wide and soft across the plate, as if it's hovering just above it. */
+.case-plate .media--cutout { max-width: 74%; max-height: 86%; background: none; border-radius: 0; box-shadow: none; filter: drop-shadow(0 34px 26px rgba(44, 7, 20, 0.42)) drop-shadow(0 8px 8px rgba(44, 7, 20, 0.25)); }
 
 .case-card {
   background: var(--cream);
@@ -414,17 +421,29 @@ a:hover { text-decoration-thickness: 2px; color: var(--jam-pink); }
   line-height: 1.05;
   color: var(--maroon);
 }
-.case-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 1rem; padding: 0; }
-.case-tags li {
-  background: var(--maroon);
-  color: #fff;
-  font-family: var(--font-display);
+/* Tags match the menu: the Work / Education / Competition label, then each
+   tool in its menu colour. */
+.tag-kind {
+  display: inline-block;
+  margin: 0 0 0.5rem;
+  padding: 0.25em 0.75em;
+  border-radius: 4px;
+  font: 700 0.68rem / 1.2 var(--font-display, inherit);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  box-shadow: 1px 2px 0 rgba(44, 7, 20, 0.25);
+}
+.tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 1rem; padding: 0; }
+.tags .tag {
+  font-family: var(--font-display, inherit);
   font-weight: 700;
   font-size: 0.7rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   padding: 0.2em 0.9em;
   border-radius: 999px;
+  white-space: nowrap;
 }
 .case-summary { margin: 0 0 1rem; line-height: 1.45; font-size: var(--step-0); }
 .case-role { margin: 0 0 1.25rem; font-family: var(--script); opacity: 0.85; }
@@ -557,3 +576,95 @@ a:hover { text-decoration-thickness: 2px; color: var(--jam-pink); }
 .brought strong, .brought b,
 .about .comments strong, .about .comments b,
 .about .body strong { color: var(--jam-pink); }
+
+/* ---------- Project gallery: kiosks in 3D frames ---------- */
+.gallery { max-width: 72rem; margin: 0 auto; padding: 1rem var(--gutter, 1.5rem) 4rem; }
+.gallery h2 { margin: 0 0 0.4rem; }
+.gallery-intro { margin: 0 0 2.5rem; color: var(--muted); }
+.gal-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 3rem 2.5rem; align-items: end; }
+.gal-item { display: grid; justify-items: center; gap: 1rem; }
+.gal-open { padding: 0; border: 0; background: none; cursor: zoom-in; width: 100%; display: grid; place-items: center; }
+.gal-open:focus-visible { outline: 3px solid var(--jam-pink); outline-offset: 8px; border-radius: 12px; }
+.gal-title { margin: 0; font-weight: 700; text-align: center; }
+.gal-item:hover .gal-title { color: var(--jam-pink); }
+
+/* Each device sits in its own perspective, turned a little so it reads as an
+   object; it turns further on hover, and faces front in the close-up. */
+.dev { display: block; perspective: 1400px; width: 100%; }
+.dev-rig { display: block; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(.2, .8, .2, 1); }
+.dev img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.dev--photo img { height: auto; object-fit: contain; filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.18)); transition: transform 0.4s ease; }
+.gal-open:hover .dev--photo img { transform: translateY(-4px) scale(1.02); }
+
+/* Stand: a landscape monitor on a neck and base, like the St George kiosk. */
+.dev--stand { width: 94%; }
+.dev--stand .dev-rig { transform: rotateY(-16deg) rotateX(4deg); }
+.gal-open:hover .dev--stand .dev-rig { transform: rotateY(-8deg) rotateX(2deg); }
+.dev--stand .dev-screen {
+  aspect-ratio: 16 / 9;
+  padding: 2.4%;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #3a3a3e, #1b1b1e 45%, #101012);
+  box-shadow: 7px 0 0 #0b0b0c, 7px 2px 0 #0b0b0c, 18px 26px 34px rgba(0, 0, 0, 0.32);
+  overflow: hidden;
+}
+.dev--stand .dev-screen img { border-radius: 3px; }
+.dev--stand .dev-neck { width: 13%; height: 3.4rem; margin: -2px auto 0; background: linear-gradient(90deg, #121214, #3a3a3e 45%, #1b1b1e); }
+.dev--stand .dev-base { width: 56%; height: 1.4rem; margin: 0 auto; background: linear-gradient(180deg, #4a4a50, #1b1b1e); clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%); box-shadow: 0 14px 22px rgba(0, 0, 0, 0.3); }
+
+/* Totem: a freestanding portrait kiosk with a grille below the screen. */
+.dev--totem { width: 52%; max-width: 15rem; }
+.dev--totem .dev-rig { transform: rotateY(18deg) rotateX(3deg); }
+.gal-open:hover .dev--totem .dev-rig { transform: rotateY(8deg) rotateX(2deg); }
+.dev--totem .dev-body {
+  padding: 7% 7% 0;
+  border-radius: 16px 16px 6px 6px;
+  background: linear-gradient(100deg, #f2f2f4, #d4d5da 55%, #a9aab1);
+  box-shadow: -8px 0 0 #8c8d94, -8px 3px 0 #8c8d94, -20px 26px 36px rgba(0, 0, 0, 0.3);
+}
+.dev--totem .dev-screen { aspect-ratio: 9 / 16; padding: 3%; border-radius: 8px; background: #141416; overflow: hidden; }
+.dev--totem .dev-screen img { border-radius: 3px; }
+.dev--totem .dev-grille { height: 3.2rem; margin: 0 8%; background: repeating-linear-gradient(90deg, transparent 0 5px, rgba(0, 0, 0, 0.12) 5px 7px); border-radius: 0 0 6px 6px; }
+.dev--totem .dev-plinth { height: 0.9rem; margin: 0 -6%; border-radius: 4px; background: linear-gradient(180deg, #3a3a3e, #121214); box-shadow: 0 12px 18px rgba(0, 0, 0, 0.3); }
+
+/* Wall: a portrait screen set into a slatted timber wall, like the bus
+   departures screen at Peninsula. */
+.dev--wall { width: 82%; max-width: 21rem; }
+.dev--wall .dev-rig { transform: rotateY(-14deg); }
+.gal-open:hover .dev--wall .dev-rig { transform: rotateY(-6deg); }
+.dev--wall .dev-wall {
+  padding: 14% 14% 16%;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.12), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.1)),
+    repeating-linear-gradient(90deg, #e6dfd2 0 13px, #c4bba9 13px 15px, #efe9de 15px 17px);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.18);
+}
+.dev--wall .dev-recess { padding: 4%; background: #18181a; border-radius: 4px; box-shadow: inset 0 6px 10px rgba(0, 0, 0, 0.7), 0 0 0 4px #9c9383, 0 2px 0 4px #d8d0c1; }
+.dev--wall .dev-screen { aspect-ratio: 734 / 1304; overflow: hidden; border-radius: 2px; }
+
+/* The close-up. */
+.gal-box { width: min(64rem, 94vw); max-height: 94vh; padding: 0; border: 0; border-radius: 18px; background: var(--surface, #fff); color: var(--ink); overflow: auto; }
+.gal-box[open] { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(14rem, 1fr); align-items: center; animation: gal-in 0.3s cubic-bezier(.2, .8, .2, 1); }
+.gal-box::backdrop { background: rgba(14, 4, 9, 0.78); }
+@keyframes gal-in { from { opacity: 0; transform: scale(0.94); } }
+.gal-box-stage { padding: 2.5rem; display: grid; place-items: center; background: #f4f1ea; min-height: 100%; }
+.gal-box-stage .dev { width: 100%; max-width: 38rem; }
+.gal-box-stage.is-totem .dev { width: 52%; }
+.gal-box-stage.is-wall .dev { width: 72%; }
+.gal-box-stage .dev-rig { transform: none !important; }
+.gal-box-copy { padding: 2.5rem 2.5rem 2.5rem 1rem; }
+.gal-box-copy h3 { margin: 0 0 0.6rem; font-size: 1.5rem; }
+.gal-box-copy p { margin: 0; line-height: 1.6; }
+.gal-box-copy .gal-link { margin-top: 1rem; }
+.gal-box-copy .gal-link a { font-weight: 700; }
+.gal-close { position: absolute; top: 0.6rem; right: 0.8rem; width: 2.4rem; height: 2.4rem; border: 0; border-radius: 50%; background: rgba(0, 0, 0, 0.06); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.gal-close:hover { background: var(--jam-pink); color: #fff; }
+@media (max-width: 760px) {
+  .gal-box[open] { grid-template-columns: 1fr; }
+  .gal-box-copy { padding: 1.5rem; }
+  .gal-box-stage { padding: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dev-rig, .dev--photo img { transition: none; }
+  .gal-box[open] { animation: none; }
+}

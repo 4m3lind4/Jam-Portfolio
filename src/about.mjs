@@ -101,7 +101,7 @@ export async function buildAbout(config, { blocks, rows }, asset, root = "") {
   ${folder}
   ${a.resumePdf ? `<div class="about-block"><a class="pdf" href="${esc(a.resumePdf)}" rel="noopener">Download PDF resume</a></div>` : ""}
 </section>
-<section class="ride" aria-labelledby="ride-title" data-no-answer="${esc(r.noAnswer)}">
+<section class="ride" aria-labelledby="ride-title" data-refusals="${esc(JSON.stringify(r.refusals))}" data-give-in="${esc(r.giveIn)}">
   <h2 class="visually-hidden" id="ride-title">Next stop: the restaurant</h2>
   <div class="ride-chat" aria-live="polite">
     <div class="ride-bubble ride-bubble--jam"><p class="talk-text">${esc(r.invite)}</p></div>

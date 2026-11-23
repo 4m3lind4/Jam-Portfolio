@@ -10,7 +10,7 @@ import { createNotionSource, toProject, toResumeRow } from "./notion.mjs";
 import { renderBlocks } from "./render.mjs";
 import { aboutPage, homePage, kitchenPage, projectPage } from "./templates.mjs";
 import { KITCHENS, storyFromNotion } from "./kitchen.mjs";
-import { buildMenu } from "./menu.mjs";
+import { buildMenu, pillPalette } from "./menu.mjs";
 import { buildAbout } from "./about.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -105,7 +105,10 @@ async function main() {
     const blocks = await source.getBlocks(p.id);
     const prefixAsset = async (url, kind) => fromRoot(await asset(url, kind), "../../");
     const next = projects.length > 1 ? projects[(i + 1) % projects.length] : null;
-    const page = { config: site, project: { ...p, cover: fromRoot(p.coverPath, "../../") }, next };
+    // Tags in the same colours as on the menu, so a tool looks the same everywhere.
+    const pills = pillPalette(projects);
+    const tags = p.tools.map((t) => ({ name: t, ...pills.get(t) }));
+    const page = { config: site, project: { ...p, tags, cover: fromRoot(p.coverPath, "../../") }, next };
     const html = KITCHENS[p.slug]
       ? kitchenPage({ ...page, story: await storyFromNotion(KITCHENS[p.slug], blocks, prefixAsset) })
       : projectPage({ ...page, contentHtml: await renderBlocks(blocks, prefixAsset) });

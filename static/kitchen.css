@@ -249,6 +249,32 @@
 /* ---------- The end of the meal ---------- */
 
 .kitchen-end { background: var(--cream); padding: 4rem var(--gutter, 1.5rem) 2rem; }
+/* An interactive demo of the app, in a phone frame beside a short intro. */
+.kitchen-demo {
+  max-width: 62rem;
+  margin: 0 auto 4rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3rem;
+  align-items: center;
+}
+.kitchen-demo h2 { font-family: var(--script); font-weight: 400; font-size: 2.3rem; margin: 0 0 1rem; color: var(--ink); }
+.kitchen-demo p { margin: 0 0 1rem; color: var(--ink); max-width: 30rem; }
+.kitchen-demo a { color: var(--maroon); font-weight: 700; }
+.phone {
+  width: 340px;
+  height: 700px;
+  padding: 12px;
+  border-radius: 52px;
+  background: #1c1c1e;
+  box-shadow: 0 0 0 2px #3a3a3c inset, 0 30px 60px rgba(71, 11, 35, 0.3);
+}
+.phone iframe, .phone video { width: 100%; height: 100%; border: 0; border-radius: 40px; background: #fff; display: block; object-fit: cover; }
+@media (max-width: 820px) {
+  .kitchen-demo { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; gap: 1.5rem; }
+  .kitchen-demo p { margin-inline: auto; }
+  .phone { width: min(340px, 100%); height: 640px; }
+}
 /* The slide deck, full width above the summary. */
 .kitchen-slides { max-width: 64rem; margin: 0 auto 3.5rem; }
 .kitchen-slides h2 { font-family: var(--script); font-weight: 400; font-size: 2.3rem; margin: 0 0 1rem; color: var(--ink); }
@@ -447,4 +473,62 @@
   .step-nav { gap: 0.8rem; right: 0.5rem; }
   .step-dot { width: 0.85rem; height: 0.85rem; border-width: 2px; }
   .step-nav a:not(:hover):not(:focus-visible) .step-pill { opacity: 0; }
+}
+
+/* ---- The finished app, full screen ---- */
+.plate-phone.is-openable { cursor: zoom-in; pointer-events: auto; }
+.art--plate { pointer-events: none; }
+.app-open {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.app-open:hover { color: var(--jam-pink); }
+.app-box {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.app-box[open] { display: grid; place-items: center; animation: app-in 0.3s ease-out; }
+.app-box::backdrop { background: rgba(14, 4, 9, 0.88); }
+@keyframes app-in { from { opacity: 0; transform: scale(0.96); } }
+.app-phone {
+  height: min(92dvh, 860px);
+  aspect-ratio: 390 / 844;
+  padding: 12px;
+  border-radius: 54px;
+  background: #1c1c1e;
+  box-shadow: 0 0 0 2px #3a3a3c inset, 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+.app-phone iframe, .app-phone video { width: 100%; height: 100%; border: 0; border-radius: 42px; background: #fff; display: block; object-fit: cover; }
+.app-close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 2.8rem;
+  height: 2.8rem;
+  border: 0;
+  border-radius: 50%;
+  background: #f9f7eb;
+  color: #470b23;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1;
+}
+.app-close:hover { background: var(--jam-pink); color: #fff; }
+/* On a phone the app simply takes the whole screen. */
+@media (max-width: 560px) {
+  .app-phone { height: 100dvh; width: 100vw; aspect-ratio: auto; padding: 0; border-radius: 0; box-shadow: none; }
+  .app-phone iframe, .app-phone video { border-radius: 0; }
 }

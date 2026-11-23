@@ -98,8 +98,10 @@
   padding: clamp(1.4rem, 3vw, 2.4rem);
   box-shadow: 8px 10px 0 var(--a-maroon);
 }
+/* The tail is measured from inside the 2px border, so it's pulled out by the
+   border's width to meet the outline exactly, not poke into the bubble. */
 .about .intro-copy.bubble::after {
-  left: -2.15rem;
+  left: calc(-2.2rem - 2px);
   top: 3.5rem;
   width: 2.2rem;
   height: 2.4rem;
@@ -168,7 +170,7 @@
 
 @media (max-width: 760px) {
   .about-intro { grid-template-columns: 1fr; gap: 2.5rem; min-height: 0; }
-  .about .intro-copy.bubble::after { left: 3rem; top: -2.1rem; clip-path: polygon(0 100%, 100% 100%, 20% 0); }
+  .about .intro-copy.bubble::after { left: 3rem; top: calc(-2.4rem - 2px); clip-path: polygon(0 100%, 100% 100%, 20% 0); }
   .about .portrait { width: 160px; margin: 0 auto; }
 }
 
@@ -293,7 +295,8 @@
 .folder-on .folder-cover span { position: relative; z-index: 1; backface-visibility: hidden; }
 
 /* Wide screens: half width, so there's room for the cover to lie open beside
-   it. about.js slides it right as it opens, keeping the spread centred. */
+   it (where the sheets pile up). about.js slides the folder right as it
+   opens, keeping the open spread centred. */
 @media (min-width: 761px) {
   .folder-on .folder-case { width: min(620px, calc(50vw - 4rem)); }
 }
@@ -391,3 +394,9 @@
 }
 .skip-anim:hover, .skip-anim:focus-visible { background: var(--jam-pink); border-color: var(--jam-pink); color: #fff; }
 .skip-anim[hidden] { display: none; }
+
+/* ---- A wooden spoon for a cursor. It tips forward over the car, as if
+   tapping it to honk. ---- */
+.page-about, .page-about a, .page-about button, .page-about [role="button"] { cursor: url("about/spoon.svg") 6 6, auto; }
+.page-about .ride-car { cursor: url("about/spoon-tap.svg") 1 16, pointer; }
+.page-about textarea, .page-about input { cursor: text; }
