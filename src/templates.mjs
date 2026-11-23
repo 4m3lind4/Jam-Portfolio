@@ -317,7 +317,7 @@ ${demo ? `<dialog class="app-box" aria-label="${esc(p.title)} app" data-src="${r
     body,
     head: MENU_FONTS + KITCHEN_HEAD,
     scripts: `<script src="../../talk.js"></script>\n<script src="../../vendor/gsap.min.js"></script>\n<script src="../../vendor/ScrollTrigger.min.js"></script>\n<script src="../../kitchen.js"></script>\n<script src="../../stepnav.js"></script>${demo ? "\n<script src=\"../../appbox.js\"></script>" : ""}`,
-    bodyClass: "page-case page-kitchen",
+    bodyClass: `page-case page-kitchen page-kitchen--${p.slug}`,
     footer: false,
   });
 }

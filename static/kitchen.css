@@ -560,3 +560,11 @@
 }
 .kitchen-on .bite-btn:hover { background: var(--jam-pink); border-color: var(--jam-pink); color: #fff; }
 @media (min-width: 761px) { .kitchen-on .bite-btn { left: 62%; } }
+
+/* On the PeriodT Coach page, where dinner is meatballs, the cursor is a fork. */
+.page-kitchen--periodt-coach { cursor: url("kitchen/fork-cursor.png") 6 5, auto; }
+.page-kitchen--periodt-coach a,
+.page-kitchen--periodt-coach button,
+.page-kitchen--periodt-coach .meatball-dish,
+.page-kitchen--periodt-coach .fork,
+.page-kitchen--periodt-coach .plate-phone.is-openable { cursor: url("kitchen/fork-cursor.png") 6 5, pointer; }

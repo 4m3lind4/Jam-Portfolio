@@ -401,7 +401,6 @@
     [$(".meatball-dish")[0], fork, btn].forEach(function (t) {
       if (!t) return;
       t.style.pointerEvents = "auto";
-      t.style.cursor = "pointer";
       t.addEventListener("click", bite);
     });
   }

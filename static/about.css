@@ -397,6 +397,6 @@
 
 /* ---- A wooden spoon for a cursor. It tips forward over the car, as if
    tapping it to honk. ---- */
-.page-about, .page-about a, .page-about button, .page-about [role="button"] { cursor: url("about/spoon.svg") 6 6, auto; }
-.page-about .ride-car { cursor: url("about/spoon-tap.svg") 1 16, pointer; }
+.page-about, .page-about a, .page-about button, .page-about [role="button"] { cursor: url("about/spoon.png") 2 3, auto; }
+.page-about .ride-car { cursor: url("about/spoon-tap.png") 4 17, pointer; }
 .page-about textarea, .page-about input { cursor: text; }

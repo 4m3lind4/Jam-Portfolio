@@ -320,8 +320,8 @@ export const ovenArt = (root, labels, shots = [], opts = {}) => stage("oven", `
 
 // `opts.award: null` leaves the award rosette off the plate.
 // PeriodT Coach's dish: Swedish meatballs in gravy on a mound of mash, with
-// peas, lingonberry jam and parsley. There's no knife: a fork takes two bites
-// (static/kitchen.js), and the app is underneath.
+// peas, lingonberry jam and parsley. There's no knife: a fork (a photo) takes
+// two bites (static/kitchen.js), and the app is underneath.
 const meatball = (cx, cy, r) => `<g>
   <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#k-mb)"/>
   <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#k-mb-edge)"/>
@@ -340,13 +340,12 @@ const peas = () => {
   }
   return out.join("");
 };
-const meatballs = () => `<defs>
+const meatballs = (root) => `<defs>
       <radialGradient id="k-mb" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#a86c44"/><stop offset=".55" stop-color="#7a4528"/><stop offset="1" stop-color="#4a2414"/></radialGradient>
       <radialGradient id="k-mb-edge" cx=".5" cy=".5" r=".5"><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#2a1006" stop-opacity=".6"/></radialGradient>
       <radialGradient id="k-mash" cx=".45" cy=".35" r=".75"><stop offset="0" stop-color="#fffdf4"/><stop offset=".7" stop-color="#f3ead2"/><stop offset="1" stop-color="#d9caa6"/></radialGradient>
       <radialGradient id="k-pea" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#9be060"/><stop offset=".6" stop-color="#4fae2c"/><stop offset="1" stop-color="#2c6e18"/></radialGradient>
       <radialGradient id="k-lingon" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#b0123e"/><stop offset=".7" stop-color="#6e0a24"/><stop offset="1" stop-color="#3e0614"/></radialGradient>
-      <linearGradient id="k-silver" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#8d8f96"/><stop offset=".35" stop-color="#ffffff"/><stop offset=".6" stop-color="#c9cbd1"/><stop offset="1" stop-color="#7c7e85"/></linearGradient>
     </defs>
     <g class="meatball-dish">
       <g class="side">${peas()}
@@ -369,9 +368,7 @@ const meatballs = () => `<defs>
       <g fill="#2f7a2a" opacity=".9">${[[332, 260], [380, 238], [452, 250], [410, 310], [470, 352], [356, 392], [300, 330], [220, 270], [250, 340]].map(([x, y], i) => `<rect x="${x}" y="${y}" width="6" height="3" transform="rotate(${i * 37} ${x} ${y})"/>`).join("")}</g>
     </g>
     <g class="fork" transform="translate(600 250) rotate(28)">
-      <path d="M-16,-150 L-16,-112 M-5,-152 L-5,-112 M6,-152 L6,-112 M17,-150 L17,-112" stroke="url(#k-silver)" stroke-width="7" stroke-linecap="round"/>
-      <path d="M-22,-118 C-22,-92 -12,-76 -6,-62 L-5,90 C-5,104 5,104 5,90 L6,-62 C12,-76 22,-92 22,-118 Z" fill="url(#k-silver)" stroke="#8d8f96" stroke-width="1"/>
-      <path d="M-4,-40 L-3,80" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>
+      <image href="${root}kitchen/fork.png" x="-28" y="-150" width="56" height="260" preserveAspectRatio="xMidYMid meet" style="filter: drop-shadow(4px 8px 6px rgba(44, 7, 20, 0.35))"/>
     </g>`;
 
 export const plateArt = (root, labels, shots = [], opts = {}) => stage("plate", `
@@ -379,7 +376,7 @@ export const plateArt = (root, labels, shots = [], opts = {}) => stage("plate", 
     ${shadow(400, 524, 240, 16)}
     <image href="${root}menu/plate-platter.webp" x="120" y="50" width="560" height="470" preserveAspectRatio="xMidYMid meet"/>
     <g class="plate-phone" transform="translate(325 128)">${phone("plate-screen", shots[0]?.src)}</g>
-    ${opts.dish === "meatballs" ? meatballs() : `    <g class="cake cake--left" transform="translate(400 285) translate(-260 150) scale(.5) translate(-400 -285)">
+    ${opts.dish === "meatballs" ? meatballs(root) : `    <g class="cake cake--left" transform="translate(400 285) translate(-260 150) scale(.5) translate(-400 -285)">
       <path d="M400,90 A195,195 0 0 0 400,480 Z" fill="url(#k-icing)"/>
       <path class="seam" d="M396,90 V480" stroke="#fff3f7" stroke-width="7"/>
       <g fill="#fff"><circle cx="300" cy="200" r="5"/><circle cx="340" cy="320" r="5"/><circle cx="270" cy="350" r="5"/><circle cx="350" cy="170" r="5"/><circle cx="310" cy="420" r="5"/></g>
