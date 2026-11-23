@@ -88,6 +88,8 @@ export default {
       path: "demos/periodt-coach/",
       video: "videos/periodt-coach-walkthrough.mp4",
       poster: "videos/periodt-coach-walkthrough.jpg",
+      // A sped-up play-through, shown on the plate once the dish is eaten.
+      gif: "videos/periodt-coach-playthrough.gif",
       title: "Try the app",
       intro: "A web version of PeriodT Coach, rebuilt from the app's SwiftUI code with its own sample team. Check the team's readiness, open an athlete, send a check-in, and browse the exercise and Female libraries.",
     },

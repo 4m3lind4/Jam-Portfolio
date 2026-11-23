@@ -561,11 +561,11 @@
 .kitchen-on .bite-btn:hover { background: var(--jam-pink); border-color: var(--jam-pink); color: #fff; }
 @media (min-width: 761px) { .kitchen-on .bite-btn { left: 62%; } }
 
-/* On the PeriodT Coach page, where dinner is meatballs, the cursor is a fork. */
-.page-kitchen--periodt-coach, .page-kitchen--periodt-coach * { cursor: url("kitchen/fork-cursor.png") 6 5, auto; }
-.page-kitchen--periodt-coach a,
-.page-kitchen--periodt-coach button,
-.page-kitchen--periodt-coach .meatball-dish,
-.page-kitchen--periodt-coach .fork,
-.page-kitchen--periodt-coach .plate-phone.is-openable { cursor: url("kitchen/fork-cursor.png") 6 5, pointer; }
 .plate-video { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 18px; background: #fff; pointer-events: none; }
+.bite-btn:focus { outline: none; }
+.bite-btn:focus-visible { outline: 3px solid var(--jam-pink); outline-offset: 3px; }
+/* The full walkthrough video, under the tap-through demo. */
+.kitchen-walkthrough { max-width: 62rem; margin: 0 auto 4rem; text-align: center; }
+.kitchen-walkthrough h2 { font-family: var(--script); font-weight: 400; font-size: 2.3rem; margin: 0 0 0.5rem; color: var(--ink); }
+.kitchen-walkthrough p { margin: 0 0 1.2rem; color: var(--ink); }
+.kitchen-walkthrough video { width: min(320px, 100%); aspect-ratio: 540 / 1174; border-radius: 28px; background: #000; box-shadow: 0 20px 40px rgba(71, 11, 35, 0.25); }

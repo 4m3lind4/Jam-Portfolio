@@ -31,6 +31,7 @@ export const KITCHENS = {
       {
         id: "challenge",
         art: boardArt,
+        opts: { produce: "cake" },
         step: "01",
         title: "The Challenge",
         html: `<p>Traditional period trackers primarily focus on menstrual health and cycle prediction. For athletes, however, the menstrual cycle can also intersect with:</p>
@@ -40,6 +41,7 @@ export const KITCHENS = {
       {
         id: "research",
         art: bowlArt,
+        opts: { produce: "cake" },
         step: "02",
         title: "Research & Team Planning",
         html: `<p>Because the project focused on a problem space I was personally familiar with as an athlete, I was able to bring contextual knowledge into the research and ideation process.</p>
@@ -107,7 +109,7 @@ export const KITCHENS = {
       {
         id: "challenge",
         art: boardArt,
-        opts: { produce: true },
+        opts: { produce: "savoury" },
         step: "01",
         title: "The Challenge",
         html: `<p>Coaches often work across several athletes in one session, so the small, session-level goals aren't always spelled out, and much of the feedback happens informally, on the spot.</p>
@@ -118,7 +120,7 @@ export const KITCHENS = {
       {
         id: "research",
         art: bowlArt,
-        opts: { chips: ["Sports researcher", "Physio insight", "Skating diary", "Market fit", "Netball clubs"], result: "Athlete × Coach", produce: true },
+        opts: { chips: ["Sports researcher", "Physio insight", "Skating diary", "Market fit", "Netball clubs"], result: "Athlete × Coach", produce: "savoury" },
         step: "02",
         title: "Research",
         html: `<p>I interviewed a sports researcher who studies coach–athlete interactions. Comparing notes on my own training, we found feedback was mostly qualitative, and that a record of what each session covered would have helped both sides.</p>

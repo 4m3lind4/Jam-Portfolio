@@ -271,7 +271,7 @@ ${scenes}
     .map((s) => `<a href="#${s.id}"><span class="step-dot" aria-hidden="true"></span><span class="step-pill">${esc(s.title)}</span></a>`)
     .join("\n  ")}
 </nav>
-${demo ? `<dialog class="app-box" aria-label="${esc(p.title)} app" data-src="${root}${esc(demo.video || demo.path)}" data-kind="${demo.video ? "video" : "demo"}">
+${demo ? `<dialog class="app-box" aria-label="${esc(p.title)} app" data-src="${root}${esc(demo.video || demo.path)}" data-kind="${demo.video ? "video" : "demo"}"${demo.gif ? ` data-gif="${root}${esc(demo.gif)}"` : ""}>
   <button class="app-close" type="button" aria-label="Close">×</button>
   <div class="app-phone"></div>
 </dialog>` : ""}
@@ -287,6 +287,11 @@ ${demo ? `<dialog class="app-box" aria-label="${esc(p.title)} app" data-src="${r
         ? `<iframe src="${root}${esc(demo.path)}" title="${esc(p.title)} app demo" loading="lazy"></iframe>`
         : `<video src="${root}${esc(demo.video)}"${demo.poster ? ` poster="${root}${esc(demo.poster)}"` : ""} controls playsinline preload="none" aria-label="${esc(p.title)} app walkthrough"></video>`
     }</div>
+  </div>` : ""}
+  ${demo?.path && demo.video ? `<div class="kitchen-walkthrough">
+    <h2>The full walkthrough</h2>
+    <p>Every screen of the finished app, recorded on iPhone.</p>
+    <video src="${root}${esc(demo.video)}"${demo.poster ? ` poster="${root}${esc(demo.poster)}"` : ""} controls playsinline preload="none" aria-label="${esc(p.title)} app walkthrough"></video>
   </div>` : ""}
   ${story.slides ? `<div class="kitchen-slides prose">
     <h2>${esc(story.slides.title)}</h2>

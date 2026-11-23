@@ -235,9 +235,13 @@
     // The hand reaches in level from the right, then chops along from the left end.
     gsap.set(knife, { x: 900, y: 60, rotation: 0 });
 
+    // Real ingredients are chopped through the middle, each swapping for its
+    // cut version as the knife lands; the pink veg is cut between slices.
+    var produce = !!$(".slice .cut").length;
     tl.to(knife, { x: X0 + W, y: 60, duration: 0.6, ease: "sine.out" });
     for (var k = 1; k <= 5; k++) {
-      var at = k < 5 ? X0 + k * W + (k - 1) * GAP : X0 + 4 * (W + GAP) + W * 0.84;
+      var at = produce ? X0 + (k - 1) * (W + GAP) + W / 2 + 14
+        : k < 5 ? X0 + k * W + (k - 1) * GAP : X0 + 4 * (W + GAP) + W * 0.84;
       // Down all the way through, a beat on the board, then back up.
       tl.to(knife, { x: at, duration: 0.3, ease: "sine.inOut" })
         .to(knife, { y: 304, duration: 0.16, ease: "power3.in" })
@@ -245,6 +249,11 @@
       if (k < 5) {
         tl.to(slices.slice(k), { x: "+=" + GAP, duration: 0.14, ease: "power2.out" }, "cut" + k)
           .to(juice[k - 1], { opacity: 1, duration: 0.08 }, "cut" + k);
+      }
+      if (produce) {
+        var piece = slices[k - 1];
+        tl.set(piece.querySelector(".whole"), { autoAlpha: 0 }, "cut" + k)
+          .fromTo(piece.querySelector(".cut"), { autoAlpha: 1, scale: 0.92, svgOrigin: (X0 + (k - 1) * (W + GAP) + W / 2) + " 450" }, { scale: 1, duration: 0.2, ease: "back.out(3)", immediateRender: false }, "cut" + k);
       }
       tl.to(tags[k - 1], { autoAlpha: 1, scale: 1, duration: 0.24, ease: "back.out(2)" }, "cut" + k + "+=0.05")
         .to(knife, { y: 60, duration: 0.24, ease: "sine.out" }, "cut" + k + "+=0.1");
@@ -387,7 +396,7 @@
       gsap.timeline({ onComplete: function () {
         busy = false;
         if (last) {
-          if (btn) gsap.to(btn, { autoAlpha: 0, duration: 0.3, delay: 0.6 });
+          gsap.to($(".garnish"), { autoAlpha: 0, duration: 0.3 });
           gsap.to(screen, { x: 325, y: 128, scale: 1, duration: 0.8, ease: "back.out(1.3)" });
           playOnPlate();
         }
@@ -412,7 +421,9 @@
     function munch() {
       if (window.JamTalk && !JamTalk.isOn()) return;
       if (!munchSound) munchSound = new Audio(root() + "kitchen/munch.mp3");
-      munchSound.currentTime = 0;
+      // The file opens with a quarter-second of silence; skip it so the
+      // crunch lands as the forkful arrives.
+      munchSound.currentTime = 0.22;
       munchSound.play().catch(function () {});
     }
     function root() {
@@ -422,9 +433,10 @@
     // Once the plate is clear, the app plays through on the phone's screen
     // (muted, looping); tapping it opens the full walkthrough (static/appbox.js).
     function playOnPlate() {
-      var box = document.querySelector(".app-box[data-kind='video']");
+      var box = document.querySelector(".app-box");
       var phone = screen[0];
-      if (!box || !phone || phone.querySelector("foreignObject")) return;
+      var gif = box && box.getAttribute("data-gif");
+      if (!gif || !phone || phone.querySelector("foreignObject")) return;
       var NS = "http://www.w3.org/2000/svg";
       var fo = document.createElementNS(NS, "foreignObject");
       fo.setAttribute("x", 6);
@@ -432,21 +444,21 @@
       fo.setAttribute("width", 138);
       fo.setAttribute("height", 294);
       fo.setAttribute("clip-path", "url(#k-screen)");
-      var v = document.createElement("video");
-      v.src = box.getAttribute("data-src");
-      v.muted = true;
-      v.loop = true;
-      v.playsInline = true;
-      v.autoplay = true;
-      v.setAttribute("aria-hidden", "true");
-      v.className = "plate-video";
-      fo.appendChild(v);
+      var img = document.createElement("img");
+      img.src = gif;
+      img.alt = "";
+      img.className = "plate-video";
+      fo.appendChild(img);
       // On top of the still screenshot (the recording has its own island).
       phone.appendChild(fo);
-      v.play().catch(function () {});
-      // The little one rests while the full screen one plays.
-      box.addEventListener("close", function () { v.play().catch(function () {}); });
-      document.querySelectorAll(".plate-phone, .app-open").forEach(function (t) { t.addEventListener("click", function () { v.pause(); }); });
+      // Tell people the app on the plate is theirs to open.
+      if (btn) {
+        btn.textContent = "Tap the app to open it";
+        gsap.to(btn, { autoAlpha: 1, duration: 0.3, delay: 0.9 });
+        btn.removeEventListener("click", bite);
+        btn.addEventListener("click", function () { phone.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+      }
+      gsap.fromTo(phone, { rotation: 0 }, { keyframes: [{ rotation: -3, duration: 0.12 }, { rotation: 3, duration: 0.12 }, { rotation: 0, duration: 0.2 }], delay: 1.4, transformOrigin: "50% 50%", repeat: 1, repeatDelay: 1.6 });
     }
 
     [$(".meatball-dish")[0], fork, btn].forEach(function (t) {

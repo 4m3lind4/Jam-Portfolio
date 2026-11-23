@@ -18,6 +18,10 @@ export const artDefs = `<svg class="art-defs" width="0" height="0" aria-hidden="
   <linearGradient id="k-arm-fade" x1="0" x2="0" y1="0" y2="1"><stop offset=".72" stop-color="#fff"/><stop offset=".97" stop-color="#000"/></linearGradient>
   <clipPath id="k-screen"><rect x="6" y="6" width="138" height="294" rx="18"/></clipPath>
   <mask id="k-arm" maskContentUnits="objectBoundingBox"><rect width="1" height="1" fill="url(#k-arm-fade)"/></mask>
+  <radialGradient id="k-straw" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#ff5a6e"/><stop offset=".6" stop-color="#e0263f"/><stop offset="1" stop-color="#8f1022"/></radialGradient>
+  <radialGradient id="k-rasp" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ff6f9a"/><stop offset=".6" stop-color="#d81b60"/><stop offset="1" stop-color="#7a0b33"/></radialGradient>
+  <radialGradient id="k-egg" cx=".38" cy=".3" r=".85"><stop offset="0" stop-color="#fff8ec"/><stop offset=".7" stop-color="#f0dcc0"/><stop offset="1" stop-color="#c9a982"/></radialGradient>
+  <radialGradient id="k-yolk" cx=".38" cy=".35" r=".7"><stop offset="0" stop-color="#ffd85a"/><stop offset="1" stop-color="#f29a12"/></radialGradient>
   <radialGradient id="k-berry" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#d23a6a"/><stop offset=".55" stop-color="#8c0f3a"/><stop offset="1" stop-color="#3e0619"/></radialGradient>
   <radialGradient id="k-tomato" cx=".35" cy=".32" r=".75"><stop offset="0" stop-color="#ff7a5c"/><stop offset=".55" stop-color="#e0261f"/><stop offset="1" stop-color="#8f1210"/></radialGradient>
   <radialGradient id="k-potato" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#ecd4a2"/><stop offset=".7" stop-color="#c9a066"/><stop offset="1" stop-color="#99713e"/></radialGradient>
@@ -191,13 +195,77 @@ const potato = (cx, cy, rx = 36, ry = 26) => `<g>
   <g fill="#8a6234" opacity=".7"><circle cx="${cx - rx * 0.4}" cy="${cy - ry * 0.3}" r="2.2"/><circle cx="${cx + rx * 0.35}" cy="${cy + ry * 0.2}" r="2"/><circle cx="${cx - rx * 0.05}" cy="${cy + ry * 0.45}" r="1.8"/><circle cx="${cx + rx * 0.55}" cy="${cy - ry * 0.45}" r="1.6"/></g>
   <ellipse cx="${cx - rx * 0.35}" cy="${cy - ry * 0.55}" rx="${rx * 0.28}" ry="${ry * 0.14}" fill="#fff" opacity=".35"/>
 </g>`;
-const PRODUCE = [berries, tomato, potato, tomato, potato];
+// Each board ingredient comes whole and cut: the knife (static/kitchen.js)
+// lands on it and swaps one for the other, the halves parting.
+const halfDisc = (cx, cy, r, side) => `M${cx},${cy - r} A${r},${r} 0 0 ${side < 0 ? 0 : 1} ${cx},${cy + r} Z`;
+const cutTomatoHalves = (cx, cy, r = 30) => [-1, 1].map((side) => {
+  const x = cx + side * 9;
+  return `<g><path d="${halfDisc(x, cy, r, side)}" fill="#e0261f"/><path d="${halfDisc(x, cy, r * 0.84, side)}" fill="#ff6b52"/>
+    <path d="${halfDisc(x + side * r * 0.12, cy, r * 0.5, side)}" fill="#c9171c"/>
+    <circle cx="${x + side * r * 0.3}" cy="${cy - r * 0.25}" r="2.6" fill="#ffe27a"/><circle cx="${x + side * r * 0.36}" cy="${cy + r * 0.2}" r="2.6" fill="#ffe27a"/><circle cx="${x + side * r * 0.18}" cy="${cy}" r="2.2" fill="#ffe27a"/></g>`;
+}).join("");
+const cutPotatoHalves = (cx, cy, rx = 30, ry = 26) => [-1, 1].map((side) => {
+  const x = cx + side * 8;
+  return `<g><path d="M${x},${cy - ry} C${x + side * rx * 1.25},${cy - ry} ${x + side * rx * 1.25},${cy + ry} ${x},${cy + ry} Z" fill="#b48a52"/>
+    <path d="M${x},${cy - ry + 4} C${x + side * rx * 1.05},${cy - ry + 4} ${x + side * rx * 1.05},${cy + ry - 4} ${x},${cy + ry - 4} Z" fill="#f6e7b4"/></g>`;
+}).join("");
+const halvedBerries = (cx, cy, r = 13) => [[-22, 4], [0, -10], [22, 6]].map(([dx, dy], i) => [-1, 1].map((side) => {
+  const x = cx + dx + side * 3;
+  return `<path d="${halfDisc(x, cy + dy, r, side)}" fill="#7a0d33"/><path d="${halfDisc(x, cy + dy, r * 0.7, side)}" fill="#d8467a"/>`;
+}).join("")).join("");
+const strawberry = (cx, cy, s = 1) => `<g>
+  <path d="M${cx},${cy + 30 * s} C${cx - 28 * s},${cy + 6 * s} ${cx - 30 * s},${cy - 20 * s} ${cx - 12 * s},${cy - 24 * s} C${cx - 4 * s},${cy - 26 * s} ${cx + 4 * s},${cy - 26 * s} ${cx + 12 * s},${cy - 24 * s} C${cx + 30 * s},${cy - 20 * s} ${cx + 28 * s},${cy + 6 * s} ${cx},${cy + 30 * s} Z" fill="url(#k-straw)"/>
+  ${[[-12, -8], [0, -12], [12, -8], [-8, 6], [8, 6], [0, 18], [-16, -16], [16, -16]].map(([dx, dy]) => `<ellipse cx="${cx + dx * s}" cy="${cy + dy * s}" rx="${1.6 * s}" ry="${2.4 * s}" fill="#ffe27a"/>`).join("")}
+  <path d="M${cx - 14 * s},${cy - 22 * s} l6,-10 l8,6 l4,-10 l4,10 l8,-6 l4,10 Z" fill="#3f8a2e" transform="translate(${-2 * s} 0)"/>
+  <ellipse cx="${cx - 9 * s}" cy="${cy - 10 * s}" rx="${5 * s}" ry="${3 * s}" fill="#fff" opacity=".45"/>
+</g>`;
+const cutStrawberryHalves = (cx, cy) => [-1, 1].map((side) => {
+  const x = cx + side * 9;
+  return `<g><path d="M${x},${cy + 28} C${x + side * 26},${cy + 6} ${x + side * 28},${cy - 18} ${x + side * 12},${cy - 22} C${x + side * 6},${cy - 24} ${x},${cy - 24} ${x},${cy - 24} Z" fill="#e0263f"/>
+    <path d="M${x},${cy + 18} C${x + side * 16},${cy + 4} ${x + side * 18},${cy - 12} ${x + side * 8},${cy - 16} L${x},${cy - 16} Z" fill="#ffc2cd"/>
+    <path d="M${x},${cy - 26} l${side * 6},-8 l${side * 6},6" stroke="#3f8a2e" stroke-width="4" fill="none"/></g>`;
+}).join("");
+const raspberries = (cx, cy) => `<g>${[[-16, 6], [16, 8], [0, -10]].map(([dx, dy]) => {
+  const x = cx + dx, y = cy + dy;
+  return `<g>${[[-5, -5], [5, -5], [0, 0], [-6, 5], [6, 5], [0, 9], [0, -9]].map(([a, b]) => `<circle cx="${x + a}" cy="${y + b}" r="5" fill="url(#k-rasp)"/>`).join("")}<circle cx="${x - 4}" cy="${y - 6}" r="2" fill="#fff" opacity=".5"/></g>`;
+}).join("")}</g>`;
+const brokenRaspberries = (cx, cy) => `<g>${[[-24, 10], [-8, 14], [8, 12], [24, 8], [-14, 0], [12, -2], [0, 4]].map(([a, b], i) => `<circle cx="${cx + a}" cy="${cy + b + 6}" r="${i % 2 ? 4.5 : 5.5}" fill="url(#k-rasp)"/>`).join("")}<ellipse cx="${cx}" cy="${cy + 20}" rx="30" ry="5" fill="#c2185b" opacity=".35"/></g>`;
+const egg = (cx, cy) => `<g><ellipse cx="${cx}" cy="${cy}" rx="22" ry="28" fill="url(#k-egg)"/><ellipse cx="${cx - 7}" cy="${cy - 11}" rx="6" ry="9" fill="#fff" opacity=".6"/></g>`;
+const crackedEgg = (cx, cy) => `<g>
+  <path d="M${cx - 30},${cy + 18} C${cx - 36},${cy - 4} ${cx - 8},${cy - 14} ${cx + 6},${cy - 8} C${cx + 30},${cy - 14} ${cx + 38},${cy + 10} ${cx + 22},${cy + 22} C${cx + 6},${cy + 30} ${cx - 20},${cy + 30} ${cx - 30},${cy + 18} Z" fill="#fffdf6"/>
+  <circle cx="${cx + 2}" cy="${cy + 6}" r="12" fill="url(#k-yolk)"/><circle cx="${cx - 2}" cy="${cy + 2}" r="3.5" fill="#fff" opacity=".6"/>
+  <path d="M${cx - 34},${cy - 4} l6,-10 l5,6 l5,-8 l5,8 v8 C${cx - 14},${cy + 6} ${cx - 30},${cy + 6} ${cx - 34},${cy - 4} Z" fill="url(#k-egg)"/>
+  <path d="M${cx + 18},${cy - 22} l5,-8 l5,6 l5,-8 l4,8 v6 C${cx + 36},${cy - 10} ${cx + 22},${cy - 10} ${cx + 18},${cy - 22} Z" fill="url(#k-egg)"/>
+</g>`;
+const milk = (cx, cy) => `<g>
+  <path d="M${cx - 22},${cy - 26} L${cx + 22},${cy - 26} L${cx + 17},${cy + 28} L${cx - 17},${cy + 28} Z" fill="#e9f1f6" stroke="#b9c8d2" stroke-width="2"/>
+  <path d="M${cx - 20},${cy - 14} L${cx + 20},${cy - 14} L${cx + 17},${cy + 26} L${cx - 17},${cy + 26} Z" fill="#fffef9"/>
+  <ellipse cx="${cx}" cy="${cy - 14}" rx="20" ry="4" fill="#fff"/>
+  <path d="M${cx + 22},${cy - 12} C${cx + 36},${cy - 12} ${cx + 36},${cy + 10} ${cx + 20},${cy + 10}" fill="none" stroke="#b9c8d2" stroke-width="4"/>
+  <path d="M${cx - 14},${cy - 20} L${cx - 12},${cy + 22}" stroke="#fff" stroke-width="3" opacity=".8"/>
+</g>`;
+const pouredMilk = (cx, cy) => `<g>
+  <path d="M${cx - 40},${cy + 24} C${cx - 40},${cy + 10} ${cx + 30},${cy + 8} ${cx + 38},${cy + 22} C${cx + 30},${cy + 32} ${cx - 34},${cy + 34} ${cx - 40},${cy + 24} Z" fill="#fffef9"/>
+  <g transform="rotate(-70 ${cx + 6} ${cy})"><path d="M${cx - 16},${cy - 24} L${cx + 16},${cy - 24} L${cx + 12},${cy + 16} L${cx - 12},${cy + 16} Z" fill="#e9f1f6" stroke="#b9c8d2" stroke-width="2"/></g>
+  <circle cx="${cx - 26}" cy="${cy + 12}" r="3" fill="#fffef9"/><circle cx="${cx + 30}" cy="${cy + 8}" r="2.5" fill="#fffef9"/>
+</g>`;
+// Board ingredients, whole and cut, by dish.
+const BOARDS = {
+  savoury: [[berries, halvedBerries], [tomato, cutTomatoHalves], [potato, cutPotatoHalves], [tomato, cutTomatoHalves], [potato, cutPotatoHalves]],
+  cake: [[egg, crackedEgg], [milk, pouredMilk], [strawberry, cutStrawberryHalves], [raspberries, brokenRaspberries], [strawberry, cutStrawberryHalves]],
+};
+// What falls into the mixing bowl, by dish.
+const BOWLS = {
+  savoury: [(x, y) => berries(x, y + 4, 12), (x, y) => cutTomato(x, y, 22)],
+  cake: [(x, y) => crackedEgg(x, y), (x, y) => strawberry(x, y, 0.75), (x, y) => raspberries(x, y), (x, y) => pouredMilk(x, y)],
+};
 
 // A label's pill is as wide as its word (about 10.6 units a character at
 // this size, plus padding), never narrower than the short ones.
 const pill = (name) => Math.max(112, Math.round(name.length * 10.6 + 34));
 
-// `opts.produce` swaps the pink slices for berries, tomatoes and potatoes.
+// `opts.produce` ("savoury" or "cake") swaps the pink slices for real
+// ingredients, each drawn whole and cut.
 export const boardArt = (root, labels = SLICES, shots, opts = {}) => {
   const { x0, w, gap } = BOARD;
   const slices = labels.map((name, i) => {
@@ -205,7 +273,7 @@ export const boardArt = (root, labels = SLICES, shots, opts = {}) => {
     const high = i % 2 === 1;
     return `<g class="slice" data-i="${i}">
       ${i === 0 && !opts.produce ? `<path d="M${x + 6},428 C${x - 34},400 ${x - 44},444 ${x - 66},416 C${x - 40},452 ${x - 34},462 ${x + 6},454 Z" fill="#7d9a54"/>` : ""}
-      ${opts.produce ? PRODUCE[i % PRODUCE.length](x + w / 2, 448) : `<rect x="${x}" y="412" width="${w}" height="66" rx="${i === 0 || i === 4 ? 26 : 8}" fill="url(#k-veg)"/>
+      ${opts.produce ? (() => { const [whole, cut] = BOARDS[opts.produce][i % 5]; return `<g class="whole">${whole(x + w / 2, 448)}</g><g class="cut" opacity="0">${cut(x + w / 2, 450)}</g>`; })() : `<rect x="${x}" y="412" width="${w}" height="66" rx="${i === 0 || i === 4 ? 26 : 8}" fill="url(#k-veg)"/>
       <ellipse cx="${x + w - 3}" cy="445" rx="9" ry="31" fill="#ffc2d6" opacity="${i === 4 ? 0 : 1}"/>
       <rect x="${x + 8}" y="420" width="${w - 22}" height="8" rx="4" fill="#fff" opacity=".35"/>`}
       <g class="slice-tag">
@@ -236,7 +304,7 @@ export const bowlArt = (root, labels, shots, opts = {}) => {
     const x = [150, 400, 650, 215, 585][i];
     const y = [120, 80, 120, 222, 222][i];
     return `<g class="chip" data-x="${x}" data-y="${y}">
-      ${opts.produce ? (i % 2 ? cutTomato(x, y - 44, 22) : berries(x, y - 40, 12)) : `<circle cx="${x}" cy="${y - 42}" r="22" fill="url(#k-veg)"/><ellipse cx="${x - 6}" cy="${y - 49}" rx="9" ry="5" fill="#fff" opacity=".4"/>`}
+      ${opts.produce ? (() => { const kinds = BOWLS[opts.produce]; return kinds[i % kinds.length](x, y - 44); })() : `<circle cx="${x}" cy="${y - 42}" r="22" fill="url(#k-veg)"/><ellipse cx="${x - 6}" cy="${y - 49}" rx="9" ry="5" fill="#fff" opacity=".4"/>`}
       <rect x="${x - 88}" y="${y - 18}" width="176" height="38" rx="19" fill="#f9f7eb"/>
       <text x="${x}" y="${y + 7}" text-anchor="middle" class="k-sans" font-size="18" font-weight="700" fill="#470b23">${name}</text>
     </g>`;
@@ -393,7 +461,7 @@ const meatballs = (root) => `<defs>
         <path d="M404,204 C430,192 470,204 478,236 C484,280 476,330 456,350 C434,362 410,348 402,322 Z" fill="#a8774a" opacity=".45"/>
         ${meatball(430, 222, 36)}${meatball(462, 288, 34)}${meatball(428, 340, 37)}${meatball(402, 260, 30)}
       </g>
-      <g fill="#2f7a2a" opacity=".9">${[[332, 260], [380, 238], [452, 250], [410, 310], [470, 352], [356, 392], [300, 330], [220, 270], [250, 340]].map(([x, y], i) => `<rect x="${x}" y="${y}" width="6" height="3" transform="rotate(${i * 37} ${x} ${y})"/>`).join("")}</g>
+      <g class="garnish" fill="#2f7a2a" opacity=".9">${[[332, 260], [380, 238], [452, 250], [410, 310], [470, 352], [356, 392], [300, 330], [220, 270], [250, 340]].map(([x, y], i) => `<rect x="${x}" y="${y}" width="6" height="3" transform="rotate(${i * 37} ${x} ${y})"/>`).join("")}</g>
     </g>
     <g class="fork" transform="translate(600 250) rotate(28)">
       <image href="${root}kitchen/fork.png" x="-28" y="-150" width="56" height="260" preserveAspectRatio="xMidYMid meet" style="filter: drop-shadow(4px 8px 6px rgba(44, 7, 20, 0.35))"/>
