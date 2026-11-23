@@ -141,7 +141,8 @@ export default {
     cutouts: ["envent"],
     // Stickers on a dish's plate, by project Slug.
     stickers: { periodt: "Winner Dish for TechFest" },
-    // Section order and the banner printed at the top of each menu page.
+    // The banner printed at the top of each menu page, by Category. Dishes
+    // are served in the projects' Order from Notion.
     sections: [
       { category: "Work", banner: "Main" },
       { category: "University", banner: "Chef's Special" },

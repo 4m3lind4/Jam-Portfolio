@@ -14,7 +14,7 @@
   var dark = section.querySelector(".ride-dark");
   var reduced = window.JamTalk ? JamTalk.reduced : matchMedia("(prefers-reduced-motion: reduce)").matches;
   var motion = !!window.gsap && !reduced;
-  var talk = window.JamTalk && JamTalk.prepare(invite, { pitch: 450, speed: 22 });
+  var talk = window.JamTalk && JamTalk.prepare(invite, { pitch: 450, speed: 13 });
   var answered = false;
   var leaving = false;
 

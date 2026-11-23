@@ -166,6 +166,10 @@ export const bookArt = (cover, root, chapters = [], title = "", course = "") => 
 const SLICES = ["Training", "Energy levels", "Recovery", "Exercise", "Performance"];
 export const BOARD = { x0: 130, w: 80, gap: 30 };
 
+// A label's pill is as wide as its word (about 10.6 units a character at
+// this size, plus padding), never narrower than the short ones.
+const pill = (name) => Math.max(112, Math.round(name.length * 10.6 + 34));
+
 export const boardArt = (root, labels = SLICES) => {
   const { x0, w, gap } = BOARD;
   const slices = labels.map((name, i) => {
@@ -178,7 +182,7 @@ export const boardArt = (root, labels = SLICES) => {
       <rect x="${x + 8}" y="420" width="${w - 22}" height="8" rx="4" fill="#fff" opacity=".35"/>
       <g class="slice-tag">
         <path d="M${x + w / 2},${high ? 330 : 390} V412" stroke="#f9f7eb" stroke-width="2" stroke-dasharray="3 4"/>
-        <rect x="${x + w / 2 - 66}" y="${high ? 292 : 352}" width="132" height="38" rx="19" fill="#f9f7eb"/>
+        <rect x="${x + w / 2 - pill(name) / 2}" y="${high ? 292 : 352}" width="${pill(name)}" height="38" rx="19" fill="#f9f7eb"/>
         <text x="${x + w / 2}" y="${high ? 317 : 377}" text-anchor="middle" class="k-sans" font-size="19" font-weight="700" fill="#470b23">${name}</text>
       </g>
     </g>`;
@@ -315,33 +319,59 @@ export const ovenArt = (root, labels, shots = [], opts = {}) => stage("oven", `
   </g>`);
 
 // `opts.award: null` leaves the award rosette off the plate.
-// PeriodT Coach's dish: two piles of jam-glazed meatballs that part like the
-// cake halves (same classes, same animation), with a pot of jam on the side.
+// PeriodT Coach's dish: Swedish meatballs in gravy on a mound of mash, with
+// peas, lingonberry jam and parsley. There's no knife: a fork takes two bites
+// (static/kitchen.js), and the app is underneath.
 const meatball = (cx, cy, r) => `<g>
-  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#k-meatball)"/>
-  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#k-meatball-crust)" opacity=".55"/>
-  <path d="M${cx - r * 0.62},${cy - r * 0.2} C${cx - r * 0.3},${cy - r * 0.78} ${cx + r * 0.4},${cy - r * 0.8} ${cx + r * 0.66},${cy - r * 0.18} C${cx + r * 0.3},${cy - r * 0.05} ${cx + r * 0.1},${cy + r * 0.12} ${cx - r * 0.05},${cy - r * 0.02} C${cx - r * 0.25},${cy + r * 0.1} ${cx - r * 0.45},${cy + r * 0.05} ${cx - r * 0.62},${cy - r * 0.2} Z" fill="#c90a55" opacity=".88"/>
-  <ellipse cx="${cx - r * 0.28}" cy="${cy - r * 0.5}" rx="${r * 0.2}" ry="${r * 0.08}" fill="#fff" opacity=".55" transform="rotate(-20 ${cx - r * 0.28} ${cy - r * 0.5})"/>
-  <g fill="#2f6b2a"><ellipse cx="${cx + r * 0.25}" cy="${cy - r * 0.62}" rx="${r * 0.1}" ry="${r * 0.05}"/><ellipse cx="${cx - r * 0.05}" cy="${cy - r * 0.7}" rx="${r * 0.08}" ry="${r * 0.04}" transform="rotate(30 ${cx} ${cy})"/></g>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#k-mb)"/>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#k-mb-edge)"/>
+  <g fill="#3a1a0c" opacity=".55"><circle cx="${cx - r * 0.35}" cy="${cy + r * 0.1}" r="${r * 0.1}"/><circle cx="${cx + r * 0.3}" cy="${cy + r * 0.35}" r="${r * 0.08}"/><circle cx="${cx + r * 0.15}" cy="${cy - r * 0.2}" r="${r * 0.07}"/></g>
+  <path d="M${cx - r * 0.8},${cy - r * 0.1} C${cx - r * 0.6},${cy - r * 0.85} ${cx + r * 0.55},${cy - r * 0.9} ${cx + r * 0.8},${cy - r * 0.15} C${cx + r * 0.7},${cy + r * 0.1} ${cx + r * 0.45},${cy - r * 0.05} ${cx + r * 0.35},${cy + r * 0.2} C${cx + r * 0.2},${cy + r * 0.05} ${cx - r * 0.1},${cy + r * 0.25} ${cx - r * 0.3},${cy + r * 0.05} C${cx - r * 0.5},${cy + r * 0.15} ${cx - r * 0.7},${cy + r * 0.05} ${cx - r * 0.8},${cy - r * 0.1} Z" fill="#a8774a" opacity=".85"/>
+  <ellipse cx="${cx - r * 0.3}" cy="${cy - r * 0.48}" rx="${r * 0.26}" ry="${r * 0.1}" fill="#fff" opacity=".45" transform="rotate(-18 ${cx - r * 0.3} ${cy - r * 0.48})"/>
+  <g fill="#2f7a2a"><rect x="${cx + r * 0.1}" y="${cy - r * 0.55}" width="${r * 0.14}" height="${r * 0.07}" transform="rotate(25 ${cx} ${cy})"/><rect x="${cx - r * 0.2}" y="${cy - r * 0.3}" width="${r * 0.1}" height="${r * 0.06}" transform="rotate(-40 ${cx} ${cy})"/></g>
 </g>`;
+const peas = () => {
+  const out = [];
+  // A loose heap of peas, packed by rings with a little jitter.
+  for (let i = 0; i < 46; i++) {
+    const a = i * 2.399, d = 9 * Math.sqrt(i);
+    const x = 228 + Math.cos(a) * d * 1.05, y = 300 + Math.sin(a) * d * 1.35;
+    out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9.5" fill="url(#k-pea)"/><circle cx="${(x - 3).toFixed(1)}" cy="${(y - 3).toFixed(1)}" r="2.6" fill="#fff" opacity=".5"/>`);
+  }
+  return out.join("");
+};
 const meatballs = () => `<defs>
-      <radialGradient id="k-meatball" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#b8683c"/><stop offset=".55" stop-color="#7a3a1c"/><stop offset="1" stop-color="#3a160a"/></radialGradient>
-      <radialGradient id="k-meatball-crust" cx=".5" cy=".5" r=".5"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#1c0804"/></radialGradient>
+      <radialGradient id="k-mb" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#a86c44"/><stop offset=".55" stop-color="#7a4528"/><stop offset="1" stop-color="#4a2414"/></radialGradient>
+      <radialGradient id="k-mb-edge" cx=".5" cy=".5" r=".5"><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#2a1006" stop-opacity=".6"/></radialGradient>
+      <radialGradient id="k-mash" cx=".45" cy=".35" r=".75"><stop offset="0" stop-color="#fffdf4"/><stop offset=".7" stop-color="#f3ead2"/><stop offset="1" stop-color="#d9caa6"/></radialGradient>
+      <radialGradient id="k-pea" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#9be060"/><stop offset=".6" stop-color="#4fae2c"/><stop offset="1" stop-color="#2c6e18"/></radialGradient>
+      <radialGradient id="k-lingon" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#b0123e"/><stop offset=".7" stop-color="#6e0a24"/><stop offset="1" stop-color="#3e0614"/></radialGradient>
+      <linearGradient id="k-silver" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#8d8f96"/><stop offset=".35" stop-color="#ffffff"/><stop offset=".6" stop-color="#c9cbd1"/><stop offset="1" stop-color="#7c7e85"/></linearGradient>
     </defs>
-    <g class="cake cake--left" transform="translate(400 285) translate(-260 150) scale(.5) translate(-400 -285)">
-      ${meatball(300, 190, 72)}${meatball(350, 330, 84)}${meatball(270, 420, 70)}${meatball(330, 470, 58)}
-      <path class="seam" d="M396,110 V470" stroke="#fff3f7" stroke-width="0"/>
+    <g class="meatball-dish">
+      <g class="side">${peas()}
+        <path d="M250,392 C232,370 262,350 292,362 C322,352 344,376 330,398 C340,420 306,440 282,428 C252,438 236,414 250,392 Z" fill="url(#k-lingon)"/>
+        <g fill="#d61d55" opacity=".7"><circle cx="270" cy="380" r="5"/><circle cx="298" cy="372" r="4"/><circle cx="312" cy="398" r="5"/><circle cx="284" cy="412" r="4"/></g>
+        <ellipse cx="278" cy="372" rx="12" ry="4" fill="#fff" opacity=".35"/>
+      </g>
+      <g class="bite bite--1">
+        <path d="M296,240 C286,176 338,146 398,158 C414,240 412,340 400,430 C344,446 292,414 286,366 C264,332 276,284 296,240 Z" fill="url(#k-mash)"/>
+        <path d="M312,224 C330,210 356,212 372,224 M306,300 C322,290 344,292 360,304 M314,372 C330,362 352,366 366,378" fill="none" stroke="#e4d8b8" stroke-width="3" stroke-linecap="round"/>
+        <path d="M330,206 C346,192 380,196 388,218 L390,310 C372,328 340,324 330,302 C318,276 318,232 330,206 Z" fill="#a8774a" opacity=".45"/>
+        ${meatball(348, 214, 34)}${meatball(360, 286, 38)}${meatball(334, 352, 33)}
+      </g>
+      <g class="bite bite--2">
+        <path d="M398,158 C458,148 516,182 516,248 C532,300 522,356 502,392 C476,440 432,446 400,430 C412,340 414,240 398,158 Z" fill="url(#k-mash)"/>
+        <path d="M418,206 C436,196 458,200 470,212 M424,320 C440,310 462,314 474,326" fill="none" stroke="#e4d8b8" stroke-width="3" stroke-linecap="round"/>
+        <path d="M404,204 C430,192 470,204 478,236 C484,280 476,330 456,350 C434,362 410,348 402,322 Z" fill="#a8774a" opacity=".45"/>
+        ${meatball(430, 222, 36)}${meatball(462, 288, 34)}${meatball(428, 340, 37)}${meatball(402, 260, 30)}
+      </g>
+      <g fill="#2f7a2a" opacity=".9">${[[332, 260], [380, 238], [452, 250], [410, 310], [470, 352], [356, 392], [300, 330], [220, 270], [250, 340]].map(([x, y], i) => `<rect x="${x}" y="${y}" width="6" height="3" transform="rotate(${i * 37} ${x} ${y})"/>`).join("")}</g>
     </g>
-    <g class="cake cake--right" transform="translate(400 285) translate(260 150) scale(.5) translate(-400 -285)">
-      ${meatball(500, 200, 70)}${meatball(450, 320, 82)}${meatball(530, 410, 72)}${meatball(460, 460, 60)}
-    </g>
-    <g class="jam-pot" transform="translate(640 150)">
-      <ellipse cx="0" cy="58" rx="74" ry="16" fill="#2c0714" opacity=".25"/>
-      <path d="M-62,0 C-62,48 -40,62 0,62 C40,62 62,48 62,0 Z" fill="url(#k-bowl)"/>
-      <ellipse cx="0" cy="0" rx="62" ry="18" fill="#efe9d6"/>
-      <ellipse cx="0" cy="2" rx="52" ry="13" fill="#b00848"/>
-      <ellipse cx="-14" cy="-2" rx="18" ry="4" fill="#ff7fab" opacity=".7"/>
-      <text y="38" text-anchor="middle" class="k-script" font-size="22" fill="#470b23">Jam</text>
+    <g class="fork" transform="translate(600 250) rotate(28)">
+      <path d="M-16,-150 L-16,-112 M-5,-152 L-5,-112 M6,-152 L6,-112 M17,-150 L17,-112" stroke="url(#k-silver)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M-22,-118 C-22,-92 -12,-76 -6,-62 L-5,90 C-5,104 5,104 5,90 L6,-62 C12,-76 22,-92 22,-118 Z" fill="url(#k-silver)" stroke="#8d8f96" stroke-width="1"/>
+      <path d="M-4,-40 L-3,80" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>
     </g>`;
 
 export const plateArt = (root, labels, shots = [], opts = {}) => stage("plate", `

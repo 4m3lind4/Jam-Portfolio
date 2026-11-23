@@ -6,7 +6,7 @@
 
   // ---- The speech bubble
   var bubble = document.querySelector(".about-intro .bubble");
-  var talk = bubble && window.JamTalk && JamTalk.prepare(bubble, { pitch: 450, speed: 22 });
+  var talk = bubble && window.JamTalk && JamTalk.prepare(bubble, { pitch: 450, speed: 13 });
   if (talk) {
     var seen = false;
     var ready = !root.classList.contains("sauce-on");
@@ -93,9 +93,7 @@
     gsap.set(cover, { transformPerspective: DEPTH, rotationY: 0, zIndex: 3 });
     // In the folder, the first sheet is on top.
     sheets.forEach(function (s, i) { gsap.set(s, { autoAlpha: 1, x: 0, y: 0, rotation: 0, zIndex: sheets.length - i }); });
-    // Sheets still waiting in the folder are dimmed; the pile is where you
-    // read, so each one comes up to full strength as it lands there.
-    sheets.forEach(function (s) { gsap.set(s.children, { opacity: 0.35 }); });
+    sheets.forEach(function (s) { gsap.set(s.children, { opacity: 1 }); });
     // Where the pile sits: centred on the open cover, which lies flat to the
     // left of the folder, exactly one folder-width across.
     var pileX = function (s) { return wide ? -caseEl.offsetWidth + (caseEl.offsetWidth - s.offsetWidth) / 2 - s.offsetLeft : 0; };
@@ -117,7 +115,9 @@
         { x: function () { return pileX(s) + land.x; }, y: land.y, rotation: land.r, duration: MOVE, immediateRender: false },
         at);
       // A little lift on the way, like paper picked up and set down.
-      tl.fromTo(s.children, { opacity: 0.35 }, { opacity: 1, duration: MOVE * 0.6, ease: "none", immediateRender: false }, at + MOVE * 0.4);
+      // The sheet it's landing on fades back, so only the top of the pile
+      // reads at full strength.
+      if (i > 0) tl.fromTo(sheets[i - 1].children, { opacity: 1 }, { opacity: 0.3, duration: MOVE * 0.6, ease: "none", immediateRender: false }, at + MOVE * 0.4);
       tl.fromTo(s, { scale: 1 }, { keyframes: [{ scale: 1.03, duration: MOVE / 2, ease: "power1.out" }, { scale: 1, duration: MOVE / 2, ease: "power1.in" }], immediateRender: false }, at);
       tl.fromTo(s, { boxShadow: "0 12px 20px rgba(71, 11, 35, 0.18)" }, { keyframes: [{ boxShadow: "0 30px 40px rgba(71, 11, 35, 0.3)", duration: MOVE / 2 }, { boxShadow: "0 6px 12px rgba(71, 11, 35, 0.16)", duration: MOVE / 2 }], immediateRender: false }, at);
       tl.to({}, { duration: HOLD });

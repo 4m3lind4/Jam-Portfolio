@@ -89,12 +89,16 @@ export function buildMenu(config, projects) {
   const m = config.menu;
   const pills = pillPalette(projects);
 
-  // Group into sections in the configured order; unknown categories go last.
-  const known = m.sections.map((s) => s.category);
-  const groups = m.sections
-    .map((s) => ({ banner: s.banner, items: projects.filter((p) => p.category === s.category) }))
-    .concat([{ banner: m.otherBanner, items: projects.filter((p) => !known.includes(p.category)) }])
-    .filter((g) => g.items.length);
+  // Dishes are served in the projects' own order (Order in Notion). Each run
+  // of neighbouring projects from the same category shares a page and that
+  // category's banner.
+  const bannerOf = (p) => m.sections.find((s) => s.category === p.category)?.banner || m.otherBanner;
+  const groups = [];
+  for (const p of projects) {
+    const last = groups[groups.length - 1];
+    if (last && last.category === p.category) last.items.push(p);
+    else groups.push({ category: p.category, banner: bannerOf(p), items: [p] });
+  }
 
   // Lay each section out across as many pages as it needs.
   // A reviews block takes up one dish slot on the page of its project.

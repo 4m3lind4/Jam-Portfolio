@@ -1,1575 +1,1575 @@
 {
- "pages": [
-  {
-   "id": "p1",
-   "properties": {
-    "Project name": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "PeriodT",
-       "annotations": {},
-       "href": null
+  "pages": [
+    {
+      "id": "p1",
+      "properties": {
+        "Project name": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "PeriodT",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Category": {
+          "type": "select",
+          "select": {
+            "name": "University"
+          }
+        },
+        "Year": {
+          "type": "number",
+          "number": 2026
+        },
+        "Tools": {
+          "type": "multi_select",
+          "multi_select": [
+            {
+              "name": "SwiftUI"
+            },
+            {
+              "name": "Swift"
+            },
+            {
+              "name": "Figma"
+            }
+          ]
+        },
+        "Order": {
+          "type": "number",
+          "number": 1
+        },
+        "Slug": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "periodt",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Summary": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "A solution to break down taboos around menstrual cycles for high-performing athletes",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "My Role": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Product Lead, UI UX Designer & programmer",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Link": {
+          "type": "url",
+          "url": "https://github.com/LALAJJ0302/PeriodT-Coach-App"
+        },
+        "Cover Image": {
+          "type": "files",
+          "files": [
+            {
+              "type": "file",
+              "file": {
+                "url": "fixture:periodt.svg"
+              }
+            }
+          ]
+        },
+        "Featured on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
       }
-     ]
     },
-    "Category": {
-     "type": "select",
-     "select": {
-      "name": "University"
-     }
+    {
+      "id": "p3",
+      "properties": {
+        "Project name": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "Envent",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Category": {
+          "type": "select",
+          "select": {
+            "name": "Work"
+          }
+        },
+        "Year": {
+          "type": "number",
+          "number": 2025
+        },
+        "Tools": {
+          "type": "multi_select",
+          "multi_select": [
+            {
+              "name": "Figma"
+            }
+          ]
+        },
+        "Order": {
+          "type": "number",
+          "number": 2
+        },
+        "Slug": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "envent",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Summary": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Designing wayfinding solutions for clients such as St George, Chatswood and Peninsula University Health hospitals",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "My Role": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "UI UX Designer & Information Architect",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Link": {
+          "type": "url",
+          "url": null
+        },
+        "Cover Image": {
+          "type": "files",
+          "files": [
+            {
+              "type": "file",
+              "file": {
+                "url": "fixture:envent-kiosk.webp"
+              }
+            }
+          ]
+        },
+        "Featured on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
     },
-    "Year": {
-     "type": "number",
-     "number": 2026
+    {
+      "id": "p4",
+      "properties": {
+        "Project name": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "SwipeShop",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Category": {
+          "type": "select",
+          "select": {
+            "name": "Competition"
+          }
+        },
+        "Year": {
+          "type": "number",
+          "number": 2026
+        },
+        "Tools": {
+          "type": "multi_select",
+          "multi_select": [
+            {
+              "name": "Figma"
+            },
+            {
+              "name": "Swift"
+            },
+            {
+              "name": "SwiftUI"
+            }
+          ]
+        },
+        "Order": {
+          "type": "number",
+          "number": 3
+        },
+        "Slug": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "swipeshop",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Summary": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Finding a match for future Gen Z shoppers",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "My Role": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Project Lead",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Link": {
+          "type": "url",
+          "url": "https://4m3lind4.github.io/Woolworths-SwipeShop/web/#/home"
+        },
+        "Cover Image": {
+          "type": "files",
+          "files": [
+            {
+              "type": "file",
+              "file": {
+                "url": "fixture:swipeshop.svg"
+              }
+            }
+          ]
+        },
+        "Featured on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
     },
-    "Tools": {
-     "type": "multi_select",
-     "multi_select": [
-      {
-       "name": "SwiftUI"
-      },
-      {
-       "name": "Swift"
-      },
-      {
-       "name": "Figma"
+    {
+      "id": "p2",
+      "properties": {
+        "Project name": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "PeriodT Coach",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Category": {
+          "type": "select",
+          "select": {
+            "name": "University"
+          }
+        },
+        "Year": {
+          "type": "number",
+          "number": 2026
+        },
+        "Tools": {
+          "type": "multi_select",
+          "multi_select": [
+            {
+              "name": "Figma"
+            },
+            {
+              "name": "Swift"
+            },
+            {
+              "name": "SwiftUI"
+            }
+          ]
+        },
+        "Order": {
+          "type": "number",
+          "number": 4
+        },
+        "Slug": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "periodt-coach",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Summary": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "A companion app that improves how coaches understand and communicate with their high-performing athletes",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "My Role": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Solo project",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Link": {
+          "type": "url",
+          "url": "https://github.com/4m3lind4/PeriodT-V2"
+        },
+        "Cover Image": {
+          "type": "files",
+          "files": [
+            {
+              "type": "file",
+              "file": {
+                "url": "fixture:coach.svg"
+              }
+            }
+          ]
+        },
+        "Featured on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
       }
-     ]
-    },
-    "Order": {
-     "type": "number",
-     "number": 1
-    },
-    "Slug": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "periodt",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Summary": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "A solution to break down taboos around menstrual cycles for high-performing athletes",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "My Role": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Product Lead, UI UX Designer & programmer",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Link": {
-     "type": "url",
-     "url": "https://github.com/LALAJJ0302/PeriodT-Coach-App"
-    },
-    "Cover Image": {
-     "type": "files",
-     "files": [
-      {
-       "type": "file",
-       "file": {
-        "url": "fixture:periodt.svg"
-       }
-      }
-     ]
-    },
-    "Featured on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
     }
-   }
-  },
-  {
-   "id": "p2",
-   "properties": {
-    "Project name": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "PeriodT Coach",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Category": {
-     "type": "select",
-     "select": {
-      "name": "University"
-     }
-    },
-    "Year": {
-     "type": "number",
-     "number": 2026
-    },
-    "Tools": {
-     "type": "multi_select",
-     "multi_select": [
-      {
-       "name": "Figma"
-      },
-      {
-       "name": "Swift"
-      },
-      {
-       "name": "SwiftUI"
-      }
-     ]
-    },
-    "Order": {
-     "type": "number",
-     "number": 2
-    },
-    "Slug": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "periodt-coach",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Summary": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "A companion app that improves how coaches understand and communicate with their high-performing athletes",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "My Role": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Solo project",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Link": {
-     "type": "url",
-     "url": "https://github.com/4m3lind4/PeriodT-V2"
-    },
-    "Cover Image": {
-     "type": "files",
-     "files": [
-      {
-       "type": "file",
-       "file": {
-        "url": "fixture:coach.svg"
-       }
-      }
-     ]
-    },
-    "Featured on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "p3",
-   "properties": {
-    "Project name": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "Envent",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Category": {
-     "type": "select",
-     "select": {
-      "name": "Work"
-     }
-    },
-    "Year": {
-     "type": "number",
-     "number": 2025
-    },
-    "Tools": {
-     "type": "multi_select",
-     "multi_select": [
-      {
-       "name": "Figma"
-      }
-     ]
-    },
-    "Order": {
-     "type": "number",
-     "number": 3
-    },
-    "Slug": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "envent",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Summary": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Designing wayfinding solutions for clients such as St George, Chatswood and Peninsula University Health hospitals",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "My Role": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "UI UX Designer & Information Architect",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Link": {
-     "type": "url",
-     "url": null
-    },
-    "Cover Image": {
-     "type": "files",
-     "files": [
-      {
-       "type": "file",
-       "file": {
-        "url": "fixture:envent-kiosk.webp"
-       }
-      }
-     ]
-    },
-    "Featured on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "p4",
-   "properties": {
-    "Project name": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "SwipeShop",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Category": {
-     "type": "select",
-     "select": {
-      "name": "Competition"
-     }
-    },
-    "Year": {
-     "type": "number",
-     "number": 2026
-    },
-    "Tools": {
-     "type": "multi_select",
-     "multi_select": [
-      {
-       "name": "Figma"
-      },
-      {
-       "name": "Swift"
-      },
-      {
-       "name": "SwiftUI"
-      }
-     ]
-    },
-    "Order": {
-     "type": "number",
-     "number": 4
-    },
-    "Slug": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "swipeshop",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Summary": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Finding a match for future Gen Z shoppers",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "My Role": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Project Lead",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Link": {
-     "type": "url",
-     "url": "https://4m3lind4.github.io/Woolworths-SwipeShop/web/#/home"
-    },
-    "Cover Image": {
-     "type": "files",
-     "files": [
-      {
-       "type": "file",
-       "file": {
-        "url": "fixture:swipeshop.svg"
-       }
-      }
-     ]
-    },
-    "Featured on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  }
- ],
- "blocks": {
-  "p1": [
-   {
-    "type": "heading_2",
-    "heading_2": {
-     "rich_text": [
-      {
-       "plain_text": "A Period Tracker Designed Around Athletic Performance",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "Role:",
-       "annotations": {
-        "bold": true
-       },
-       "href": null
-      },
-      {
-       "plain_text": " UX/UI Designer · Developer · Team Coordinator",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "Course:",
-       "annotations": {
-        "bold": true
-       },
-       "href": null
-      },
-      {
-       "plain_text": " Introduction to iOS Development, UTS",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "heading_3",
-    "heading_3": {
-     "rich_text": [
-      {
-       "plain_text": "Overview",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "PeriodT is an athlete-focused period tracking concept designed to help athletes understand how their menstrual cycle may interact with ",
-       "annotations": {},
-       "href": null
-      },
-      {
-       "plain_text": "training, recovery and performance",
-       "annotations": {
-        "bold": true
-       },
-       "href": null
-      },
-      {
-       "plain_text": ".",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "The project was developed within a two-week development period and combined interaction design with software development.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "divider",
-    "divider": {}
-   },
-   {
-    "type": "heading_2",
-    "heading_2": {
-     "rich_text": [
-      {
-       "plain_text": "01 — The Challenge",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "Traditional period trackers primarily focus on menstrual health and cycle prediction.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "For athletes, however, the menstrual cycle can also intersect with:",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "bulleted_list_item",
-    "bulleted_list_item": {
-     "rich_text": [
-      {
-       "plain_text": "Training",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "bulleted_list_item",
-    "bulleted_list_item": {
-     "rich_text": [
-      {
-       "plain_text": "Energy levels",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "bulleted_list_item",
-    "bulleted_list_item": {
-     "rich_text": [
-      {
-       "plain_text": "Recovery",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "bulleted_list_item",
-    "bulleted_list_item": {
-     "rich_text": [
-      {
-       "plain_text": "Exercise",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "bulleted_list_item",
-    "bulleted_list_item": {
-     "rich_text": [
-      {
-       "plain_text": "Performance",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "The goal was to explore how menstrual information could be presented in a way that was more relevant to an athlete's training routine.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "heading_2",
-    "heading_2": {
-     "rich_text": [
-      {
-       "plain_text": "02 — Research & Team Planning",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "Because the project focused on a problem space I was personally familiar with as an athlete, I was able to bring contextual knowledge into the research and ideation process.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "At the beginning of the project, I worked with my team to identify individual strengths, interests and development goals.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "We then allocated responsibilities across the project based on these strengths while maintaining shared ownership of the final product.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "heading_2",
-    "heading_2": {
-     "rich_text": [
-      {
-       "plain_text": "03 — Low-Fidelity Design",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "With less than two weeks to complete the project, another team member and I rapidly developed the initial low-fidelity prototype.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "We established the core user flows before refining the concept into a mid-fidelity design.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "I took responsibility for reviewing the mid-fidelity experience and ensuring that the interactions and visual hierarchy remained consistent across the product.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "heading_2",
-    "heading_2": {
-     "rich_text": [
-      {
-       "plain_text": "04 — Product Development",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "heading_3",
-    "heading_3": {
-     "rich_text": [
-      {
-       "plain_text": "Translating the design into a working product",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "Once the core screens were confirmed, the team divided the development workload across the main product flows:",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "bulleted_list_item",
-    "bulleted_list_item": {
-     "rich_text": [
-      {
-       "plain_text": "Onboarding questionnaire",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "bulleted_list_item",
-    "bulleted_list_item": {
-     "rich_text": [
-      {
-       "plain_text": "Cycle home screen",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "bulleted_list_item",
-    "bulleted_list_item": {
-     "rich_text": [
-      {
-       "plain_text": "Calendar",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "bulleted_list_item",
-    "bulleted_list_item": {
-     "rich_text": [
-      {
-       "plain_text": "Predicted period",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "bulleted_list_item",
-    "bulleted_list_item": {
-     "rich_text": [
-      {
-       "plain_text": "Workout and exercise information",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "I contributed to the software development process and worked with the team through GitHub to combine and integrate our individual components.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "This required us to maintain consistency between the design and the implemented product while working within a highly compressed timeline.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "heading_2",
-    "heading_2": {
-     "rich_text": [
-      {
-       "plain_text": "05 — Final Product",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "The final concept provided athletes with cycle-related information alongside training and exercise guidance.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "The experience was designed to help users move beyond simply ",
-       "annotations": {},
-       "href": null
-      },
-      {
-       "plain_text": "predicting their period",
-       "annotations": {
-        "bold": true
-       },
-       "href": null
-      },
-      {
-       "plain_text": " towards understanding how their cycle could be considered within their broader training routine.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "heading_2",
-    "heading_2": {
-     "rich_text": [
-      {
-       "plain_text": "Outcome",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "heading_3",
-    "heading_3": {
-     "rich_text": [
-      {
-       "plain_text": "🏆 Best Interaction Design — TechFest",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "PeriodT was selected as the Best Interaction Design project from 40 selected projects and 200+ applicants.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "I also completed the course with a High Distinction.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "Following the project, PeriodT received interest from industry and is currently being explored for further development.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "heading_3",
-    "heading_3": {
-     "rich_text": [
-      {
-       "plain_text": "What I brought to the project",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "Product thinking:",
-       "annotations": {
-        "bold": true
-       },
-       "href": null
-      },
-      {
-       "plain_text": " Connected menstrual-cycle tracking with the specific needs of athletes.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "UX/UI:",
-       "annotations": {
-        "bold": true
-       },
-       "href": null
-      },
-      {
-       "plain_text": " Contributed to the core interaction flows and visual design.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "Development:",
-       "annotations": {
-        "bold": true
-       },
-       "href": null
-      },
-      {
-       "plain_text": " Contributed to implementing the product and integrating team code through GitHub.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "Team coordination:",
-       "annotations": {
-        "bold": true
-       },
-       "href": null
-      },
-      {
-       "plain_text": " Helped allocate development responsibilities according to team strengths and project requirements.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
-      {
-       "plain_text": "Outcome:",
-       "annotations": {
-        "bold": true
-       },
-       "href": null
-      },
-      {
-       "plain_text": " Delivered an award-winning interaction design concept within a two-week development period.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   }
   ],
-  "40f42916-eb9d-8144-b9d9-cd2760fb19f3": [
-   {
-    "type": "heading_2",
-    "heading_2": {
-     "rich_text": [
+  "blocks": {
+    "p1": [
       {
-       "plain_text": "Chef's Comments",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
+        "type": "heading_2",
+        "heading_2": {
+          "rich_text": [
+            {
+              "plain_text": "A Period Tracker Designed Around Athletic Performance",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
       {
-       "plain_text": "For those curious, my initials are JAM. I'm Jessica Amelinda Mang, a UI/UX designer who likes to experiment, make a mess, and create something worth serving.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Role:",
+              "annotations": {
+                "bold": true
+              },
+              "href": null
+            },
+            {
+              "plain_text": " UX/UI Designer · Developer · Team Coordinator",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
       {
-       "plain_text": "I believe design is a lot like cooking. You need the right ingredients, time to experiment, and plenty of taste testing before you know you've got the recipe right.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Course:",
+              "annotations": {
+                "bold": true
+              },
+              "href": null
+            },
+            {
+              "plain_text": " Introduction to iOS Development, UTS",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
       {
-       "plain_text": "So, welcome to my kitchen. Let's see what I've been cooking.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    }
-   },
-   {
-    "type": "paragraph",
-    "paragraph": {
-     "rich_text": [
+        "type": "heading_3",
+        "heading_3": {
+          "rich_text": [
+            {
+              "plain_text": "Overview",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
       {
-       "plain_text": "Design takes time, experimentation and testing for it to be enjoyed.",
-       "annotations": {},
-       "href": null
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "PeriodT is an athlete-focused period tracking concept designed to help athletes understand how their menstrual cycle may interact with ",
+              "annotations": {},
+              "href": null
+            },
+            {
+              "plain_text": "training, recovery and performance",
+              "annotations": {
+                "bold": true
+              },
+              "href": null
+            },
+            {
+              "plain_text": ".",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "The project was developed within a two-week development period and combined interaction design with software development.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "divider",
+        "divider": {}
+      },
+      {
+        "type": "heading_2",
+        "heading_2": {
+          "rich_text": [
+            {
+              "plain_text": "01 — The Challenge",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Traditional period trackers primarily focus on menstrual health and cycle prediction.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "For athletes, however, the menstrual cycle can also intersect with:",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+          "rich_text": [
+            {
+              "plain_text": "Training",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+          "rich_text": [
+            {
+              "plain_text": "Energy levels",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+          "rich_text": [
+            {
+              "plain_text": "Recovery",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+          "rich_text": [
+            {
+              "plain_text": "Exercise",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+          "rich_text": [
+            {
+              "plain_text": "Performance",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "The goal was to explore how menstrual information could be presented in a way that was more relevant to an athlete's training routine.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "heading_2",
+        "heading_2": {
+          "rich_text": [
+            {
+              "plain_text": "02 — Research & Team Planning",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Because the project focused on a problem space I was personally familiar with as an athlete, I was able to bring contextual knowledge into the research and ideation process.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "At the beginning of the project, I worked with my team to identify individual strengths, interests and development goals.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "We then allocated responsibilities across the project based on these strengths while maintaining shared ownership of the final product.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "heading_2",
+        "heading_2": {
+          "rich_text": [
+            {
+              "plain_text": "03 — Low-Fidelity Design",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "With less than two weeks to complete the project, another team member and I rapidly developed the initial low-fidelity prototype.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "We established the core user flows before refining the concept into a mid-fidelity design.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "I took responsibility for reviewing the mid-fidelity experience and ensuring that the interactions and visual hierarchy remained consistent across the product.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "heading_2",
+        "heading_2": {
+          "rich_text": [
+            {
+              "plain_text": "04 — Product Development",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "heading_3",
+        "heading_3": {
+          "rich_text": [
+            {
+              "plain_text": "Translating the design into a working product",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Once the core screens were confirmed, the team divided the development workload across the main product flows:",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+          "rich_text": [
+            {
+              "plain_text": "Onboarding questionnaire",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+          "rich_text": [
+            {
+              "plain_text": "Cycle home screen",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+          "rich_text": [
+            {
+              "plain_text": "Calendar",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+          "rich_text": [
+            {
+              "plain_text": "Predicted period",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {
+          "rich_text": [
+            {
+              "plain_text": "Workout and exercise information",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "I contributed to the software development process and worked with the team through GitHub to combine and integrate our individual components.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "This required us to maintain consistency between the design and the implemented product while working within a highly compressed timeline.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "heading_2",
+        "heading_2": {
+          "rich_text": [
+            {
+              "plain_text": "05 — Final Product",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "The final concept provided athletes with cycle-related information alongside training and exercise guidance.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "The experience was designed to help users move beyond simply ",
+              "annotations": {},
+              "href": null
+            },
+            {
+              "plain_text": "predicting their period",
+              "annotations": {
+                "bold": true
+              },
+              "href": null
+            },
+            {
+              "plain_text": " towards understanding how their cycle could be considered within their broader training routine.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "heading_2",
+        "heading_2": {
+          "rich_text": [
+            {
+              "plain_text": "Outcome",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "heading_3",
+        "heading_3": {
+          "rich_text": [
+            {
+              "plain_text": "🏆 Best Interaction Design — TechFest",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "PeriodT was selected as the Best Interaction Design project from 40 selected projects and 200+ applicants.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "I also completed the course with a High Distinction.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Following the project, PeriodT received interest from industry and is currently being explored for further development.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "heading_3",
+        "heading_3": {
+          "rich_text": [
+            {
+              "plain_text": "What I brought to the project",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Product thinking:",
+              "annotations": {
+                "bold": true
+              },
+              "href": null
+            },
+            {
+              "plain_text": " Connected menstrual-cycle tracking with the specific needs of athletes.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "UX/UI:",
+              "annotations": {
+                "bold": true
+              },
+              "href": null
+            },
+            {
+              "plain_text": " Contributed to the core interaction flows and visual design.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Development:",
+              "annotations": {
+                "bold": true
+              },
+              "href": null
+            },
+            {
+              "plain_text": " Contributed to implementing the product and integrating team code through GitHub.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Team coordination:",
+              "annotations": {
+                "bold": true
+              },
+              "href": null
+            },
+            {
+              "plain_text": " Helped allocate development responsibilities according to team strengths and project requirements.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Outcome:",
+              "annotations": {
+                "bold": true
+              },
+              "href": null
+            },
+            {
+              "plain_text": " Delivered an award-winning interaction design concept within a two-week development period.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
       }
-     ]
+    ],
+    "40f42916-eb9d-8144-b9d9-cd2760fb19f3": [
+      {
+        "type": "heading_2",
+        "heading_2": {
+          "rich_text": [
+            {
+              "plain_text": "Chef's Comments",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "For those curious, my initials are JAM. I'm Jessica Amelinda Mang, a UI/UX designer who likes to experiment, make a mess, and create something worth serving.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "I believe design is a lot like cooking. You need the right ingredients, time to experiment, and plenty of taste testing before you know you've got the recipe right.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "So, welcome to my kitchen. Let's see what I've been cooking.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "plain_text": "Design takes time, experimentation and testing for it to be enjoyed.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        }
+      },
+      {
+        "type": "child_database",
+        "child_database": {
+          "title": "Résumé"
+        }
+      }
+    ]
+  },
+  "resume": [
+    {
+      "id": "r0",
+      "properties": {
+        "Title": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "UXID @ UTS",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Section": {
+          "type": "select",
+          "select": {
+            "name": "Experience"
+          }
+        },
+        "Note": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "(User Experience & Interaction Design)",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Role & Dates": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Founder | May 2025 – Present",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Founded and scaled the society to 300+ members. Organised events and coordinated teams to increase engagement both with UTS Faculty of Engineering & IT.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Order": {
+          "type": "number",
+          "number": 1
+        },
+        "Show on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    },
+    {
+      "id": "r1",
+      "properties": {
+        "Title": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "Envent",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Section": {
+          "type": "select",
+          "select": {
+            "name": "Experience"
+          }
+        },
+        "Note": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Role & Dates": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "UI UX & Graphic Designer | March 2025 – Present",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Delivered high quality & tailored UI UX designs for clients including Peninsula University Hospital. Improved mobile & kiosk UI, improving customer satisfaction.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Order": {
+          "type": "number",
+          "number": 2
+        },
+        "Show on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    },
+    {
+      "id": "r2",
+      "properties": {
+        "Title": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "JBL Student Ambassador",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Section": {
+          "type": "select",
+          "select": {
+            "name": "Experience"
+          }
+        },
+        "Note": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Role & Dates": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Content Creator | March 2026 – Present",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Led promotional initiatives and activations, driving awareness among student communities. Created targeted digital content to promote JBL products, enhancing reach and engagement across social platforms.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Order": {
+          "type": "number",
+          "number": 3
+        },
+        "Show on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    },
+    {
+      "id": "r3",
+      "properties": {
+        "Title": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "Bachelor of Information Technology",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Section": {
+          "type": "select",
+          "select": {
+            "name": "Education"
+          }
+        },
+        "Note": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Role & Dates": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Software & Interaction Design | Estimated graduation: 2027",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Order": {
+          "type": "number",
+          "number": 1
+        },
+        "Show on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    },
+    {
+      "id": "r4",
+      "properties": {
+        "Title": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "Branding & Identity",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Section": {
+          "type": "select",
+          "select": {
+            "name": "Skills"
+          }
+        },
+        "Note": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Role & Dates": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Logo design, typography, packaging, and style guides.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Order": {
+          "type": "number",
+          "number": 1
+        },
+        "Show on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    },
+    {
+      "id": "r5",
+      "properties": {
+        "Title": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "UI/UX Design",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Section": {
+          "type": "select",
+          "select": {
+            "name": "Skills"
+          }
+        },
+        "Note": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Role & Dates": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Wireframing, prototyping, user research, and responsive web design.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Order": {
+          "type": "number",
+          "number": 2
+        },
+        "Show on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    },
+    {
+      "id": "r6",
+      "properties": {
+        "Title": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "Project Management",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Section": {
+          "type": "select",
+          "select": {
+            "name": "Skills"
+          }
+        },
+        "Note": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Role & Dates": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Led project planning and execution by defining priorities, coordinating cross-functional teams, tracking progress, and delivering user-centred solutions within project timelines.",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Order": {
+          "type": "number",
+          "number": 3
+        },
+        "Show on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    },
+    {
+      "id": "r7",
+      "properties": {
+        "Title": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "UTS TechFest Selection",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Section": {
+          "type": "select",
+          "select": {
+            "name": "Awards"
+          }
+        },
+        "Note": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Role & Dates": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Top Project in iOS Course, 2026",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Order": {
+          "type": "number",
+          "number": 1
+        },
+        "Show on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    },
+    {
+      "id": "r8",
+      "properties": {
+        "Title": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "Burwood Art Competition",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Section": {
+          "type": "select",
+          "select": {
+            "name": "Awards"
+          }
+        },
+        "Note": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Role & Dates": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Top 50 Finalist, 2024",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Order": {
+          "type": "number",
+          "number": 2
+        },
+        "Show on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    },
+    {
+      "id": "r9",
+      "properties": {
+        "Title": {
+          "type": "title",
+          "title": [
+            {
+              "plain_text": "Randwick's Women's Art Competition",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Section": {
+          "type": "select",
+          "select": {
+            "name": "Awards"
+          }
+        },
+        "Note": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Role & Dates": {
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "plain_text": "Community Choice Award, 2023",
+              "annotations": {},
+              "href": null
+            }
+          ]
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": []
+        },
+        "Order": {
+          "type": "number",
+          "number": 3
+        },
+        "Show on Portfolio": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
     }
-   },
-   {
-    "type": "child_database",
-    "child_database": {
-     "title": "Résumé"
-    }
-   }
   ]
- },
- "resume": [
-  {
-   "id": "r0",
-   "properties": {
-    "Title": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "UXID @ UTS",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Section": {
-     "type": "select",
-     "select": {
-      "name": "Experience"
-     }
-    },
-    "Note": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "(User Experience & Interaction Design)",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Role & Dates": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Founder | May 2025 – Present",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Description": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Founded and scaled the society to 300+ members. Organised events and coordinated teams to increase engagement both with UTS Faculty of Engineering & IT.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Order": {
-     "type": "number",
-     "number": 1
-    },
-    "Show on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "r1",
-   "properties": {
-    "Title": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "Envent",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Section": {
-     "type": "select",
-     "select": {
-      "name": "Experience"
-     }
-    },
-    "Note": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Role & Dates": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "UI UX & Graphic Designer | March 2025 – Present",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Description": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Delivered high quality & tailored UI UX designs for clients including Peninsula University Hospital. Improved mobile & kiosk UI, improving customer satisfaction.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Order": {
-     "type": "number",
-     "number": 2
-    },
-    "Show on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "r2",
-   "properties": {
-    "Title": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "JBL Student Ambassador",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Section": {
-     "type": "select",
-     "select": {
-      "name": "Experience"
-     }
-    },
-    "Note": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Role & Dates": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Content Creator | March 2026 – Present",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Description": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Led promotional initiatives and activations, driving awareness among student communities. Created targeted digital content to promote JBL products, enhancing reach and engagement across social platforms.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Order": {
-     "type": "number",
-     "number": 3
-    },
-    "Show on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "r3",
-   "properties": {
-    "Title": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "Bachelor of Information Technology",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Section": {
-     "type": "select",
-     "select": {
-      "name": "Education"
-     }
-    },
-    "Note": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Role & Dates": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Software & Interaction Design | Estimated graduation: 2027",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Description": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Order": {
-     "type": "number",
-     "number": 1
-    },
-    "Show on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "r4",
-   "properties": {
-    "Title": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "Branding & Identity",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Section": {
-     "type": "select",
-     "select": {
-      "name": "Skills"
-     }
-    },
-    "Note": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Role & Dates": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Description": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Logo design, typography, packaging, and style guides.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Order": {
-     "type": "number",
-     "number": 1
-    },
-    "Show on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "r5",
-   "properties": {
-    "Title": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "UI/UX Design",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Section": {
-     "type": "select",
-     "select": {
-      "name": "Skills"
-     }
-    },
-    "Note": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Role & Dates": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Description": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Wireframing, prototyping, user research, and responsive web design.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Order": {
-     "type": "number",
-     "number": 2
-    },
-    "Show on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "r6",
-   "properties": {
-    "Title": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "Project Management",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Section": {
-     "type": "select",
-     "select": {
-      "name": "Skills"
-     }
-    },
-    "Note": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Role & Dates": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Description": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Led project planning and execution by defining priorities, coordinating cross-functional teams, tracking progress, and delivering user-centred solutions within project timelines.",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Order": {
-     "type": "number",
-     "number": 3
-    },
-    "Show on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "r7",
-   "properties": {
-    "Title": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "UTS TechFest Selection",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Section": {
-     "type": "select",
-     "select": {
-      "name": "Awards"
-     }
-    },
-    "Note": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Role & Dates": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Top Project in iOS Course, 2026",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Description": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Order": {
-     "type": "number",
-     "number": 1
-    },
-    "Show on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "r8",
-   "properties": {
-    "Title": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "Burwood Art Competition",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Section": {
-     "type": "select",
-     "select": {
-      "name": "Awards"
-     }
-    },
-    "Note": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Role & Dates": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Top 50 Finalist, 2024",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Description": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Order": {
-     "type": "number",
-     "number": 2
-    },
-    "Show on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  },
-  {
-   "id": "r9",
-   "properties": {
-    "Title": {
-     "type": "title",
-     "title": [
-      {
-       "plain_text": "Randwick's Women's Art Competition",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Section": {
-     "type": "select",
-     "select": {
-      "name": "Awards"
-     }
-    },
-    "Note": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Role & Dates": {
-     "type": "rich_text",
-     "rich_text": [
-      {
-       "plain_text": "Community Choice Award, 2023",
-       "annotations": {},
-       "href": null
-      }
-     ]
-    },
-    "Description": {
-     "type": "rich_text",
-     "rich_text": []
-    },
-    "Order": {
-     "type": "number",
-     "number": 3
-    },
-    "Show on Portfolio": {
-     "type": "checkbox",
-     "checkbox": true
-    }
-   }
-  }
- ]
 }

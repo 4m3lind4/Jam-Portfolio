@@ -217,6 +217,7 @@ export function kitchenPage({ config, project: p, next, story }) {
       (s) => `<section class="scene scene--${s.id}" id="${s.id}" aria-labelledby="${s.id}-title">
   <div class="scene-pin">
     ${s.art(root, s.labels, s.shots, s.opts)}
+    ${s.opts?.dish === "meatballs" ? `<button class="bite-btn" type="button">Tap the dish to take a bite</button>` : ""}
     <div class="scene-copy">
       <div class="scene-ticket">
         <p class="ticket-step">Step ${s.step}</p>

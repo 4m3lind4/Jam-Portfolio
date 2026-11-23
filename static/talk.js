@@ -83,7 +83,7 @@
     source.parentNode.insertBefore(copy, source.nextSibling);
     var chars = split(copy);
     var pitch = opts.pitch || 420;
-    var speed = opts.speed || 26;
+    var speed = opts.speed || 15;
     var shown = 0;
     var timer = null;
     var api = { done: false };
@@ -101,8 +101,8 @@
       s.classList.add("is-on");
       var c = s.textContent.toLowerCase();
       var wait = speed;
-      if (/[.!?]/.test(c)) wait = speed * 9;
-      else if (/[,;:—–]/.test(c)) wait = speed * 5;
+      if (/[.!?]/.test(c)) wait = speed * 6;
+      else if (/[,;:—–]/.test(c)) wait = speed * 3;
       else if (/[a-z]/.test(c) && shown % 2) blip(c, pitch);
       timer = setTimeout(tick, wait);
     }

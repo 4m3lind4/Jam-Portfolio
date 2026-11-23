@@ -353,6 +353,59 @@
     tl.to(pencil, { x: 690, y: 440, rotation: 30, duration: 0.4, ease: "sine.inOut" }).to({}, { duration: 0.3 });
   });
 
+  // ---- PeriodT Coach's dish: no knife. The dish settles as you scroll in,
+  // then each tap (on the dish, the fork or the "Take a bite" button) sends
+  // the fork in for a bite. Two bites and the app is underneath.
+  function eatMeatballs(tl, $, el) {
+    var screen = $(".plate-phone");
+    var fork = $(".fork")[0];
+    var bites = $(".bite");
+    var btn = el.querySelector(".bite-btn");
+    var eaten = 0;
+    var busy = false;
+    gsap.set(screen, { x: 348, y: 180, scale: 0.68 });
+    gsap.set($(".slicer"), { autoAlpha: 0 });
+    gsap.set(fork, { x: 760, y: 250, rotation: 28 });
+    gsap.set(bites, { svgOrigin: "400 300" });
+
+    tl.fromTo($(".meatball-dish"), { scale: 0.9, svgOrigin: "400 300" }, { scale: 1, duration: 0.6, ease: "back.out(1.6)" }, 0.1)
+      .to(fork, { x: 600, duration: 0.6, ease: "power2.out" }, 0.4)
+      .fromTo(btn, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.8)
+      .to({}, { duration: 1 });
+
+    // Where each bite is taken from: the left of the mound, then the right.
+    var SPOTS = [{ x: 352, y: 300 }, { x: 446, y: 290 }];
+    function bite() {
+      if (busy || eaten >= bites.length) return;
+      busy = true;
+      var b = bites[eaten];
+      var spot = SPOTS[eaten];
+      eaten += 1;
+      var last = eaten === bites.length;
+      if (btn) btn.textContent = last ? "Enjoy!" : "One more bite";
+      gsap.timeline({ onComplete: function () {
+        busy = false;
+        if (last) {
+          if (btn) gsap.to(btn, { autoAlpha: 0, duration: 0.3, delay: 0.6 });
+          gsap.to(screen, { x: 325, y: 128, scale: 1, duration: 0.8, ease: "back.out(1.3)" });
+        }
+      } })
+        // The fork dips into the dish...
+        .to(fork, { x: spot.x + 70, y: spot.y + 40, rotation: 8, duration: 0.35, ease: "power2.in" })
+        .to(fork, { y: spot.y + 60, duration: 0.1 })
+        // ...and lifts the bite away with it.
+        .to(b, { scale: 0.35, x: (spot.x + 40 - 400) * 0.65, y: -260, autoAlpha: 0, duration: 0.55, ease: "power2.in" }, ">")
+        .to(fork, { x: 640, y: -60, rotation: 40, duration: 0.55, ease: "power2.in" }, "<")
+        .to(fork, { x: 600, y: 250, rotation: 28, duration: 0.5, ease: "power2.out" }, last ? "+=0.1" : "+=0.05");
+    }
+    [$(".meatball-dish")[0], fork, btn].forEach(function (t) {
+      if (!t) return;
+      t.style.pointerEvents = "auto";
+      t.style.cursor = "pointer";
+      t.addEventListener("click", bite);
+    });
+  }
+
   // ---- 5, 6, 7. The prototype goes in the oven low-fi and comes out finished.
   scene("development", function (tl, $) {
     var door = $(".door");
@@ -400,6 +453,7 @@
 
   // ---- 8. The finished dish is sliced, and the app is underneath.
   scene("plated", function (tl, $, el) {
+    if ($(".meatball-dish").length) return eatMeatballs(tl, $, el);
     var left = $(".cake--left");
     var right = $(".cake--right");
     var screen = $(".plate-phone");
