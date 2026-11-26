@@ -18,7 +18,7 @@
     var $ = gsap.utils.selector(el);
     var tl = gsap.timeline({
       defaults: { ease: "none" },
-      scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: 0.5 },
+      scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: 0.8 },
     });
     build(tl, $, el);
   }
@@ -240,6 +240,13 @@
     var produce = !!$(".slice .cut").length;
     tl.to(knife, { x: X0 + W, y: 60, duration: 0.6, ease: "sine.out" });
     for (var k = 1; k <= 5; k++) {
+      // Eggs and milk aren't for chopping: they wait whole for the bowl.
+      if (produce && !slices[k - 1].querySelector(".cut")) {
+        tl.addLabel("cut" + k);
+        if (k < 5) tl.to(slices.slice(k), { x: "+=" + GAP, duration: 0.14, ease: "power2.out" }, "cut" + k);
+        tl.to(tags[k - 1], { autoAlpha: 1, scale: 1, duration: 0.24, ease: "back.out(2)" }, "cut" + k);
+        continue;
+      }
       var at = produce ? X0 + (k - 1) * (W + GAP) + W / 2 + 14
         : k < 5 ? X0 + k * W + (k - 1) * GAP : X0 + 4 * (W + GAP) + W * 0.84;
       // Down all the way through, a beat on the board, then back up.
@@ -295,23 +302,50 @@
     gsap.set($(".bowl-result"), { y: 120, scale: 0.7, autoAlpha: 0, transformOrigin: "50% 100%" });
     gsap.set($(".swirl"), { opacity: 0, svgOrigin: "400 350" });
 
+    // Real ingredients: the bowl starts empty, each one lands in it (the egg
+    // cracked on the rim, the milk poured), and only the whisk turns them pink.
+    var inside = $(".bowl-in .in");
+    var real = inside.length > 0;
+    var STEP = real ? 0.42 : 0.16;
+    if (real) {
+      gsap.set($(".batter"), { opacity: 0 });
+      gsap.set(inside, { opacity: 0 });
+    }
     tl.to(chips, { y: 0, rotation: 0, duration: 0.7, ease: "bounce.out", stagger: 0.16 });
     chips.forEach(function (c, i) {
       var x = +c.dataset.x;
       var y = +c.dataset.y;
-      tl.to(c, { x: 400 - x, y: 372 - y, scale: 0.55, rotation: i % 2 ? 40 : -40, duration: 0.42, ease: "power2.in" }, 1.7 + i * 0.16);
-      tl.to(c, { autoAlpha: 0, duration: 0.05 }, 2.07 + i * 0.16);
-      tl.fromTo($(".batter"), { attr: { cy: 350 } }, { attr: { cy: 346 }, duration: 0.09, yoyo: true, repeat: 1, immediateRender: false }, 2.05 + i * 0.16);
+      var at = 1.7 + i * STEP;
+      var whole = c.querySelector(".whole");
+      var cut = c.querySelector(".cut");
+      if (real && cut) {
+        // Over the bowl, it cracks or tips, then goes in.
+        tl.to(c, { x: 400 - x, y: 250 - y, rotation: 0, duration: 0.25, ease: "power2.out" }, at)
+          .set(whole, { autoAlpha: 0 }, at + 0.25)
+          .set(cut, { autoAlpha: 1 }, at + 0.25)
+          .to(c, { y: 372 - y, scale: 0.55, duration: 0.15, ease: "power2.in" }, at + 0.3);
+      } else {
+        tl.to(c, { x: 400 - x, y: 372 - y, scale: 0.55, rotation: i % 2 ? 40 : -40, duration: 0.42, ease: "power2.in" }, at);
+      }
+      tl.to(c, { autoAlpha: 0, duration: 0.05 }, at + 0.37);
+      if (real) tl.to(inside[i], { opacity: 1, duration: 0.1 }, at + 0.36);
+      else tl.fromTo($(".batter"), { attr: { cy: 350 } }, { attr: { cy: 346 }, duration: 0.09, yoyo: true, repeat: 1, immediateRender: false }, at + 0.35);
     });
-    tl.to(whisk, { y: 340, autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 2.9)
-      .to($(".swirl"), { opacity: 1, duration: 0.3 }, 3.1);
-    for (var i = 0; i < 4; i++) {
-      tl.to(whisk, { x: 330, rotation: -9, duration: 0.2, ease: "sine.inOut" }, 3.2 + i * 0.42)
-        .to(whisk, { x: 470, rotation: 9, duration: 0.2, ease: "sine.inOut" }, 3.4 + i * 0.42)
-        .to($(".swirl"), { scaleX: i % 2 ? 1 : -1, duration: 0.42, ease: "sine.inOut" }, 3.2 + i * 0.42);
+    var mixAt = 1.7 + chips.length * STEP + 0.4;
+    var shift = mixAt - 2.9;
+    tl.to(whisk, { y: 340, autoAlpha: 1, duration: 0.35, ease: "power2.out" }, mixAt)
+      .to($(".swirl"), { opacity: 1, duration: 0.3 }, mixAt + 0.2);
+    if (real) {
+      tl.to(inside, { opacity: 0, duration: 1.2, ease: "none" }, mixAt + 0.3)
+        .to($(".batter"), { opacity: 1, duration: 1.2, ease: "none" }, mixAt + 0.3);
     }
-    tl.to(whisk, { y: -160, autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 4.9)
-      .to($(".bowl-result"), { y: 0, scale: 1, autoAlpha: 1, duration: 0.45, ease: "back.out(1.7)" }, 5.1)
+    for (var i = 0; i < 4; i++) {
+      tl.to(whisk, { x: 330, rotation: -9, duration: 0.2, ease: "sine.inOut" }, shift + 3.2 + i * 0.42)
+        .to(whisk, { x: 470, rotation: 9, duration: 0.2, ease: "sine.inOut" }, shift + 3.4 + i * 0.42)
+        .to($(".swirl"), { scaleX: i % 2 ? 1 : -1, duration: 0.42, ease: "sine.inOut" }, shift + 3.2 + i * 0.42);
+    }
+    tl.to(whisk, { y: -160, autoAlpha: 0, duration: 0.3, ease: "power2.in" }, shift + 4.9)
+      .to($(".bowl-result"), { y: 0, scale: 1, autoAlpha: 1, duration: 0.45, ease: "back.out(1.7)" }, shift + 5.1)
       .to({}, { duration: 0.3 });
 
     $(".chip").forEach(function (c) {
@@ -391,7 +425,7 @@
       var spot = SPOTS[eaten];
       eaten += 1;
       var last = eaten === bites.length;
-      if (btn) btn.textContent = last ? "Enjoy!" : "One more bite";
+      if (btn) btn.textContent = last ? "Yum!" : "One more bite! Tap again";
       gsap.set(b, { svgOrigin: spot.x + " " + spot.y });
       gsap.timeline({ onComplete: function () {
         busy = false;
@@ -426,6 +460,9 @@
       munchSound.currentTime = 0.22;
       munchSound.play().catch(function () {});
     }
+    document.addEventListener("jam:sound", function () {
+      if (munchSound && !JamTalk.isOn()) munchSound.pause();
+    });
     function root() {
       var link = document.querySelector('link[href$="kitchen.css"]');
       return link ? link.getAttribute("href").replace("kitchen.css", "") : "";
@@ -453,7 +490,7 @@
       phone.appendChild(fo);
       // Tell people the app on the plate is theirs to open.
       if (btn) {
-        btn.textContent = "Tap the app to open it";
+        btn.textContent = "Watch the video playthrough by tapping the GIF";
         gsap.to(btn, { autoAlpha: 1, duration: 0.3, delay: 0.9 });
         btn.removeEventListener("click", bite);
         btn.addEventListener("click", function () { phone.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
@@ -500,6 +537,46 @@
       .to(door, { scaleY: -0.2, duration: 1, ease: "power2.inOut" }, 6)
       .to(tray, { x: 60, y: 214, scale: 1, duration: 1.2, ease: "power2.inOut" }, 6.85)
       .to({}, { duration: 0.3 });
+
+    // A closer look: each stage of the design, full size, a tap away.
+    var ticket = $(".scene-ticket")[0];
+    var peeks = [["Low-fi", ".ph-lo image"], ["Mid-fi", ".ph-mid image"], ["Final", ".ph-hi image"]]
+      .map(function (p) { var im = $(p[1])[0]; return im && [p[0], im.getAttribute("href")]; })
+      .filter(Boolean);
+    if (ticket && peeks.length) {
+      var row = document.createElement("div");
+      row.className = "oven-peek";
+      row.innerHTML = '<p class="oven-peek-label">Take a closer look</p>' + peeks.map(function (p, i) {
+        return '<button type="button" data-i="' + i + '"><img src="' + p[1] + '" alt="" loading="lazy"><span>' + p[0] + "</span></button>";
+      }).join("");
+      ticket.appendChild(row);
+      var box = document.createElement("dialog");
+      box.className = "peek-box";
+      box.innerHTML = '<button type="button" class="peek-close" aria-label="Close">×</button><img alt=""><p></p><div class="peek-nav"><button type="button" data-d="-1" aria-label="Previous">‹</button><button type="button" data-d="1" aria-label="Next">›</button></div>';
+      document.body.appendChild(box);
+      var cur = 0;
+      var showPeek = function (i) {
+        cur = (i + peeks.length) % peeks.length;
+        box.querySelector("img").src = peeks[cur][1];
+        box.querySelector("img").alt = peeks[cur][0] + " design";
+        box.querySelector("p").textContent = peeks[cur][0];
+      };
+      row.addEventListener("click", function (e) {
+        var b = e.target.closest("button");
+        if (!b) return;
+        showPeek(+b.dataset.i);
+        box.showModal();
+      });
+      box.addEventListener("click", function (e) {
+        var b = e.target.closest("button");
+        if (e.target === box || (b && b.classList.contains("peek-close"))) return box.close();
+        if (b && b.dataset.d) showPeek(cur + +b.dataset.d);
+      });
+      box.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") showPeek(cur + 1);
+        if (e.key === "ArrowLeft") showPeek(cur - 1);
+      });
+    }
 
     // The right-hand dial works the oven light; the left one just turns.
     var lamp = false;

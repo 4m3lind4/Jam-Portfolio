@@ -23,7 +23,7 @@
   color: var(--w-cream);
   font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-.welcome-on .welcome { height: 260svh; }
+.welcome-on .welcome { height: 200svh; }
 
 .welcome-pin {
   position: relative;

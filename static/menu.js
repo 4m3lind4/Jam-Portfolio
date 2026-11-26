@@ -396,7 +396,14 @@
   let raw = 0;
   let running = false;
 
-  const progress = () => clamp(-section.getBoundingClientRect().top / vh, -1.2, SHEETS + 1.2);
+  // A page turn takes this much of a screen of scroll (menu.css sizes the
+  // section to match); arriving and leaving still take a whole one.
+  const TURN = 0.72;
+  const progress = () => {
+    const y = -section.getBoundingClientRect().top / vh;
+    const turned = y / TURN;
+    return clamp(y < 0 ? y : turned <= SHEETS ? turned : SHEETS + y - SHEETS * TURN, -1.2, SHEETS + 1.2);
+  };
 
   function frame() {
     vh = viewportHeight();

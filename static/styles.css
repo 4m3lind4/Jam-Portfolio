@@ -94,17 +94,27 @@ a:hover { text-decoration-thickness: 2px; color: var(--jam-pink); }
 .talk-ch { opacity: 0; }
 .talk-ch.is-on { opacity: 1; }
 .talk-sound {
-  margin-top: 0.8rem;
-  padding: 0.3rem 0.8rem;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  background: transparent;
-  color: inherit;
-  font: 700 0.8rem / 1.2 inherit;
+  position: fixed;
+  z-index: 45;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 2px solid #470b23;
+  border-radius: 50%;
+  background: #f9f7eb;
+  color: #470b23;
   cursor: pointer;
 }
-.talk-sound[aria-pressed="true"] { background: #470b23; color: #f9f7eb; border-color: #470b23; }
-.talk-sound:hover { background: var(--jam-pink); border-color: var(--jam-pink); color: #fff; }
+.talk-sound[hidden] { display: none; }
+.talk-sound:hover { background: var(--jam-pink); color: #fff; }
+.talk-sound .sound-cross, .talk-sound.is-off .sound-waves { display: none; }
+.talk-sound.is-off .sound-cross { display: inline; }
+/* Leave the corner free for it. */
+body .site-header { padding-right: max(var(--gutter), 4.75rem); }
 
 /* ---------- Header and footer ---------- */
 
@@ -673,3 +683,10 @@ a:hover { text-decoration-thickness: 2px; color: var(--jam-pink); }
    hand. */
 .page-home, .page-home *, .page-case, .page-case * { cursor: pointer; }
 .page-home input, .page-home textarea, .page-case input, .page-case textarea { cursor: text; }
+
+/* Small phones: logo, menu and sound button share one row. */
+.wordmark { flex-shrink: 0; }
+@media (max-width: 520px) {
+  .site-header { gap: 0.6rem; }
+  .site-header nav { gap: 0.8rem; font-size: 0.95rem; }
+}

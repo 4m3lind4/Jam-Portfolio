@@ -252,13 +252,26 @@ const pouredMilk = (cx, cy) => `<g>
 // Board ingredients, whole and cut, by dish.
 const BOARDS = {
   savoury: [[berries, halvedBerries], [tomato, cutTomatoHalves], [potato, cutPotatoHalves], [tomato, cutTomatoHalves], [potato, cutPotatoHalves]],
-  cake: [[egg, crackedEgg], [milk, pouredMilk], [strawberry, cutStrawberryHalves], [raspberries, brokenRaspberries], [strawberry, cutStrawberryHalves]],
+  cake: [[egg, null], [milk, null], [strawberry, cutStrawberryHalves], [raspberries, brokenRaspberries], [strawberry, cutStrawberryHalves]],
 };
 // What falls into the mixing bowl, by dish.
 const BOWLS = {
   savoury: [(x, y) => berries(x, y + 4, 12), (x, y) => cutTomato(x, y, 22)],
-  cake: [(x, y) => crackedEgg(x, y), (x, y) => strawberry(x, y, 0.75), (x, y) => raspberries(x, y), (x, y) => pouredMilk(x, y)],
+  cake: [[egg, crackedEgg], [milk, pouredMilk], (x, y) => strawberry(x, y, 0.75), (x, y) => raspberries(x, y), (x, y) => strawberry(x, y, 0.75)],
 };
+// What each ingredient leaves in the bowl once it's in, before the whisk.
+const shrink = (x, y, s, art) => `<g transform="translate(${x} ${y}) scale(${s}) translate(${-x} ${-y})">${art}</g>`;
+const BOWL_IN = {
+  savoury: [(x, y) => berries(x, y, 9), (x, y) => cutTomato(x, y, 16)],
+  cake: [
+    (x, y) => `<ellipse cx="${x}" cy="${y}" rx="26" ry="9" fill="#fffdf6"/><ellipse cx="${x + 2}" cy="${y - 1}" rx="9" ry="6" fill="url(#k-yolk)"/>`,
+    (x, y) => `<ellipse cx="${x}" cy="${y}" rx="40" ry="9" fill="#fffef9" opacity=".95"/>`,
+    (x, y) => shrink(x, y, 0.5, cutStrawberryHalves(x, y)),
+    (x, y) => shrink(x, y, 0.6, brokenRaspberries(x, y - 12)),
+    (x, y) => shrink(x, y, 0.5, cutStrawberryHalves(x, y)),
+  ],
+};
+const BOWL_SPOTS = [[330, 352], [470, 348], [400, 360], [440, 362], [355, 362]];
 
 // A label's pill is as wide as its word (about 10.6 units a character at
 // this size, plus padding), never narrower than the short ones.
@@ -273,7 +286,7 @@ export const boardArt = (root, labels = SLICES, shots, opts = {}) => {
     const high = i % 2 === 1;
     return `<g class="slice" data-i="${i}">
       ${i === 0 && !opts.produce ? `<path d="M${x + 6},428 C${x - 34},400 ${x - 44},444 ${x - 66},416 C${x - 40},452 ${x - 34},462 ${x + 6},454 Z" fill="#7d9a54"/>` : ""}
-      ${opts.produce ? (() => { const [whole, cut] = BOARDS[opts.produce][i % 5]; return `<g class="whole">${whole(x + w / 2, 448)}</g><g class="cut" opacity="0">${cut(x + w / 2, 450)}</g>`; })() : `<rect x="${x}" y="412" width="${w}" height="66" rx="${i === 0 || i === 4 ? 26 : 8}" fill="url(#k-veg)"/>
+      ${opts.produce ? (() => { const [whole, cut] = BOARDS[opts.produce][i % 5]; return `<g class="whole">${whole(x + w / 2, 448)}</g>${cut ? `<g class="cut" opacity="0">${cut(x + w / 2, 450)}</g>` : ""}`; })() : `<rect x="${x}" y="412" width="${w}" height="66" rx="${i === 0 || i === 4 ? 26 : 8}" fill="url(#k-veg)"/>
       <ellipse cx="${x + w - 3}" cy="445" rx="9" ry="31" fill="#ffc2d6" opacity="${i === 4 ? 0 : 1}"/>
       <rect x="${x + 8}" y="420" width="${w - 22}" height="8" rx="4" fill="#fff" opacity=".35"/>`}
       <g class="slice-tag">
@@ -304,7 +317,7 @@ export const bowlArt = (root, labels, shots, opts = {}) => {
     const x = [150, 400, 650, 215, 585][i];
     const y = [120, 80, 120, 222, 222][i];
     return `<g class="chip" data-x="${x}" data-y="${y}">
-      ${opts.produce ? (() => { const kinds = BOWLS[opts.produce]; return kinds[i % kinds.length](x, y - 44); })() : `<circle cx="${x}" cy="${y - 42}" r="22" fill="url(#k-veg)"/><ellipse cx="${x - 6}" cy="${y - 49}" rx="9" ry="5" fill="#fff" opacity=".4"/>`}
+      ${opts.produce ? (() => { const k = BOWLS[opts.produce][i % BOWLS[opts.produce].length]; return Array.isArray(k) ? `<g class="whole">${k[0](x, y - 44)}</g><g class="cut" opacity="0">${k[1](x, y - 44)}</g>` : k(x, y - 44); })() : `<circle cx="${x}" cy="${y - 42}" r="22" fill="url(#k-veg)"/><ellipse cx="${x - 6}" cy="${y - 49}" rx="9" ry="5" fill="#fff" opacity=".4"/>`}
       <rect x="${x - 88}" y="${y - 18}" width="176" height="38" rx="19" fill="#f9f7eb"/>
       <text x="${x}" y="${y + 7}" text-anchor="middle" class="k-sans" font-size="18" font-weight="700" fill="#470b23">${name}</text>
     </g>`;
@@ -312,6 +325,7 @@ export const bowlArt = (root, labels, shots, opts = {}) => {
   return stage("bowl", `
     ${shadow(400, 526, 200, 14)}
     <ellipse cx="400" cy="340" rx="214" ry="44" fill="#a59e88"/>
+    ${opts.produce ? `<g class="bowl-in">${(opts.chips || FOLDS).map((_, i) => { const k = BOWL_IN[opts.produce]; const [bx, by] = BOWL_SPOTS[i]; return `<g class="in" opacity="0">${k[i % k.length](bx, by)}</g>`; }).join("")}</g>` : ""}
     <ellipse class="batter" cx="400" cy="350" rx="192" ry="32" fill="url(#k-icing)"/>
     <path class="swirl" d="M300,350 C340,326 460,330 490,350 C460,370 360,372 340,352 C360,340 430,342 440,352" fill="none" stroke="#ffd3e2" stroke-width="5" stroke-linecap="round"/>
     <g class="whisk" transform="translate(470 340)">

@@ -227,7 +227,7 @@
   // ---- The reveal underneath: portrait set down like a plate, then the rest.
   var intro = document.querySelectorAll(".about-intro .portrait");
   var bubble = document.querySelector(".about-intro .bubble");
-  var copy = document.querySelectorAll(".about-intro .label, .about-intro .comments > *, .about-intro .talk-sound, .folder");
+  var copy = document.querySelectorAll(".about-intro .label, .about-intro .comments > *, .folder");
 
   var tl = gsap.timeline({
     paused: true,

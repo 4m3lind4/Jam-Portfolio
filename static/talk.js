@@ -122,8 +122,9 @@
   function sync() {
     document.querySelectorAll(".talk-sound").forEach(function (b) {
       b.hidden = reduced;
-      b.setAttribute("aria-pressed", String(on));
-      b.querySelector(".talk-sound-label").textContent = on ? "Sound on" : "Sound off";
+      b.classList.toggle("is-off", !on);
+      b.setAttribute("aria-label", on ? "Turn sound off" : "Turn sound on");
+      b.title = on ? "Turn sound off" : "Turn sound on";
     });
   }
   document.addEventListener("click", function (e) {
@@ -132,6 +133,9 @@
     on = !on;
     try { localStorage.setItem(KEY, on ? "on" : "off"); } catch (err) {}
     if (on) { audio(); blip("a", 420); }
+    // Off cuts whatever is playing, not just what comes next.
+    else if (ctx) ctx.suspend();
+    document.dispatchEvent(new Event("jam:sound"));
     sync();
   });
   // Try to start right away; where the browser says no, the first gesture

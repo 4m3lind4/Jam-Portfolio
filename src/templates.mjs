@@ -29,8 +29,9 @@ function zoneStyle(z) {
   return `--zone:${z.color};--zone-ink:${z.ink}`;
 }
 
-// The switch for the talking sound in speech bubbles (static/talk.js shows it).
-export const SOUND_BUTTON = `<button class="talk-sound" type="button" aria-pressed="false" hidden><span aria-hidden="true">♪</span> <span class="talk-sound-label">Sound off</span></button>`;
+// The one sound switch, fixed to the top right of every page (static/talk.js
+// shows it). The waves mean sound is on; the cross means it is off.
+const SOUND_BUTTON = `<button class="talk-sound" type="button" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5Z" fill="currentColor"/><path class="sound-waves" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/><path class="sound-cross" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>`;
 
 const MENU_FONTS = `<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Outfit:wght@700&family=Cedarville+Cursive&family=Monsieur+La+Doulaise&display=swap" rel="stylesheet">`;
 
@@ -73,6 +74,7 @@ ${head}
     ${contact.length ? `<a href="${root}#contact">Contact</a>` : ""}
   </nav>
 </header>
+${SOUND_BUTTON}
 <main id="main">
 ${body}
 </main>
@@ -112,7 +114,6 @@ export function homePage({ config, menu }) {
     <img class="waiter" src="menu/waiter.webp" alt="${esc(config.name)}, dressed for service, holding a plate" width="1573" height="1000">
     <div class="bubble welcome-bubble">
       <h1 class="talk-text" id="welcome-title">${config.welcome.map(esc).join(" ")}</h1>
-      ${SOUND_BUTTON}
     </div>
     <div class="welcome-flash" aria-hidden="true"></div>
     <a class="welcome-go" href="#projects">${esc(config.welcomeCta)} <span aria-hidden="true">↓</span></a>
@@ -221,7 +222,7 @@ export function kitchenPage({ config, project: p, next, story }) {
       (s) => `<section class="scene scene--${s.id}" id="${s.id}" aria-labelledby="${s.id}-title">
   <div class="scene-pin">
     ${s.art(root, s.labels, s.shots, s.opts)}
-    ${s.opts?.dish === "meatballs" ? `<button class="bite-btn" type="button">Tap the dish to take a bite</button>` : ""}
+    ${s.opts?.dish === "meatballs" ? `<button class="bite-btn" type="button">Bon appétit! Enjoy eating the food by tapping it</button>` : ""}
     <div class="scene-copy">
       <div class="scene-ticket">
         <p class="ticket-step">Step ${s.step}</p>
@@ -417,7 +418,7 @@ export function projectPage({ config, project: p, next, contentHtml }) {
     root: "../../",
     title: `${p.title} | ${config.title}`,
     current: "projects",
-    scripts: config.galleries?.[p.slug] ? `<script src="../../gallery.js"></script>` : "",
+    scripts: `<script src="../../talk.js"></script>${config.galleries?.[p.slug] ? `\n<script src="../../gallery.js"></script>` : ""}`,
     description: p.summary || config.intro,
     body,
     head: MENU_FONTS,

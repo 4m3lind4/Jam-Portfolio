@@ -25,7 +25,7 @@
   --face-pad-x: max(16px, min(44px, calc(var(--page-w) * 0.075)));
 
   position: relative;
-  height: calc((var(--sheet-count) + 2) * 100svh);
+  height: calc((var(--sheet-count) * 0.72 + 2) * 100svh);
   margin-top: 2rem;
   color: var(--cream);
   font: 400 16px/1.6 var(--m-body);

@@ -2,7 +2,6 @@
 // Notion, then the Résumé table grouped into Experience, Education, Skills
 // and Awards. Styled after the résumé sheet in the original portfolio.
 import { esc, renderBlocks } from "./render.mjs";
-import { SOUND_BUTTON } from "./templates.mjs";
 import { sauceLettering } from "./sauce.mjs";
 
 // The first image block on the page becomes the portrait; the first heading
@@ -95,9 +94,12 @@ export async function buildAbout(config, { blocks, rows }, asset, root = "") {
     <div class="intro-copy bubble">
       <h2 class="label">${esc(page.label)}</h2>
       <div class="comments talk-text">${comments}</div>
-      ${SOUND_BUTTON}
     </div>
   </div>
+  <button class="scroll-hint" type="button">
+    <svg viewBox="0 0 354 546" width="34" height="52" aria-hidden="true"><rect x="19.5" y="19.5" width="315" height="507" rx="157.5" fill="#fff" stroke="#470b23" stroke-width="39"/><rect class="scroll-wheel" x="149.5" y="113" width="55" height="55" rx="27.5" fill="#470b23"/></svg>
+    <span>Scroll</span>
+  </button>
   ${folder}
   ${a.resumePdf ? `<div class="about-block"><a class="pdf" href="${esc(a.resumePdf)}" rel="noopener">Download PDF resume</a></div>` : ""}
 </section>

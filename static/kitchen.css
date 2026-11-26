@@ -92,11 +92,12 @@
 
 /* ---------- Scenes, pinned ---------- */
 
-.kitchen-on .scene { padding: 0; height: var(--len, 240vh); background: none; }
-.kitchen-on .scene--intro { --len: 200vh; }
-.kitchen-on .scene--challenge { --len: 280vh; }
-.kitchen-on .scene--development { --len: 400vh; }
-.kitchen-on .scene--plated { --len: 280vh; }
+.kitchen-on .scene { padding: 0; height: var(--len, 185vh); background: none; }
+.kitchen-on .scene--intro { --len: 160vh; }
+.kitchen-on .scene--challenge { --len: 215vh; }
+.kitchen-on .scene--research { --len: 220vh; }
+.kitchen-on .scene--development { --len: 280vh; }
+.kitchen-on .scene--plated { --len: 220vh; }
 
 .kitchen-on .scene-pin {
   /* The ticket grows with the screen, so laptop text is comfortable to read. */
@@ -211,9 +212,9 @@
   .art { order: 0; }
 
   .kitchen-on .scene { height: auto; background: linear-gradient(180deg, var(--k-top), var(--k-low)); }
-  .kitchen-on .scene--intro { --tail: 30svh; }
-  .kitchen-on .scene--development { --tail: 90svh; }
-  .kitchen-on .scene--challenge, .kitchen-on .scene--plated { --tail: 60svh; }
+  .kitchen-on .scene--intro { --tail: 22svh; }
+  .kitchen-on .scene--development { --tail: 60svh; }
+  .kitchen-on .scene--challenge, .kitchen-on .scene--plated { --tail: 45svh; }
   /* The ticket's margin is the tail: it keeps the art stuck until the scene ends. */
   .kitchen-on .scene-pin { position: static; display: flow-root; height: auto; overflow: visible; background: none; }
   .kitchen-on .scene-pin::before, .kitchen-on .scene-pin::after { display: none; }
@@ -236,7 +237,7 @@
     left: auto;
     top: auto;
     width: auto;
-    margin: 1.25rem 1rem var(--tail, 35svh);
+    margin: 1.25rem 1rem var(--tail, 28svh);
     transform: none;
   }
   .kitchen-on .kitchen-dark { z-index: 3; bottom: auto; height: 46svh; position: absolute; }
@@ -562,6 +563,8 @@
 @media (min-width: 761px) { .kitchen-on .bite-btn { left: 62%; } }
 
 .plate-video { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 18px; background: #fff; pointer-events: none; }
+.kitchen-on .bite-btn { width: max-content; max-width: min(88vw, 22rem); text-align: center; animation: bite-nudge 1.8s ease-in-out infinite; }
+@keyframes bite-nudge { 0%, 70%, 100% { box-shadow: 3px 4px 0 #470b23; } 35% { box-shadow: 3px 4px 0 #470b23, 0 0 0 7px rgba(255, 79, 139, 0.45); } }
 .bite-btn:focus { outline: none; }
 .bite-btn:focus-visible { outline: 3px solid var(--jam-pink); outline-offset: 3px; }
 /* The full walkthrough video, under the tap-through demo. */
@@ -569,3 +572,17 @@
 .kitchen-walkthrough h2 { font-family: var(--script); font-weight: 400; font-size: 2.3rem; margin: 0 0 0.5rem; color: var(--ink); }
 .kitchen-walkthrough p { margin: 0 0 1.2rem; color: var(--ink); }
 .kitchen-walkthrough video { width: min(320px, 100%); aspect-ratio: 540 / 1174; border-radius: 28px; background: #000; box-shadow: 0 20px 40px rgba(71, 11, 35, 0.25); }
+
+/* The oven's closer look: thumbnails of each design stage, opening full size. */
+.oven-peek { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; align-items: flex-end; }
+.oven-peek-label { width: 100%; margin: 0; font-weight: 700; font-size: 0.85rem; }
+.oven-peek button { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 0.35rem; border: 2px solid #470b23; border-radius: 10px; background: #fff; font: inherit; font-size: 0.8rem; font-weight: 700; color: #470b23; transition: transform 0.15s; }
+.oven-peek button:hover { transform: translateY(-3px); }
+.oven-peek img { width: 64px; height: 120px; object-fit: cover; object-position: top; border-radius: 6px; }
+.peek-box { border: 0; border-radius: 16px; padding: 1rem 1rem 0.6rem; background: #f9f7eb; max-width: min(92vw, 560px); text-align: center; color: #470b23; }
+.peek-box::backdrop { background: rgba(29, 6, 15, 0.78); }
+.peek-box img { display: block; max-width: 100%; max-height: 78vh; margin: 0 auto; border-radius: 10px; }
+.peek-box p { margin: 0.5rem 0 0; font-weight: 700; }
+.peek-close { position: absolute; top: 0.3rem; right: 0.5rem; border: 0; background: none; font-size: 1.8rem; line-height: 1; color: #470b23; }
+.peek-nav { display: flex; justify-content: center; gap: 1rem; margin-top: 0.3rem; }
+.peek-nav button { border: 2px solid #470b23; border-radius: 50%; width: 2.2rem; height: 2.2rem; background: #fff; font-size: 1.3rem; color: #470b23; }

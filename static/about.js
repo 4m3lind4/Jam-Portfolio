@@ -34,6 +34,17 @@
     }, 300);
   }
 
+  // ---- The scroll hint: gone once you scroll, back at the top.
+  var hint = document.querySelector(".scroll-hint");
+  if (hint) {
+    var hintSync = function () { hint.classList.toggle("is-gone", scrollY > 40); };
+    addEventListener("scroll", hintSync, { passive: true });
+    hintSync();
+    hint.addEventListener("click", function () {
+      scrollBy({ top: innerHeight * 0.85, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+    });
+  }
+
   // ---- The folder
   window.__folderRan = true;
   var folder = document.querySelector(".folder");
